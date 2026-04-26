@@ -1,7 +1,8 @@
-import { spawnSync } from "node:child_process";
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { parse as parseYaml } from "yaml";
+import { execa } from "execa";
+import chalk from "chalk";
 
 const PROJECT_ROOT = resolve(import.meta.dir, "..");
 const AGENTS_DIR = resolve(PROJECT_ROOT, "agents");
@@ -37,7 +38,7 @@ export class Agent {
     return `acp-verifier-${this.name}`;
   }
 
-  buildImage(): void {
+  async buildImage(): Promise<void> {
     const missing = this.envVars.filter((v) => !process.env[v]);
     if (missing.length > 0) {
       throw new Error(
@@ -45,14 +46,23 @@ export class Agent {
       );
     }
 
+    const prefix = chalk.cyan(`[build-${this.name}]`);
     const context = resolve(PROJECT_ROOT, this.dockerContext);
-    const result = spawnSync(
-      "docker",
-      ["build", "-t", this.imageName, context],
-      { stdio: "inherit" }
-    );
-    if (result.status !== 0) {
-      throw new Error(`Failed to build Docker image for ${this.name}`);
-    }
+
+    const proc = execa("docker", ["build", "-t", this.imageName, context]);
+
+    proc.stdout?.on("data", (chunk: Buffer) => {
+      for (const line of chunk.toString().split("\n")) {
+        if (line) process.stdout.write(`${prefix} ${line}\n`);
+      }
+    });
+
+    proc.stderr?.on("data", (chunk: Buffer) => {
+      for (const line of chunk.toString().split("\n")) {
+        if (line) process.stderr.write(`${prefix} ${line}\n`);
+      }
+    });
+
+    await proc;
   }
 }

@@ -19,9 +19,11 @@ export class AgentRegistry {
       .map((e) => Agent.fromDir(e.name));
   }
 
-  buildAllImages(): void {
+  async buildAllImages(): Promise<void> {
+    console.log();
     for (const agent of this.agents) {
-      agent.buildImage();
+      await agent.buildImage();
     }
+    console.log();
   }
 }

@@ -5,26 +5,20 @@ import { Writable, Readable } from "node:stream";
 import * as acp from "@agentclientprotocol/sdk";
 import { AgentRegistry } from "../lib/agent-registry";
 
-const PROJECT_ROOT = resolve(import.meta.dir, "..");
-
 const registry = new AgentRegistry();
-registry.buildAllImages();
+await registry.buildAllImages();
 
 test.each(registry.agents)(
-  "%p: agent responds with 'hi' when asked to say one word",
+  "%(p.name)s: agent responds with single word",
   async (agent) => {
     const envFlags = agent.envVars.flatMap((v) => ["-e", v]);
 
-    const agentProcess = spawn(
-      "docker",
-      ["run", "-i", "--rm", ...envFlags, agent.imageName],
-      { stdio: ["pipe", "pipe", "inherit"] }
-    );
+    const agentProcess = spawn("docker", ["run", "-i", "--rm", ...envFlags, agent.imageName], {
+      stdio: ["pipe", "pipe", "inherit"],
+    });
 
     const input = Writable.toWeb(agentProcess.stdin!);
-    const output = Readable.toWeb(
-      agentProcess.stdout!
-    ) as ReadableStream<Uint8Array>;
+    const output = Readable.toWeb(agentProcess.stdout!) as ReadableStream<Uint8Array>;
 
     const agentTextChunks: string[] = [];
 
@@ -34,20 +28,14 @@ test.each(registry.agents)(
       },
       async sessionUpdate(params) {
         const update = params.update;
-        if (
-          update.sessionUpdate === "agent_message_chunk" &&
-          update.content.type === "text"
-        ) {
+        if (update.sessionUpdate === "agent_message_chunk" && update.content.type === "text") {
           agentTextChunks.push(update.content.text);
         }
       },
     };
 
     const stream = acp.ndJsonStream(input, output);
-    const connection = new acp.ClientSideConnection(
-      (_agent) => client,
-      stream
-    );
+    const connection = new acp.ClientSideConnection((_agent) => client, stream);
 
     try {
       const initResult = await connection.initialize({
@@ -61,7 +49,7 @@ test.each(registry.agents)(
           (m): m is acp.AuthMethodEnvVar & { type: "env_var" } =>
             "type" in m &&
             m.type === "env_var" &&
-            m.vars.every((v) => v.optional || agent.envVars.includes(v.name))
+            m.vars.every((v) => v.optional || agent.envVars.includes(v.name)),
         );
         if (envVarMethod) {
           await connection.authenticate({ methodId: envVarMethod.id });
@@ -84,13 +72,10 @@ test.each(registry.agents)(
           const option = configOptions.find((o) => o.id === id);
           if (!option || option.type !== "select") continue;
 
-          const flatOptions = option.options.flatMap((o) =>
-            "options" in o ? o.options : [o]
-          );
+          const flatOptions = option.options.flatMap((o) => ("options" in o ? o.options : [o]));
           if (flatOptions.length === 0) continue;
 
-          const picked =
-            flatOptions.at(pickIndex) ?? flatOptions[flatOptions.length - 1]!;
+          const picked = flatOptions.at(pickIndex) ?? flatOptions[flatOptions.length - 1]!;
           await connection.setSessionConfigOption({
             sessionId: sessionResult.sessionId,
             configId: id,
@@ -112,5 +97,5 @@ test.each(registry.agents)(
       agentProcess.kill();
     }
   },
-  60_000
+  60_000,
 );
