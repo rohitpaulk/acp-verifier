@@ -1,188 +1,92 @@
 import { expect, test } from "bun:test";
-import { resolve } from "path";
-
-const CODEX_ACP_BIN = resolve(
-  import.meta.dir,
-  "..",
-  "node_modules",
-  ".bin",
-  "codex-acp"
-);
-
-type JsonRpcMessage = {
-  jsonrpc: "2.0";
-  id?: number;
-  method?: string;
-  params?: Record<string, unknown>;
-  result?: Record<string, unknown>;
-  error?: { code: number; message: string };
-};
-
-class AcpClient {
-  private proc: ReturnType<typeof Bun.spawn>;
-  private stdin: import("bun").FileSink;
-  private reader: { read(): Promise<{ done: boolean; value?: Uint8Array }> };
-  private buffer = "";
-  private decoder = new TextDecoder();
-  private nextId = 0;
-
-  constructor(bin: string, args: string[] = []) {
-    this.proc = Bun.spawn([bin, ...args], {
-      stdin: "pipe",
-      stdout: "pipe",
-      stderr: "inherit",
-    });
-    this.stdin = this.proc.stdin as import("bun").FileSink;
-    this.reader = (this.proc.stdout as ReadableStream<Uint8Array>).getReader();
-  }
-
-  private send(message: object) {
-    this.stdin.write(JSON.stringify(message) + "\n");
-  }
-
-  private async readOneMessage(): Promise<JsonRpcMessage> {
-    while (true) {
-      const nlIndex = this.buffer.indexOf("\n");
-      if (nlIndex !== -1) {
-        const line = this.buffer.slice(0, nlIndex);
-        this.buffer = this.buffer.slice(nlIndex + 1);
-        if (line.trim()) {
-          return JSON.parse(line);
-        }
-        continue;
-      }
-      const { done, value } = await this.reader.read();
-      if (done) throw new Error("stdout stream ended unexpectedly");
-      this.buffer += this.decoder.decode(value, { stream: true });
-    }
-  }
-
-  async request(
-    method: string,
-    params: Record<string, unknown>
-  ): Promise<{
-    response: JsonRpcMessage;
-    notifications: JsonRpcMessage[];
-  }> {
-    const id = this.nextId++;
-    this.send({ jsonrpc: "2.0", id, method, params });
-
-    const notifications: JsonRpcMessage[] = [];
-    while (true) {
-      const msg = await this.readOneMessage();
-
-      if ("id" in msg && msg.id === id) {
-        return { response: msg, notifications };
-      }
-
-      if ("method" in msg) {
-        if (msg.id !== undefined) {
-          this.send({
-            jsonrpc: "2.0",
-            id: msg.id,
-            error: { code: -1, message: "denied by test client" },
-          });
-        }
-        notifications.push(msg);
-      }
-    }
-  }
-
-  async close() {
-    this.stdin.end();
-    this.proc.kill();
-  }
-}
-
-function collectAgentText(notifications: JsonRpcMessage[]): string {
-  return notifications
-    .filter((n) => {
-      const update = n.params?.update as { sessionUpdate?: string } | undefined;
-      return update?.sessionUpdate === "agent_message_chunk";
-    })
-    .map((n) => {
-      const update = n.params!.update as {
-        content: { type: string; text: string };
-      };
-      return update.content.text;
-    })
-    .join("");
-}
+import { spawn } from "node:child_process";
+import { Writable, Readable } from "node:stream";
+import * as acp from "@agentclientprotocol/sdk";
 
 test(
   "codex-acp: agent responds with 'hi' when asked to say one word",
   async () => {
-    const client = new AcpClient(CODEX_ACP_BIN);
+    const agentProcess = spawn("bunx", ["@zed-industries/codex-acp"], {
+      stdio: ["pipe", "pipe", "inherit"],
+    });
+
+    const input = Writable.toWeb(agentProcess.stdin!);
+    const output = Readable.toWeb(
+      agentProcess.stdout!
+    ) as ReadableStream<Uint8Array>;
+
+    const agentTextChunks: string[] = [];
+
+    const client: acp.Client = {
+      async requestPermission(_params) {
+        throw new Error("denied by test client");
+      },
+      async sessionUpdate(params) {
+        const update = params.update;
+        if (
+          update.sessionUpdate === "agent_message_chunk" &&
+          update.content.type === "text"
+        ) {
+          agentTextChunks.push(update.content.text);
+        }
+      },
+    };
+
+    const stream = acp.ndJsonStream(input, output);
+    const connection = new acp.ClientSideConnection(
+      (_agent) => client,
+      stream
+    );
 
     try {
-      const { response: initResponse } = await client.request("initialize", {
-        protocolVersion: 1,
+      await connection.initialize({
+        protocolVersion: acp.PROTOCOL_VERSION,
         clientCapabilities: {},
         clientInfo: { name: "acp-verifier", version: "0.1.0" },
       });
-      expect(initResponse.error).toBeUndefined();
 
-      const { response: sessionResponse } = await client.request(
-        "session/new",
-        { cwd: process.cwd(), mcpServers: [] }
-      );
-      expect(sessionResponse.error).toBeUndefined();
-      const sessionId = (sessionResponse.result as { sessionId: string })
-        .sessionId;
-      expect(sessionId).toBeTruthy();
+      const sessionResult = await connection.newSession({
+        cwd: process.cwd(),
+        mcpServers: [],
+      });
+      expect(sessionResult.sessionId).toBeTruthy();
 
-      // Pick the cheapest available model with lowest reasoning effort
-      type ConfigOption = {
-        id: string;
-        options: { value: string }[];
-      };
-      const configOptions = (
-        sessionResponse.result as { configOptions?: ConfigOption[] }
-      ).configOptions;
+      const configOptions = sessionResult.configOptions;
 
       if (configOptions) {
-        const modelOption = configOptions.find((o) => o.id === "model");
-        const reasoningOption = configOptions.find(
-          (o) => o.id === "reasoning_effort"
-        );
+        for (const [id, pickIndex] of [
+          ["model", -1],
+          ["reasoning_effort", 0],
+        ] as const) {
+          const option = configOptions.find((o) => o.id === id);
+          if (!option || option.type !== "select") continue;
 
-        // Use the last model in the list (typically the cheapest/smallest)
-        if (modelOption && modelOption.options.length > 0) {
-          const cheapestModel =
-            modelOption.options[modelOption.options.length - 1]!.value;
-          await client.request("session/set_config_option", {
-            sessionId,
-            configId: "model",
-            value: cheapestModel,
-          });
-        }
+          const flatOptions = option.options.flatMap((o) =>
+            "options" in o ? o.options : [o]
+          );
+          if (flatOptions.length === 0) continue;
 
-        // Use the lowest reasoning effort
-        if (reasoningOption && reasoningOption.options.length > 0) {
-          const lowestReasoning = reasoningOption.options[0]!.value;
-          await client.request("session/set_config_option", {
-            sessionId,
-            configId: "reasoning_effort",
-            value: lowestReasoning,
+          const picked =
+            flatOptions.at(pickIndex) ?? flatOptions[flatOptions.length - 1]!;
+          await connection.setSessionConfigOption({
+            sessionId: sessionResult.sessionId,
+            configId: id,
+            value: picked.value,
           });
         }
       }
 
-      const { response: promptResponse, notifications } =
-        await client.request("session/prompt", {
-          sessionId,
-          prompt: [{ type: "text", text: "say exactly one word: hi" }],
-        });
+      const promptResult = await connection.prompt({
+        sessionId: sessionResult.sessionId,
+        prompt: [{ type: "text", text: "say exactly one word: hi" }],
+      });
 
-      expect(promptResponse.error).toBeUndefined();
-      expect(
-        (promptResponse.result as { stopReason: string }).stopReason
-      ).toBe("end_turn");
+      expect(promptResult.stopReason).toBe("end_turn");
 
-      const agentText = collectAgentText(notifications);
+      const agentText = agentTextChunks.join("");
       expect(agentText.trim().toLowerCase()).toBe("hi");
     } finally {
-      await client.close();
+      agentProcess.kill();
     }
   },
   60_000
