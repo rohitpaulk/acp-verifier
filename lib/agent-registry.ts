@@ -12,6 +12,18 @@ export class AgentRegistry {
     this.agents = this.discover();
   }
 
+  get agentNames(): string[] {
+    return this.agents.map((a) => a.name);
+  }
+
+  agentByName(name: string): Agent {
+    const agent = this.agents.find((a) => a.name === name);
+    if (!agent) {
+      throw new Error(`Unknown agent: ${name}`);
+    }
+    return agent;
+  }
+
   private discover(): Agent[] {
     const entries = readdirSync(AGENTS_DIR, { withFileTypes: true });
     return entries

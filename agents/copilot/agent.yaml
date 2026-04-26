@@ -1,0 +1,3 @@
+name: copilot
+env_vars:
+  - COPILOT_GITHUB_TOKEN

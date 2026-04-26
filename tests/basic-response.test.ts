@@ -1,101 +1,84 @@
 import { expect, test } from "bun:test";
-import { spawn } from "node:child_process";
-import { resolve } from "node:path";
-import { Writable, Readable } from "node:stream";
 import * as acp from "@agentclientprotocol/sdk";
 import { AgentRegistry } from "../lib/agent-registry";
+import { AgentProcess } from "../lib/agent-process";
 
 const registry = new AgentRegistry();
 await registry.buildAllImages();
 
-test.each(registry.agents)(
-  "%(p.name)s: agent responds with single word",
-  async (agent) => {
-    const envFlags = agent.envVars.flatMap((v) => ["-e", v]);
-
-    const agentProcess = spawn("docker", ["run", "-i", "--rm", ...envFlags, agent.imageName], {
-      stdio: ["pipe", "pipe", "inherit"],
-    });
-
-    const input = Writable.toWeb(agentProcess.stdin!);
-    const output = Readable.toWeb(agentProcess.stdout!) as ReadableStream<Uint8Array>;
-
+test.each(registry.agentNames)(
+  "%s: agent responds with single word",
+  async (name) => {
+    const agent = registry.agentByName(name);
     const agentTextChunks: string[] = [];
 
-    const client: acp.Client = {
-      async requestPermission(_params) {
-        throw new Error("denied by test client");
-      },
+    using proc = new AgentProcess(agent, {
       async sessionUpdate(params) {
         const update = params.update;
         if (update.sessionUpdate === "agent_message_chunk" && update.content.type === "text") {
           agentTextChunks.push(update.content.text);
         }
       },
-    };
+    });
 
-    const stream = acp.ndJsonStream(input, output);
-    const connection = new acp.ClientSideConnection((_agent) => client, stream);
+    const initResult = await proc.connection.initialize({
+      protocolVersion: acp.PROTOCOL_VERSION,
+      clientCapabilities: {},
+      clientInfo: { name: "acp-verifier", version: "0.1.0" },
+    });
 
-    try {
-      const initResult = await connection.initialize({
-        protocolVersion: acp.PROTOCOL_VERSION,
-        clientCapabilities: {},
-        clientInfo: { name: "acp-verifier", version: "0.1.0" },
-      });
-
-      if (initResult.authMethods?.length) {
-        const envVarMethod = initResult.authMethods.find(
-          (m): m is acp.AuthMethodEnvVar & { type: "env_var" } =>
-            "type" in m &&
-            m.type === "env_var" &&
-            m.vars.every((v) => v.optional || agent.envVars.includes(v.name)),
-        );
-        if (envVarMethod) {
-          await connection.authenticate({ methodId: envVarMethod.id });
-        }
+    if (initResult.authMethods?.length) {
+      const envVarMethod = initResult.authMethods.find(
+        (m): m is acp.AuthMethodEnvVar & { type: "env_var" } =>
+          "type" in m &&
+          m.type === "env_var" &&
+          m.vars.every((v) => v.optional || agent.envVars.includes(v.name)),
+      );
+      if (envVarMethod) {
+        await proc.connection.authenticate({ methodId: envVarMethod.id });
       }
+    }
 
-      const sessionResult = await connection.newSession({
-        cwd: process.cwd(),
-        mcpServers: [],
-      });
-      expect(sessionResult.sessionId).toBeTruthy();
+    const sessionResult = await proc.connection.newSession({
+      cwd: "/tmp",
+      mcpServers: [],
+    });
+    expect(sessionResult.sessionId).toBeTruthy();
 
-      const configOptions = sessionResult.configOptions;
+    const configOptions = sessionResult.configOptions;
 
-      if (configOptions) {
-        for (const [id, pickIndex] of [
-          ["model", -1],
-          ["reasoning_effort", 0],
-        ] as const) {
-          const option = configOptions.find((o) => o.id === id);
-          if (!option || option.type !== "select") continue;
+    if (configOptions) {
+      for (const [id, pickIndex] of [
+        ["model", -1],
+        ["reasoning_effort", 0],
+      ] as const) {
+        const option = configOptions.find((o) => o.id === id);
+        if (!option || option.type !== "select") continue;
 
-          const flatOptions = option.options.flatMap((o) => ("options" in o ? o.options : [o]));
-          if (flatOptions.length === 0) continue;
+        const flatOptions = option.options.flatMap((o) => ("options" in o ? o.options : [o]));
+        if (flatOptions.length === 0) continue;
 
-          const picked = flatOptions.at(pickIndex) ?? flatOptions[flatOptions.length - 1]!;
-          await connection.setSessionConfigOption({
+        const picked = flatOptions.at(pickIndex) ?? flatOptions[flatOptions.length - 1]!;
+        try {
+          await proc.connection.setSessionConfigOption({
             sessionId: sessionResult.sessionId,
             configId: id,
             value: picked.value,
           });
+        } catch {
+          // Some agents reject certain config options (e.g. reasoning_effort for models that don't support it)
         }
       }
-
-      const promptResult = await connection.prompt({
-        sessionId: sessionResult.sessionId,
-        prompt: [{ type: "text", text: "say exactly one word: hi" }],
-      });
-
-      expect(promptResult.stopReason).toBe("end_turn");
-
-      const agentText = agentTextChunks.join("");
-      expect(agentText.trim().toLowerCase()).toBe("hi");
-    } finally {
-      agentProcess.kill();
     }
+
+    const promptResult = await proc.connection.prompt({
+      sessionId: sessionResult.sessionId,
+      prompt: [{ type: "text", text: "say exactly one word: hi" }],
+    });
+
+    expect(promptResult.stopReason).toBe("end_turn");
+
+    const agentText = agentTextChunks.join("");
+    expect(agentText.trim().toLowerCase()).toBe("hi");
   },
-  60_000,
 );
