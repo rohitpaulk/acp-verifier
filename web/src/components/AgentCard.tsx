@@ -111,7 +111,6 @@ function CheckCell({ check }: { check: Check }) {
 export default function AgentCard({
   slug,
   name,
-  company,
   checks,
 }: AgentCardProps) {
   const passed = checks.filter((c) => c.status === "pass").length;
@@ -120,25 +119,19 @@ export default function AgentCard({
   return (
     <div className="bg-surface border border-border rounded-2xl p-6 transition-colors hover:border-border-hover">
       <div className="flex items-center justify-between mb-5">
-        <div className="flex items-center gap-3.5">
-          <div className="w-8 h-8 flex items-center justify-center shrink-0">
-            <img src={logoPath(slug)} alt={name} className="w-8 h-8" />
-          </div>
-          <div>
-            <h2 className="text-base font-bold tracking-tight leading-tight">
-              {name}
-            </h2>
-            <div className="text-xs text-text-muted mt-0.5">by {company}</div>
+        <div>
+          <h2 className="text-xl font-bold tracking-tight leading-tight">
+            {name}
+          </h2>
+          <div className="text-xs text-text-muted mt-0.5">
+            <span className="text-text-dim font-semibold">{pct}%</span> passed
           </div>
         </div>
-        <div className="text-right">
-          <div className="font-mono text-lg font-bold text-text leading-tight">
-            {pct}%
-          </div>
-          <div className="text-xs text-text-muted mt-0.5">passed</div>
+        <div className="w-8 h-8 flex items-center justify-center shrink-0">
+          <img src={logoPath(slug)} alt={name} className="w-8 h-8" />
         </div>
       </div>
-      <Tooltip.Provider delay={150} closeDelay={150}>
+      <Tooltip.Provider delay={0} closeDelay={150}>
         <div className="check-grid">
           {checks.map((check) => (
             <CheckCell key={check.slug} check={check} />
