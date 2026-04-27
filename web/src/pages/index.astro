@@ -1,17 +1,530 @@
 ---
+import mockData from "../data/mock-results.json";
 
+const agents = [...mockData.agents].sort((a, b) => {
+  const pctA = a.checks.filter((c) => c.status === "pass").length / a.checks.length;
+  const pctB = b.checks.filter((c) => c.status === "pass").length / b.checks.length;
+  return pctB - pctA;
+});
+const totalChecks = agents[0]?.checks.length ?? 0;
+
+function passCount(checks: { status: string }[]) {
+  return checks.filter((c) => c.status === "pass").length;
+}
+
+function failCount(checks: { status: string }[]) {
+  return checks.filter((c) => c.status === "fail").length;
+}
 ---
 
 <html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Are we ACP yet?</title>
-	</head>
-	<body>
-		<h1>Are we ACP yet?</h1>
-	</body>
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="generator" content={Astro.generator} />
+    <title>Are we ACP yet?</title>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&family=Space+Grotesk:wght@400;500;600;700&display=swap');
+
+      *, *::before, *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      :root {
+        --bg: #0b0d0f;
+        --surface: #131719;
+        --surface-hover: #191d20;
+        --border: #1f2428;
+        --text: #e6eaed;
+        --text-dim: #9ca3ab;
+        --text-muted: #5c6670;
+        --green: #2dd468;
+        --green-bg: rgba(45, 212, 104, 0.12);
+        --green-border: rgba(45, 212, 104, 0.25);
+        --red: #f04848;
+        --red-bg: rgba(240, 72, 72, 0.12);
+        --red-border: rgba(240, 72, 72, 0.25);
+      }
+
+      html {
+        background: var(--bg);
+        color: var(--text);
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        -webkit-font-smoothing: antialiased;
+      }
+
+      body {
+        min-height: 100vh;
+      }
+
+      /* ---- Navbar ---- */
+
+      nav {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 16px 32px;
+        border-bottom: 1px solid var(--border);
+      }
+
+      .nav-brand {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-weight: 700;
+        font-size: 0.95rem;
+        color: var(--text);
+        text-decoration: none;
+      }
+
+      .nav-logo {
+        color: var(--green);
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 1.1rem;
+        font-weight: 700;
+      }
+
+      .nav-links {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .nav-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 7px 14px;
+        border-radius: 8px;
+        font-size: 0.82rem;
+        font-weight: 500;
+        color: var(--text-dim);
+        text-decoration: none;
+        border: 1px solid var(--border);
+        background: var(--surface);
+        transition: color 0.15s, border-color 0.15s;
+      }
+
+      .nav-link:hover {
+        color: var(--text);
+        border-color: #2e3438;
+      }
+
+      .nav-link svg {
+        width: 16px;
+        height: 16px;
+      }
+
+      /* ---- Header ---- */
+
+      .container {
+        max-width: 1000px;
+        margin: 0 auto;
+        padding: 0 28px;
+      }
+
+      header {
+        padding: 64px 0 48px;
+        text-align: center;
+      }
+
+      h1 {
+        font-family: 'Space Grotesk', sans-serif;
+        font-size: 3.5rem;
+        font-weight: 700;
+        letter-spacing: -0.04em;
+        line-height: 1.05;
+        color: var(--text);
+      }
+
+      .badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        margin-top: 20px;
+        padding: 6px 16px;
+        border-radius: 100px;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        font-size: 0.82rem;
+        font-weight: 500;
+        color: var(--text-dim);
+      }
+
+      .badge-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: var(--green);
+      }
+
+      .subtitle {
+        margin-top: 16px;
+        color: var(--text-muted);
+        font-size: 0.95rem;
+        line-height: 1.6;
+      }
+
+      .subtitle .legend-green {
+        color: var(--green);
+        font-weight: 600;
+      }
+
+      .subtitle .legend-red {
+        color: var(--red);
+        font-weight: 600;
+      }
+
+      /* ---- Agent Cards ---- */
+
+      .agents {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+      }
+
+      .card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        padding: 24px 28px;
+        transition: border-color 0.2s;
+      }
+
+      .card:hover {
+        border-color: #2a2e32;
+      }
+
+      .card-top {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        margin-bottom: 20px;
+      }
+
+      .agent-info {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+      }
+
+      .agent-icon {
+        width: 32px;
+        height: 32px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+      }
+
+      .agent-icon img {
+        width: 32px;
+        height: 32px;
+      }
+
+      .agent-meta h2 {
+        font-size: 1.15rem;
+        font-weight: 700;
+        letter-spacing: -0.02em;
+        line-height: 1.2;
+      }
+
+      .agent-company {
+        font-size: 0.8rem;
+        color: var(--text-muted);
+        margin-top: 2px;
+      }
+
+      .card-stats {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+
+      .stat-number {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: var(--text);
+        line-height: 1;
+      }
+
+      .stat-label {
+        font-size: 0.8rem;
+        color: var(--text-muted);
+        line-height: 1;
+      }
+
+      /* ---- Check Grid ---- */
+
+      .grid {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 4px;
+      }
+
+      .cell {
+        position: relative;
+        width: 30px;
+        height: 30px;
+        border-radius: 5px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: default;
+        transition: transform 0.12s ease, box-shadow 0.12s ease;
+      }
+
+      .cell:hover {
+        transform: scale(1.25);
+        z-index: 10;
+      }
+
+      .cell.pass {
+        background: var(--green-bg);
+        color: var(--green);
+        border: 1.5px solid var(--green-border);
+      }
+
+      .cell.pass:hover {
+        background: rgba(45, 212, 104, 0.2);
+        box-shadow: 0 0 12px rgba(45, 212, 104, 0.15);
+      }
+
+      .cell.fail {
+        background: var(--red-bg);
+        color: var(--red);
+        border: 1.5px solid var(--red-border);
+      }
+
+      .cell.fail:hover {
+        background: rgba(240, 72, 72, 0.2);
+        box-shadow: 0 0 12px rgba(240, 72, 72, 0.15);
+      }
+
+      /* ---- Tooltip ---- */
+
+      .tooltip {
+        position: absolute;
+        bottom: calc(100% + 10px);
+        left: 50%;
+        transform: translateX(-50%);
+        background: #181c1f;
+        color: var(--text);
+        font-size: 0.85rem;
+        font-weight: 500;
+        padding: 12px 10px;
+        border-radius: 6px;
+        pointer-events: none;
+        opacity: 0;
+        transition: opacity 0.12s;
+        border: 1px solid #282e33;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+        text-align: left;
+        min-width: 220px;
+        max-width: 280px;
+      }
+
+      .cell:hover .tooltip {
+        pointer-events: auto;
+      }
+
+      .tooltip::after {
+        content: '';
+        position: absolute;
+        top: 100%;
+        left: 50%;
+        transform: translateX(-50%);
+        border: 6px solid transparent;
+        border-top-color: #282e33;
+      }
+
+      .cell:hover .tooltip {
+        opacity: 1;
+      }
+
+      .tooltip-title {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        font-family: 'Space Grotesk', sans-serif;
+        font-weight: 700;
+        font-size: 0.7rem;
+        margin-bottom: 6px;
+      }
+
+      .tooltip-icon {
+        width: 14px;
+        height: 14px;
+        border-radius: 50%;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+      }
+
+      .tooltip-icon.pass {
+        background: var(--green-bg);
+        color: var(--green);
+        border: 1.5px solid var(--green-border);
+      }
+
+      .tooltip-icon.fail {
+        background: var(--red-bg);
+        color: var(--red);
+        border: 1.5px solid var(--red-border);
+      }
+
+      .tooltip-desc {
+        font-size: 0.65rem;
+        color: var(--text-dim);
+        line-height: 1.4;
+      }
+
+      .tooltip-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        margin-top: 8px;
+        font-size: 0.6rem;
+        font-weight: 600;
+        color: var(--text-muted);
+        text-decoration: none;
+        transition: color 0.15s;
+      }
+
+      .tooltip-link:hover {
+        color: var(--text);
+      }
+
+      /* ---- Footer ---- */
+
+      .footer-bar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-top: 32px;
+        padding: 20px 0 40px;
+        border-top: 1px solid var(--border);
+        font-size: 0.78rem;
+        color: var(--text-muted);
+      }
+
+      .footer-meta {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+      }
+
+      .footer-value {
+        color: var(--text-dim);
+      }
+
+      .footer-dot {
+        width: 4px;
+        height: 4px;
+        border-radius: 50%;
+        background: var(--text-muted);
+      }
+
+      .footer-link {
+        color: var(--text-muted);
+        text-decoration: none;
+        transition: color 0.15s;
+      }
+
+      .footer-link:hover {
+        color: var(--text);
+      }
+    </style>
+  </head>
+  <body>
+    <nav>
+      <a href="/" class="nav-brand">
+        <span class="nav-logo">&gt;_</span>
+        Are we ACP yet?
+      </a>
+      <div class="nav-links">
+        <a href="https://github.com/nichochar/acp" target="_blank" class="nav-link">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+        </a>
+        <a href="https://github.com/nichochar/acp" target="_blank" class="nav-link">About ACP</a>
+      </div>
+    </nav>
+
+    <div class="container">
+      <header>
+        <h1>Are we ACP yet?</h1>
+        <div class="badge">
+          <span class="badge-dot"></span>
+          ACP: Agentic Control Protocol
+        </div>
+        <p class="subtitle">
+          Your ACP server has bugs. Let's find them.<br/>
+          <span class="legend-green">Green</span> means passed. <span class="legend-red">Red</span> means not yet.
+        </p>
+      </header>
+
+      <div class="agents">
+        {agents.map((agent) => {
+          return (
+            <div class="card">
+              <div class="card-top">
+                <div class="agent-info">
+                  <div class="agent-icon">
+                    <img src={`/logos/${agent.slug === "claude-code" ? "claude" : agent.slug === "codex" ? "openai" : "copilot"}.svg`} alt={agent.name} />
+                  </div>
+                  <div class="agent-meta">
+                    <h2>{agent.name}</h2>
+                    <div class="agent-company">by {agent.company}</div>
+                  </div>
+                </div>
+                <div class="card-stats">
+                  <span class="stat-number">{Math.round((passCount(agent.checks) / agent.checks.length) * 100)}%</span>
+                  <span class="stat-label">passed</span>
+                </div>
+              </div>
+              <div class="grid">
+                {agent.checks.map((check) => (
+                  <div class={`cell ${check.status}`}>
+                    {check.status === "pass"
+                      ? <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+                      : <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+                    }
+                    <div class="tooltip">
+                      <div class="tooltip-title">
+                        <span class={`tooltip-icon ${check.status}`}>
+                          {check.status === "pass"
+                            ? <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+                            : <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+                          }
+                        </span>
+                        {check.label}
+                      </div>
+                      <div class="tooltip-desc">{check.description}</div>
+                      <a href={`/checks/${check.slug}`} class="tooltip-link">View details &rarr;</a>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      <div class="footer-bar">
+        <div class="footer-meta">
+          <span>Last updated: <span class="footer-value">{mockData.lastUpdated}</span></span>
+          <span class="footer-dot"></span>
+          <span>Checks: <span class="footer-value">{totalChecks}</span></span>
+        </div>
+        <a href="https://github.com/nichochar/acp" target="_blank" class="footer-link">
+          How are these checks determined? &rarr;
+        </a>
+      </div>
+    </div>
+  </body>
 </html>
