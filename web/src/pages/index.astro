@@ -1,6 +1,7 @@
 ---
 import "../styles/global.css";
 import mockData from "../data/mock-results.json";
+import AgentCard from "../components/AgentCard";
 
 const agents = [...mockData.agents].sort((a, b) => {
   const pctA = a.checks.filter((c) => c.status === "pass").length / a.checks.length;
@@ -8,10 +9,6 @@ const agents = [...mockData.agents].sort((a, b) => {
   return pctB - pctA;
 });
 const totalChecks = agents[0]?.checks.length ?? 0;
-
-function passCount(checks: { status: string }[]) {
-  return checks.filter((c) => c.status === "pass").length;
-}
 ---
 
 <html lang="en">
@@ -44,40 +41,9 @@ function passCount(checks: { status: string }[]) {
       </header>
 
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {agents.map((agent) => {
-          return (
-            <div class="bg-surface border border-border rounded-2xl p-6 transition-colors hover:border-border-hover">
-              <div class="flex items-center justify-between mb-5">
-                <div class="flex items-center gap-3.5">
-                  <div class="w-8 h-8 flex items-center justify-center shrink-0">
-                    <img src={`/logos/${agent.slug === "claude-code" ? "claude" : agent.slug === "codex" ? "openai" : "copilot"}.svg`} alt={agent.name} class="w-8 h-8" />
-                  </div>
-                  <div>
-                    <h2 class="text-base font-bold tracking-tight leading-tight">{agent.name}</h2>
-                    <div class="text-xs text-text-muted mt-0.5">by {agent.company}</div>
-                  </div>
-                </div>
-                <div class="text-right">
-                  <div class="font-mono text-lg font-bold text-text leading-tight">{Math.round((passCount(agent.checks) / agent.checks.length) * 100)}%</div>
-                  <div class="text-xs text-text-muted mt-0.5">passed</div>
-                </div>
-              </div>
-              <div class="flex flex-wrap gap-1">
-                {agent.checks.map((check) => (
-                  <div
-                    class={`cell ${check.status}`}
-                    data-tippy-content={`<div class="flex items-center gap-1 font-bold text-xs mb-1.5"><span class="tooltip-icon ${check.status}">${check.status === "pass" ? '<svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>' : '<svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>'}</span>${check.label}</div><div class="text-xs text-text-dim leading-snug">${check.description}</div><a href="/checks/${check.slug}" class="inline-flex items-center gap-1 mt-2 text-xs font-semibold text-text-muted no-underline transition-colors hover:text-text">View details &rarr;</a>`}
-                  >
-                    {check.status === "pass"
-                      ? <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
-                      : <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
-                    }
-                  </div>
-                ))}
-              </div>
-            </div>
-          );
-        })}
+        {agents.map((agent) => (
+          <AgentCard client:load {...agent} />
+        ))}
       </div>
 
       <div class="flex items-center justify-between mt-8 pt-5 pb-10 border-t border-border text-xs text-text-muted">
@@ -93,10 +59,15 @@ function passCount(checks: { status: string }[]) {
     </div>
 
     <style is:global>
+      .check-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(28px, 1fr));
+        gap: 4px;
+      }
+
       .cell {
         position: relative;
-        width: 30px;
-        height: 30px;
+        aspect-ratio: 1;
         border-radius: 5px;
         display: flex;
         align-items: center;
@@ -132,7 +103,7 @@ function passCount(checks: { status: string }[]) {
         box-shadow: 0 0 12px rgba(240, 72, 72, 0.15);
       }
 
-      .tippy-box {
+      .tooltip-popup {
         background: var(--color-tooltip-bg);
         color: var(--color-text);
         border: 1px solid var(--color-tooltip-border);
@@ -141,19 +112,14 @@ function passCount(checks: { status: string }[]) {
         font-size: 0.85rem;
         font-weight: 500;
         text-align: left;
-      }
-
-      .tippy-content {
         padding: 14px 16px;
-      }
-
-      .tippy-arrow {
-        color: var(--color-tooltip-border);
+        z-index: 50;
+        max-width: 280px;
       }
 
       .tooltip-icon {
-        width: 14px;
-        height: 14px;
+        width: 20px;
+        height: 20px;
         border-radius: 50%;
         display: inline-flex;
         align-items: center;
@@ -174,17 +140,5 @@ function passCount(checks: { status: string }[]) {
       }
     </style>
 
-    <script>
-      import tippy from 'tippy.js';
-      import 'tippy.js/dist/tippy.css';
-
-      tippy('[data-tippy-content]', {
-        allowHTML: true,
-        arrow: true,
-        interactive: true,
-        maxWidth: 280,
-        placement: 'top',
-      });
-    </script>
   </body>
 </html>
