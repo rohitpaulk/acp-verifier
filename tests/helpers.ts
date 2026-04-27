@@ -1,9 +1,5 @@
 import * as acp from "@agentclientprotocol/sdk";
-import { AgentRegistry } from "../lib/agent-registry";
 import type { Agent } from "../lib/agent";
-
-export const registry = new AgentRegistry();
-await registry.buildAllImages();
 
 export async function initAndAuth(proc: { connection: acp.ClientSideConnection }, agent: Agent) {
   const initResult = await proc.connection.initialize({

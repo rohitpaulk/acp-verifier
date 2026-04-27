@@ -1,12 +1,12 @@
 import { expect, test, setDefaultTimeout } from "bun:test";
 import * as acp from "@agentclientprotocol/sdk";
 import { AgentProcess } from "../lib/agent-process";
-import { registry } from "./helpers";
+import { registry } from "./setup";
 
 setDefaultTimeout(15_000);
 
-test.each(registry.agentNames)("%s: responds to initialize within 500ms", async (name) => {
-  const agent = registry.agentByName(name);
+test.each(registry.agentSlugs)("%s: responds to initialize within 500ms", async (slug) => {
+  const agent = registry.agentBySlug(slug);
   using proc = new AgentProcess(agent);
 
   const start = performance.now();

@@ -12,14 +12,14 @@ export class AgentRegistry {
     this.agents = this.discover();
   }
 
-  get agentNames(): string[] {
-    return this.agents.map((a) => a.name);
+  get agentSlugs(): string[] {
+    return this.agents.map((a) => a.slug);
   }
 
-  agentByName(name: string): Agent {
-    const agent = this.agents.find((a) => a.name === name);
+  agentBySlug(slug: string): Agent {
+    const agent = this.agents.find((a) => a.slug === slug);
     if (!agent) {
-      throw new Error(`Unknown agent: ${name}`);
+      throw new Error(`Unknown agent: ${slug}`);
     }
     return agent;
   }

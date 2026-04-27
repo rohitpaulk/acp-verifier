@@ -1,14 +1,14 @@
 import { expect, test, setDefaultTimeout } from "bun:test";
 import * as acp from "@agentclientprotocol/sdk";
 import { AgentProcess } from "../lib/agent-process";
-import { registry } from "./helpers";
+import { registry } from "./setup";
 
 setDefaultTimeout(15_000);
 
-test.each(registry.agentNames)(
+test.each(registry.agentSlugs)(
   "%s: responds with matching protocol version when agent supports it",
-  async (name) => {
-    const agent = registry.agentByName(name);
+  async (slug) => {
+    const agent = registry.agentBySlug(slug);
     using proc = new AgentProcess(agent);
 
     const result = await proc.connection.initialize({
@@ -21,10 +21,10 @@ test.each(registry.agentNames)(
   },
 );
 
-test.each(registry.agentNames)(
+test.each(registry.agentSlugs)(
   "%s: responds with its latest version when client requests an unsupported version",
-  async (name) => {
-    const agent = registry.agentByName(name);
+  async (slug) => {
+    const agent = registry.agentBySlug(slug);
     using proc = new AgentProcess(agent);
 
     const result = await proc.connection.initialize({
@@ -39,8 +39,8 @@ test.each(registry.agentNames)(
   },
 );
 
-test.each(registry.agentNames)("%s: includes agentInfo in initialize response", async (name) => {
-  const agent = registry.agentByName(name);
+test.each(registry.agentSlugs)("%s: includes agentInfo in initialize response", async (slug) => {
+  const agent = registry.agentBySlug(slug);
   using proc = new AgentProcess(agent);
 
   const result = await proc.connection.initialize({
@@ -53,10 +53,10 @@ test.each(registry.agentNames)("%s: includes agentInfo in initialize response", 
   expect(result.agentInfo!.name).toBeTruthy();
 });
 
-test.each(registry.agentNames)(
+test.each(registry.agentSlugs)(
   "%s: includes agentCapabilities in initialize response",
-  async (name) => {
-    const agent = registry.agentByName(name);
+  async (slug) => {
+    const agent = registry.agentBySlug(slug);
     using proc = new AgentProcess(agent);
 
     const result = await proc.connection.initialize({

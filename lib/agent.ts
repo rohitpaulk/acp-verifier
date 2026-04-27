@@ -13,11 +13,13 @@ type AgentYAML = {
 };
 
 export class Agent {
+  readonly slug: string;
   readonly name: string;
   readonly dockerContext: string;
   readonly envVars: string[];
 
-  constructor(opts: { name: string; dockerContext: string; envVars: string[] }) {
+  constructor(opts: { slug: string; name: string; dockerContext: string; envVars: string[] }) {
+    this.slug = opts.slug;
     this.name = opts.name;
     this.dockerContext = opts.dockerContext;
     this.envVars = opts.envVars;
@@ -28,6 +30,7 @@ export class Agent {
     const raw = readFileSync(configPath, "utf-8");
     const config = parseYaml(raw) as AgentYAML;
     return new Agent({
+      slug: dir,
       name: config.name,
       dockerContext: `agents/${dir}`,
       envVars: config.env_vars,
@@ -35,16 +38,16 @@ export class Agent {
   }
 
   get imageName(): string {
-    return `acp-verifier-${this.name}`;
+    return `acp-verifier-${this.slug}`;
   }
 
   async buildImage(): Promise<void> {
     const missing = this.envVars.filter((v) => !process.env[v]);
     if (missing.length > 0) {
-      throw new Error(`Missing required env vars for ${this.name}: ${missing.join(", ")}`);
+      throw new Error(`Missing required env vars for ${this.slug}: ${missing.join(", ")}`);
     }
 
-    const prefix = chalk.cyan(`[build-${this.name}]`);
+    const prefix = chalk.cyan(`[build-${this.slug}]`);
     const context = resolve(PROJECT_ROOT, this.dockerContext);
 
     const proc = execa("docker", ["build", "-t", this.imageName, context]);

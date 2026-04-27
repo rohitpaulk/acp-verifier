@@ -1,11 +1,12 @@
 import { expect, test, setDefaultTimeout } from "bun:test";
 import { AgentProcess } from "../../lib/agent-process";
-import { registry, initAndAuth } from "../helpers";
+import { registry } from "../setup";
+import { initAndAuth } from "../helpers";
 
 setDefaultTimeout(15_000);
 
-test.each(registry.agentNames)("%s: session/new returns a non-empty sessionId", async (name) => {
-  const agent = registry.agentByName(name);
+test.each(registry.agentSlugs)("%s: session/new returns a non-empty sessionId", async (slug) => {
+  const agent = registry.agentBySlug(slug);
   using proc = new AgentProcess(agent);
   await initAndAuth(proc, agent);
 
@@ -18,8 +19,8 @@ test.each(registry.agentNames)("%s: session/new returns a non-empty sessionId", 
   expect(typeof result.sessionId).toBe("string");
 });
 
-test.each(registry.agentNames)("%s: session/new returns distinct sessionIds", async (name) => {
-  const agent = registry.agentByName(name);
+test.each(registry.agentSlugs)("%s: session/new returns distinct sessionIds", async (slug) => {
+  const agent = registry.agentBySlug(slug);
   using proc = new AgentProcess(agent);
   await initAndAuth(proc, agent);
 
