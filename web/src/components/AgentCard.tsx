@@ -130,7 +130,11 @@ export default function AgentCard({
           </div>
         </div>
         <div className="w-8 h-8 flex items-center justify-center shrink-0">
-          <img src={logoPath(slug)} alt={name} className="w-8 h-8" />
+          <img
+            src={logoPath(slug)}
+            alt={name}
+            className="w-8 h-8 brightness-0 invert opacity-70"
+          />
         </div>
       </div>
       <Tooltip.Provider delay={0} closeDelay={150}>
