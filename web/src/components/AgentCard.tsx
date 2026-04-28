@@ -119,7 +119,7 @@ export default function AgentCard({
   const pct = Math.round((passed / checks.length) * 100);
 
   return (
-    <div className="bg-surface border border-border rounded-2xl p-6 transition-colors hover:border-border-hover">
+    <div className="bg-surface border border-border p-6 transition-colors hover:border-border-hover">
       <div className="flex items-center justify-between mb-5">
         <div>
           <h2 className="text-xl font-bold tracking-tight leading-tight">

@@ -6,9 +6,9 @@ export default function StatusPill() {
       <Tooltip.Root>
         <Tooltip.Trigger
           closeOnClick={false}
-          className="mt-5 inline-flex cursor-help items-center gap-2 rounded-full border border-red-border bg-red-bg px-3 py-1.5 text-xs font-semibold uppercase tracking-wide text-red"
+          className="mt-5 inline-flex cursor-help items-center gap-2 border border-red-border bg-red-bg px-3 py-1.5 text-xs font-semibold uppercase tracking-wide text-red"
         >
-          <span className="h-1.5 w-1.5 rounded-full bg-red" />
+          <span className="h-1.5 w-1.5 bg-red" />
           <span>Status: Not Ready</span>
         </Tooltip.Trigger>
         <Tooltip.Portal>
