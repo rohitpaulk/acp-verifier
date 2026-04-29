@@ -133,6 +133,8 @@
 }
 
 .tooltip-popup {
+  --tooltip-exit-delay: 0.12s;
+  --tooltip-fade-duration: 0.12s;
   background: var(--color-tooltip-bg);
   color: var(--color-text);
   border: 1px solid var(--color-tooltip-border);
@@ -189,14 +191,16 @@
   opacity: 0;
   transform: translateX(-50%);
   transition:
-    opacity 0.12s ease,
-    visibility 0.12s ease;
+    opacity var(--tooltip-fade-duration) ease var(--tooltip-exit-delay),
+    visibility 0s linear
+      calc(var(--tooltip-exit-delay) + var(--tooltip-fade-duration));
 }
 
 .status-tooltip-root:hover .status-tooltip,
 .status-tooltip-root:focus-within .status-tooltip {
   visibility: visible;
   opacity: 1;
+  transition-delay: 0s, 0s;
 }
 
 .check-grid {
@@ -283,8 +287,9 @@
   pointer-events: none;
   transform: translateX(-50%);
   transition:
-    opacity 0.12s ease,
-    visibility 0.12s ease;
+    opacity var(--tooltip-fade-duration) ease var(--tooltip-exit-delay),
+    visibility 0s linear
+      calc(var(--tooltip-exit-delay) + var(--tooltip-fade-duration));
 }
 
 .cell-anchor-wrapper:hover .cell-tooltip,
@@ -292,6 +297,7 @@
   visibility: visible;
   opacity: 1;
   pointer-events: auto;
+  transition-delay: 0s, 0s;
 }
 
 .check-card {
