@@ -31,13 +31,48 @@
   --cursor-glow-y: -999px;
   --cursor-glow-size: 350px;
   --cursor-glow-color: rgba(45, 212, 104, 0.12);
+  --cursor-glow-border-color: rgba(45, 212, 104, 0.45);
   position: relative;
+  background-color: var(--color-border);
+  transition: background-color 0.12s ease;
 }
 
+.cursor-glow-card:hover {
+  background-color: var(--color-border-hover);
+}
+
+/* Border glow — radial gradient on the card itself, visible in the 1px gap */
 .cursor-glow-card::before {
   content: "";
   position: absolute;
   inset: 0;
+  background: radial-gradient(
+    500px circle at var(--cursor-glow-x) var(--cursor-glow-y),
+    var(--cursor-glow-border-color),
+    transparent 70%
+  );
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+
+.cursor-glow-card:hover::before {
+  opacity: 1;
+}
+
+/* Solid inner fill — creates the 1px border gap effect */
+.cursor-glow-card-fill {
+  position: absolute;
+  inset: 1px;
+  background-color: var(--color-surface);
+  pointer-events: none;
+}
+
+/* Interior content glow */
+.cursor-glow-card::after {
+  content: "";
+  position: absolute;
+  inset: 1px;
   background: radial-gradient(
     var(--cursor-glow-size) circle at var(--cursor-glow-x) var(--cursor-glow-y),
     var(--cursor-glow-color),
@@ -49,28 +84,8 @@
   z-index: 1;
 }
 
-.cursor-glow-card:hover::before {
-  opacity: 1;
-}
-
-.cursor-glow-card::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(
-    200px circle at var(--cursor-glow-x) var(--cursor-glow-y),
-    var(--cursor-glow-color),
-    transparent 70%
-  );
-  filter: blur(40px);
-  opacity: 0;
-  transition: opacity 0.3s ease;
-  pointer-events: none;
-  z-index: 1;
-}
-
 .cursor-glow-card:hover::after {
-  opacity: 0.6;
+  opacity: 1;
 }
 
 .tooltip-positioner {

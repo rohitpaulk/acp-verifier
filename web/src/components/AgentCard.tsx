@@ -128,7 +128,7 @@ export default function AgentCard({
   const pct = Math.round((passed / checks.length) * 100);
 
   return (
-    <CursorGlowCard className="group relative bg-surface border border-border p-6 transition-colors hover:border-border-hover">
+    <CursorGlowCard className="group relative p-6">
       <Link
         to={`/${slug}`}
         aria-label={`View ${name} details`}

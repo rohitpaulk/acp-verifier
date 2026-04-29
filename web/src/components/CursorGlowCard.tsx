@@ -38,6 +38,7 @@ export default function CursorGlowCard({
       style={{ ...vars, ...style }}
       {...rest}
     >
+      <div className="cursor-glow-card-fill" aria-hidden="true" />
       {children}
     </div>
   );
