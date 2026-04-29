@@ -1,10 +1,11 @@
 import { useEffect } from "react";
+import { Link, useLocation } from "react-router";
 
 import AgentCard from "./components/AgentCard";
 import StatusPill from "./components/StatusPill";
 import mockData from "./data/mock-results.json";
 
-type Agent = (typeof mockData.agents)[number];
+export type Agent = (typeof mockData.agents)[number];
 type Check = Agent["checks"][number];
 
 const failureMessages: Record<string, Record<string, string>> = {
@@ -53,10 +54,8 @@ const failureMessages: Record<string, Record<string, string>> = {
       "Copilot could not render the requested prompt into model-ready messages.",
     "prompt-arguments":
       "Copilot ignored required prompt arguments instead of validating them.",
-    "log-levels":
-      "Copilot emitted logs, but did not honor the requested severity filter.",
-    "sampling-basic":
-      "Copilot did not call back to the client with a sampling request.",
+    "log-levels": "Copilot emitted logs, but did not honor the requested severity filter.",
+    "sampling-basic": "Copilot did not call back to the client with a sampling request.",
   },
   "claude-code": {
     "tool-call-cancellation":
@@ -88,11 +87,7 @@ function resultMessage(agent: Agent, check: Check) {
   );
 }
 
-function HomePage() {
-  useEffect(() => {
-    document.title = "Are we ACP yet?";
-  }, []);
-
+export function HomePage() {
   const agents = [...mockData.agents].sort((a, b) => {
     const pctA =
       a.checks.filter((check) => check.status === "pass").length / a.checks.length;
@@ -175,44 +170,36 @@ function HomePage() {
   );
 }
 
-function AgentPage({ agent }: { agent: Agent }) {
-  useEffect(() => {
-    document.title = `Is ${agent.name} ACP yet?`;
-  }, [agent.name]);
+export function AgentPage({ agent }: { agent: Agent }) {
+  const { hash } = useLocation();
 
   useEffect(() => {
-    const openTargetCheck = () => {
-      if (!window.location.hash) {
-        return;
-      }
+    if (!hash) {
+      return;
+    }
 
-      const target = document.querySelector(window.location.hash);
-      if (target instanceof HTMLDetailsElement) {
-        target.open = true;
-      }
-    };
-
-    openTargetCheck();
-    window.addEventListener("hashchange", openTargetCheck);
-    return () => window.removeEventListener("hashchange", openTargetCheck);
-  }, [agent.slug]);
+    const target = document.querySelector(hash);
+    if (target instanceof HTMLDetailsElement) {
+      target.open = true;
+    }
+  }, [agent.slug, hash]);
 
   const passed = agent.checks.filter((check) => check.status === "pass").length;
   const failed = agent.checks.length - passed;
 
   return (
     <div className="relative mx-auto max-w-5xl px-7">
-      <a
-        href="/"
+      <Link
+        to="/"
         className="absolute top-7 left-7 inline-flex items-center gap-1 text-xs font-semibold text-text-muted no-underline transition-colors hover:text-text"
       >
         &larr; All agents
-      </a>
+      </Link>
 
       <header className="pt-24 pb-12 text-center">
-        <a href="/">
+        <Link to="/">
           <img src="/logos/acp.svg" alt="ACP" className="mb-5 inline-block h-10 opacity-70" />
-        </a>
+        </Link>
         <h1 className="text-5xl leading-none font-bold tracking-tighter text-text">
           Is{" "}
           <span className="text-green underline decoration-green-border decoration-2 underline-offset-4">
@@ -351,45 +338,26 @@ function AgentPage({ agent }: { agent: Agent }) {
   );
 }
 
-function NotFoundPage({ slug }: { slug: string }) {
-  useEffect(() => {
-    document.title = "Agent not found";
-  }, []);
-
+export function NotFoundPage({ slug }: { slug: string }) {
   return (
     <div className="mx-auto max-w-5xl px-7">
       <main className="pt-24 pb-14 text-center">
-        <a href="/">
+        <Link to="/">
           <img src="/logos/acp.svg" alt="ACP" className="mb-5 inline-block h-10 opacity-70" />
-        </a>
+        </Link>
         <h1 className="text-5xl leading-none font-bold tracking-tighter text-text">
           Agent not found
         </h1>
         <p className="mt-6 text-text-muted">
           No ACP verifier results exist for <span className="text-text-dim">{slug}</span>.
         </p>
-        <a
-          href="/"
+        <Link
+          to="/"
           className="mt-8 inline-flex border border-border bg-surface px-3 py-1.5 text-xs font-semibold text-text-muted no-underline transition-colors hover:border-border-hover hover:text-text"
         >
           &larr; All agents
-        </a>
+        </Link>
       </main>
     </div>
   );
-}
-
-export default function App() {
-  const slug = decodeURIComponent(window.location.pathname).replace(/^\/+|\/+$/g, "");
-
-  if (!slug) {
-    return <HomePage />;
-  }
-
-  const agent = mockData.agents.find((candidate) => candidate.slug === slug);
-  if (!agent) {
-    return <NotFoundPage slug={slug} />;
-  }
-
-  return <AgentPage agent={agent} />;
 }

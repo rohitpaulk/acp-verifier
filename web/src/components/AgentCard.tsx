@@ -1,6 +1,6 @@
 import { Tooltip } from "@base-ui/react/tooltip";
+import { Link } from "react-router";
 import Balancer from "react-wrap-balancer";
-
 
 interface Check {
   slug: string;
@@ -81,12 +81,12 @@ function TooltipContent({
       <Balancer as="div" className="text-xs text-text-dim leading-snug">
         {check.description}
       </Balancer>
-      <a
-        href={`/${agentSlug}#check-${check.slug}`}
+      <Link
+        to={`/${agentSlug}#check-${check.slug}`}
         className="inline-flex items-center gap-1 mt-3 text-xs font-semibold text-text-muted no-underline transition-colors hover:text-text"
       >
         View details &rarr;
-      </a>
+      </Link>
     </>
   );
 }
@@ -104,8 +104,8 @@ function CheckCell({
     <Tooltip.Root>
       <Tooltip.Trigger
         render={
-          <a
-            href={`/${agentSlug}#check-${check.slug}`}
+          <Link
+            to={`/${agentSlug}#check-${check.slug}`}
             aria-label={`${check.label}: ${statusLabel}`}
           />
         }
@@ -137,8 +137,8 @@ export default function AgentCard({
 
   return (
     <div className="group relative bg-surface border border-border p-6 transition-colors hover:border-border-hover">
-      <a
-        href={`/${slug}`}
+      <Link
+        to={`/${slug}`}
         aria-label={`View ${name} details`}
         className="absolute inset-0 z-0"
       />

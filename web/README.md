@@ -1,6 +1,6 @@
 # ACP Verifier Web
 
-Vite React app for the "Are we ACP yet?" status site.
+React Router framework-mode app for the "Are we ACP yet?" status site.
 
 ## Project Structure
 
@@ -10,11 +10,12 @@ Vite React app for the "Are we ACP yet?" status site.
 ├── src/
 │   ├── components/
 │   ├── data/
+│   ├── routes/
 │   ├── styles/
-│   ├── App.tsx
-│   └── main.tsx
-├── index.html
+│   ├── root.tsx
+│   └── routes.ts
 ├── package.json
+├── react-router.config.ts
 └── vite.config.ts
 ```
 
@@ -28,9 +29,10 @@ All commands are run from this directory:
 | Command           | Action                               |
 | :---------------- | :----------------------------------- |
 | `bun install`     | Installs dependencies                |
-| `bun run dev`     | Starts the Vite dev server           |
-| `bun run build`   | Builds the production site to `dist` |
+| `bun run dev`     | Starts the React Router dev server   |
+| `bun run build`   | Builds the production site to `dist/client` |
 | `bun run preview` | Previews the production build        |
 
-The app handles `/` and `/:agent` paths client-side. Production hosts should
-serve `index.html` as the fallback for agent detail URLs.
+The app runs in React Router SPA mode (`ssr: false`) and handles `/` and
+`/:agent` paths client-side. Production hosts should serve `index.html` from
+`dist/client` as the fallback for agent detail URLs.

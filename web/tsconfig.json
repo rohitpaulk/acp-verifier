@@ -15,8 +15,9 @@
     "isolatedModules": true,
     "noEmit": true,
     "jsx": "react-jsx",
-    "types": ["vite/client"]
+    "types": ["node", "vite/client"],
+    "rootDirs": [".", "./.react-router/types"]
   },
-  "include": ["src", "vite.config.ts"],
+  "include": ["src", ".react-router/types/**/*", "react-router.config.ts", "vite.config.ts"],
   "exclude": ["dist"]
 }
