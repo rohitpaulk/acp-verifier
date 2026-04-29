@@ -40,6 +40,10 @@
   background-color: var(--color-border-hover);
 }
 
+.cursor-glow-card:has(.cell-anchor-wrapper:hover, .cell-anchor-wrapper:focus-within) {
+  z-index: 20;
+}
+
 /* Border glow — radial gradient on the card itself, visible in the 1px gap */
 .cursor-glow-card::before {
   content: "";
