@@ -1,3 +1,5 @@
+import { spring } from "motion";
+import { AnimateView } from "motion-plus/animate-view";
 import { useEffect } from "react";
 import { Link, useLocation } from "react-router";
 
@@ -87,6 +89,29 @@ function resultMessage(agent: Agent, check: Check) {
   );
 }
 
+function QuestionHeadline({ agentName }: { agentName?: string }) {
+  return (
+    <AnimateView
+      name="acp-headline"
+      transition={{ type: spring, bounce: 0, duration: 0.5 }}
+    >
+      <h1 className="text-5xl leading-none font-bold tracking-tighter text-text">
+        {agentName ? (
+          <>
+            Is{" "}
+            <span className="text-green underline decoration-green-border decoration-2 underline-offset-4">
+              {agentName}
+            </span>{" "}
+          </>
+        ) : (
+          "Are we "
+        )}
+        ACP yet?
+      </h1>
+    </AnimateView>
+  );
+}
+
 export function HomePage() {
   const agents = [...mockData.agents].sort((a, b) => {
     const pctA =
@@ -101,9 +126,7 @@ export function HomePage() {
     <div className="mx-auto max-w-5xl px-7">
       <header className="pt-24 pb-12 text-center">
         <img src="/logos/acp.svg" alt="ACP" className="mb-5 inline-block h-10 opacity-70" />
-        <h1 className="text-5xl leading-none font-bold tracking-tighter text-text">
-          Are we ACP yet?
-        </h1>
+        <QuestionHeadline />
         <StatusPill />
         <p className="mt-8 text-base leading-relaxed text-text-muted">
           <span className="font-semibold text-green">Green</span> checks pass,{" "}
@@ -200,13 +223,7 @@ export function AgentPage({ agent }: { agent: Agent }) {
         <Link to="/">
           <img src="/logos/acp.svg" alt="ACP" className="mb-5 inline-block h-10 opacity-70" />
         </Link>
-        <h1 className="text-5xl leading-none font-bold tracking-tighter text-text">
-          Is{" "}
-          <span className="text-green underline decoration-green-border decoration-2 underline-offset-4">
-            {agent.name}
-          </span>{" "}
-          ACP yet?
-        </h1>
+        <QuestionHeadline agentName={agent.name} />
         <StatusPill />
       </header>
 

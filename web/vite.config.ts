@@ -7,6 +7,9 @@ export default defineConfig({
   resolve: {
     dedupe: ["react", "react-dom"],
   },
+  optimizeDeps: {
+    exclude: ["motion-plus"],
+  },
   preview: {
     allowedHosts: ["acp-verifier-production.up.railway.app", "areweacpyet.com"],
   },

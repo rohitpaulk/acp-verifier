@@ -1,4 +1,3 @@
-import { Tooltip } from "@base-ui/react/tooltip";
 import { Link } from "react-router";
 import Balancer from "react-wrap-balancer";
 
@@ -101,29 +100,20 @@ function CheckCell({
   const statusLabel = check.status === "pass" ? "Passed" : "Failed";
 
   return (
-    <Tooltip.Root>
-      <Tooltip.Trigger
-        render={
-          <Link
-            to={`/${agentSlug}#check-${check.slug}`}
-            aria-label={`${check.label}: ${statusLabel}`}
-          />
-        }
-        closeOnClick={false}
+    <div className="cell-anchor-wrapper">
+      <Link
+        to={`/${agentSlug}#check-${check.slug}`}
+        aria-label={`${check.label}: ${statusLabel}`}
         className="cell-anchor cursor-pointer"
       >
         <span className={`cell ${check.status}`} aria-hidden="true">
           {check.status === "pass" ? <CheckIcon /> : <XIcon />}
         </span>
-      </Tooltip.Trigger>
-      <Tooltip.Portal>
-        <Tooltip.Positioner sideOffset={8} className="tooltip-positioner">
-          <Tooltip.Popup className="tooltip-popup">
-            <TooltipContent check={check} agentSlug={agentSlug} />
-          </Tooltip.Popup>
-        </Tooltip.Positioner>
-      </Tooltip.Portal>
-    </Tooltip.Root>
+      </Link>
+      <div className="tooltip-popup cell-tooltip">
+        <TooltipContent check={check} agentSlug={agentSlug} />
+      </div>
+    </div>
   );
 }
 
@@ -159,13 +149,11 @@ export default function AgentCard({
           />
         </div>
       </div>
-      <Tooltip.Provider delay={0} closeDelay={150}>
-        <div className="relative z-10 check-grid">
-          {checks.map((check) => (
-            <CheckCell key={check.slug} check={check} agentSlug={slug} />
-          ))}
-        </div>
-      </Tooltip.Provider>
+      <div className="relative z-10 check-grid">
+        {checks.map((check) => (
+          <CheckCell key={check.slug} check={check} agentSlug={slug} />
+        ))}
+      </div>
     </div>
   );
 }
