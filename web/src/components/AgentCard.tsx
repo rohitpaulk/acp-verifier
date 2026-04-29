@@ -22,29 +22,25 @@ interface AgentCardProps {
 }
 
 function logoPath(slug: string) {
-  const map: Record<string, string> = {
+  const logoName = {
     "claude-code": "claude",
     codex: "openai",
-  };
-  return `/logos/${map[slug] ?? slug}.svg`;
+    copilot: "copilot",
+  }[slug];
+
+  if (!logoName) {
+    throw new Error(`No logo mapping found for slug: ${slug}`);
+  }
+
+  return `/logos/${logoName}.svg`;
 }
 
-function PopoverContent({
-  check,
-  agentSlug,
-}: {
-  check: Check;
-  agentSlug: string;
-}) {
+function PopoverContent({ check, agentSlug }: { check: Check; agentSlug: string }) {
   return (
     <>
       <div className="flex items-center gap-1.5 font-bold text-sm mb-2.5">
         <span className={`tooltip-icon ${check.status}`}>
-          {check.status === "pass" ? (
-            <CheckIcon size={12} />
-          ) : (
-            <XIcon size={12} />
-          )}
+          {check.status === "pass" ? <CheckIcon size={12} /> : <XIcon size={12} />}
         </span>
         {check.label}
       </div>
@@ -96,11 +92,7 @@ function CheckCell({
   );
 }
 
-export default function AgentCard({
-  slug,
-  name,
-  checks,
-}: AgentCardProps) {
+export default function AgentCard({ slug, name, checks }: AgentCardProps) {
   const passed = checks.filter((c) => c.status === "pass").length;
   const pct = Math.round((passed / checks.length) * 100);
   const logo = logoPath(slug);
@@ -113,16 +105,10 @@ export default function AgentCard({
 
   return (
     <CursorGlowCard className="group relative p-6" glowImageSrc={logo}>
-      <Link
-        to={`/${slug}`}
-        aria-label={`View ${name} details`}
-        className="absolute inset-0 z-0"
-      />
+      <Link to={`/${slug}`} aria-label={`View ${name} details`} className="absolute inset-0 z-0" />
       <div className="relative z-10 flex items-center justify-between mb-5 pointer-events-none">
         <div>
-          <h2 className="text-xl font-bold tracking-tight leading-tight">
-            {name}
-          </h2>
+          <h2 className="text-xl font-bold tracking-tight leading-tight">{name}</h2>
           <div className="text-xs text-text-muted mt-0.5">
             <span className="text-text-dim font-semibold">{pct}%</span> passed
           </div>
@@ -137,12 +123,7 @@ export default function AgentCard({
       </div>
       <div className="relative z-10 check-grid">
         {checks.map((check) => (
-          <CheckCell
-            key={check.slug}
-            check={check}
-            agentSlug={slug}
-            handle={popoverHandle}
-          />
+          <CheckCell key={check.slug} check={check} agentSlug={slug} handle={popoverHandle} />
         ))}
       </div>
       <Popover.Root
@@ -170,9 +151,7 @@ export default function AgentCard({
               >
                 <Popover.Popup className="tooltip-popup cell-tooltip">
                   <Popover.Viewport className="cell-tooltip-viewport">
-                    {check && (
-                      <PopoverContent check={check} agentSlug={slug} />
-                    )}
+                    {check && <PopoverContent check={check} agentSlug={slug} />}
                   </Popover.Viewport>
                 </Popover.Popup>
               </Popover.Positioner>
