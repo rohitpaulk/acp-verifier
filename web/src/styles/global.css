@@ -29,9 +29,8 @@
 .cursor-glow-card {
   --cursor-glow-x: -999px;
   --cursor-glow-y: -999px;
-  --cursor-glow-size: 350px;
-  --cursor-glow-color: rgba(45, 212, 104, 0.12);
-  --cursor-glow-border-color: rgba(45, 212, 104, 0.45);
+  --cursor-glow-size: 500px;
+  --cursor-glow-color: rgba(45, 212, 104, 0.28);
   position: relative;
   background-color: var(--color-border);
   transition: background-color 0.12s ease;
@@ -47,8 +46,8 @@
   position: absolute;
   inset: 0;
   background: radial-gradient(
-    500px circle at var(--cursor-glow-x) var(--cursor-glow-y),
-    var(--cursor-glow-border-color),
+    var(--cursor-glow-size) circle at var(--cursor-glow-x) var(--cursor-glow-y),
+    var(--cursor-glow-color),
     transparent 70%
   );
   opacity: 0;
@@ -66,26 +65,6 @@
   inset: 1px;
   background-color: var(--color-surface);
   pointer-events: none;
-}
-
-/* Interior content glow */
-.cursor-glow-card::after {
-  content: "";
-  position: absolute;
-  inset: 1px;
-  background: radial-gradient(
-    var(--cursor-glow-size) circle at var(--cursor-glow-x) var(--cursor-glow-y),
-    var(--cursor-glow-color),
-    transparent 70%
-  );
-  opacity: 0;
-  transition: opacity 0.3s ease;
-  pointer-events: none;
-  z-index: 1;
-}
-
-.cursor-glow-card:hover::after {
-  opacity: 1;
 }
 
 .tooltip-positioner {
@@ -211,25 +190,25 @@
 
 .cell.pass {
   border: 1.5px solid var(--color-green-border);
-  background: var(--color-green-bg);
+  background: color-mix(in srgb, var(--color-green) 12%, var(--color-surface));
   color: var(--color-green);
 }
 
 .cell-anchor-wrapper:hover .cell.pass,
 .cell-anchor-wrapper:focus-within .cell.pass {
-  background: var(--color-green-bg-hover);
+  background: color-mix(in srgb, var(--color-green) 20%, var(--color-surface));
   box-shadow: 0 0 12px rgba(45, 212, 104, 0.15);
 }
 
 .cell.fail {
   border: 1.5px solid var(--color-red-border);
-  background: var(--color-red-bg);
+  background: color-mix(in srgb, var(--color-red) 12%, var(--color-surface));
   color: var(--color-red);
 }
 
 .cell-anchor-wrapper:hover .cell.fail,
 .cell-anchor-wrapper:focus-within .cell.fail {
-  background: var(--color-red-bg-hover);
+  background: color-mix(in srgb, var(--color-red) 20%, var(--color-surface));
   box-shadow: 0 0 12px rgba(240, 72, 72, 0.15);
 }
 
