@@ -1,7 +1,7 @@
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Space+Grotesk:wght@400;500;600;700;800&display=swap');
 @import "tailwindcss";
 @source "../../src/**/*.astro";
 @source "../../src/**/*.tsx";
-@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Space+Grotesk:wght@400;500;600;700;800&display=swap');
 
 @theme {
   --color-bg: #0b0d0f;
@@ -25,4 +25,52 @@
 
   --font-sans: 'Space Grotesk', -apple-system, BlinkMacSystemFont, sans-serif;
   --font-mono: 'JetBrains Mono', monospace;
+}
+
+.tooltip-positioner {
+  z-index: 50;
+}
+
+.tooltip-popup {
+  background: var(--color-tooltip-bg);
+  color: var(--color-text);
+  border: 1px solid var(--color-tooltip-border);
+  border-radius: 0;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+  font-size: 0.85rem;
+  font-weight: 500;
+  text-align: left;
+  padding: 14px 16px;
+  z-index: 50;
+  max-width: 280px;
+}
+
+.tooltip-icon {
+  width: 20px;
+  height: 20px;
+  border-radius: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.tooltip-icon.pass {
+  background: var(--color-green-bg);
+  color: var(--color-green);
+  border: 1.5px solid var(--color-green-border);
+}
+
+.tooltip-icon.fail {
+  background: var(--color-red-bg);
+  color: var(--color-red);
+  border: 1.5px solid var(--color-red-border);
+}
+
+.status-tooltip-popup {
+  max-width: none;
+  padding: 8px 10px;
+  font-size: 0.75rem;
+  text-align: center;
+  white-space: nowrap;
 }
