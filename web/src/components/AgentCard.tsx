@@ -1,3 +1,4 @@
+import { Tooltip } from "@base-ui/react/tooltip";
 import { Link } from "react-router";
 import Balancer from "react-wrap-balancer";
 
@@ -102,20 +103,35 @@ function CheckCell({
   const statusLabel = check.status === "pass" ? "Passed" : "Failed";
 
   return (
-    <div className="cell-anchor-wrapper">
-      <Link
-        to={`/${agentSlug}#check-${check.slug}`}
-        aria-label={`${check.label}: ${statusLabel}`}
-        className="cell-anchor cursor-pointer"
-      >
-        <span className={`cell ${check.status}`} aria-hidden="true">
-          {check.status === "pass" ? <CheckIcon /> : <XIcon />}
-        </span>
-      </Link>
-      <div className="tooltip-popup cell-tooltip">
-        <TooltipContent check={check} agentSlug={agentSlug} />
+    <Tooltip.Root>
+      <div className="cell-anchor-wrapper">
+        <Tooltip.Trigger
+          render={
+            <Link
+              to={`/${agentSlug}#check-${check.slug}`}
+              aria-label={`${check.label}: ${statusLabel}`}
+              className="cell-anchor cursor-pointer"
+            />
+          }
+        >
+          <span className={`cell ${check.status}`} aria-hidden="true">
+            {check.status === "pass" ? <CheckIcon /> : <XIcon />}
+          </span>
+        </Tooltip.Trigger>
+        <Tooltip.Portal>
+          <Tooltip.Positioner
+            className="tooltip-positioner"
+            side="top"
+            sideOffset={8}
+            collisionPadding={12}
+          >
+            <Tooltip.Popup className="tooltip-popup cell-tooltip">
+              <TooltipContent check={check} agentSlug={agentSlug} />
+            </Tooltip.Popup>
+          </Tooltip.Positioner>
+        </Tooltip.Portal>
       </div>
-    </div>
+    </Tooltip.Root>
   );
 }
 
@@ -152,11 +168,13 @@ export default function AgentCard({
           />
         </div>
       </div>
-      <div className="relative z-10 check-grid">
-        {checks.map((check) => (
-          <CheckCell key={check.slug} check={check} agentSlug={slug} />
-        ))}
-      </div>
+      <Tooltip.Provider delay={0} closeDelay={120} timeout={400}>
+        <div className="relative z-10 check-grid">
+          {checks.map((check) => (
+            <CheckCell key={check.slug} check={check} agentSlug={slug} />
+          ))}
+        </div>
+      </Tooltip.Provider>
     </CursorGlowCard>
   );
 }

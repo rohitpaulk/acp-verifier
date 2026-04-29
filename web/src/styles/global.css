@@ -40,7 +40,11 @@
   background-color: var(--color-border-hover);
 }
 
-.cursor-glow-card:has(.cell-anchor-wrapper:hover, .cell-anchor-wrapper:focus-within) {
+.cursor-glow-card:has(
+    .cell-anchor-wrapper:hover,
+    .cell-anchor-wrapper:focus-within,
+    .cell-anchor[data-popup-open]
+  ) {
   z-index: 20;
 }
 
@@ -133,7 +137,6 @@
 }
 
 .tooltip-popup {
-  --tooltip-exit-delay: 0.12s;
   --tooltip-fade-duration: 0.12s;
   background: var(--color-tooltip-bg);
   color: var(--color-text);
@@ -184,23 +187,21 @@
 }
 
 .status-tooltip {
-  position: absolute;
-  top: calc(100% + 8px);
-  left: 50%;
-  visibility: hidden;
-  opacity: 0;
-  transform: translateX(-50%);
+  opacity: 1;
+  transform-origin: var(--transform-origin);
   transition:
-    opacity var(--tooltip-fade-duration) ease var(--tooltip-exit-delay),
-    visibility 0s linear
-      calc(var(--tooltip-exit-delay) + var(--tooltip-fade-duration));
+    opacity var(--tooltip-fade-duration) ease,
+    transform var(--tooltip-fade-duration) ease;
 }
 
-.status-tooltip-root:hover .status-tooltip,
-.status-tooltip-root:focus-within .status-tooltip {
-  visibility: visible;
-  opacity: 1;
-  transition-delay: 0s, 0s;
+.status-tooltip[data-starting-style],
+.status-tooltip[data-ending-style] {
+  opacity: 0;
+  transform: scale(0.96);
+}
+
+.status-tooltip[data-instant] {
+  transition-duration: 0s;
 }
 
 .check-grid {
@@ -244,12 +245,14 @@
 }
 
 .cell-anchor-wrapper:hover,
-.cell-anchor-wrapper:focus-within {
+.cell-anchor-wrapper:focus-within,
+.cell-anchor-wrapper:has(.cell-anchor[data-popup-open]) {
   z-index: 10;
 }
 
 .cell-anchor-wrapper:hover .cell,
-.cell-anchor-wrapper:focus-within .cell {
+.cell-anchor-wrapper:focus-within .cell,
+.cell-anchor[data-popup-open] .cell {
   transform: scale(1.25);
 }
 
@@ -260,7 +263,8 @@
 }
 
 .cell-anchor-wrapper:hover .cell.pass,
-.cell-anchor-wrapper:focus-within .cell.pass {
+.cell-anchor-wrapper:focus-within .cell.pass,
+.cell-anchor[data-popup-open] .cell.pass {
   background: color-mix(in srgb, var(--color-green) 20%, var(--color-surface));
   box-shadow: 0 0 12px rgba(45, 212, 104, 0.15);
 }
@@ -272,32 +276,29 @@
 }
 
 .cell-anchor-wrapper:hover .cell.fail,
-.cell-anchor-wrapper:focus-within .cell.fail {
+.cell-anchor-wrapper:focus-within .cell.fail,
+.cell-anchor[data-popup-open] .cell.fail {
   background: color-mix(in srgb, var(--color-red) 20%, var(--color-surface));
   box-shadow: 0 0 12px rgba(240, 72, 72, 0.15);
 }
 
 .cell-tooltip {
-  position: absolute;
-  bottom: calc(100% + 8px);
-  left: 50%;
-  visibility: hidden;
   width: max-content;
-  opacity: 0;
-  pointer-events: none;
-  transform: translateX(-50%);
+  opacity: 1;
+  transform-origin: var(--transform-origin);
   transition:
-    opacity var(--tooltip-fade-duration) ease var(--tooltip-exit-delay),
-    visibility 0s linear
-      calc(var(--tooltip-exit-delay) + var(--tooltip-fade-duration));
+    opacity var(--tooltip-fade-duration) ease,
+    transform var(--tooltip-fade-duration) ease;
 }
 
-.cell-anchor-wrapper:hover .cell-tooltip,
-.cell-anchor-wrapper:focus-within .cell-tooltip {
-  visibility: visible;
-  opacity: 1;
-  pointer-events: auto;
-  transition-delay: 0s, 0s;
+.cell-tooltip[data-starting-style],
+.cell-tooltip[data-ending-style] {
+  opacity: 0;
+  transform: scale(0.96);
+}
+
+.cell-tooltip[data-instant] {
+  transition-duration: 0s;
 }
 
 .check-card {
