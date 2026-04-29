@@ -1,3 +1,4 @@
+import { useRef, useState } from "react";
 import { Tooltip } from "@base-ui/react/tooltip";
 import { Link } from "react-router";
 import Balancer from "react-wrap-balancer";
@@ -63,42 +64,32 @@ function TooltipContent({
 function CheckCell({
   check,
   agentSlug,
+  handle,
 }: {
   check: Check;
   agentSlug: string;
+  handle: Tooltip.Handle<Check>;
 }) {
   const statusLabel = check.status === "pass" ? "Passed" : "Failed";
 
   return (
-    <Tooltip.Root>
-      <div className="cell-anchor-wrapper">
-        <Tooltip.Trigger
-          render={
-            <Link
-              to={`/${agentSlug}#check-${check.slug}`}
-              aria-label={`${check.label}: ${statusLabel}`}
-              className="cell-anchor cursor-pointer"
-            />
-          }
-        >
-          <span className={`cell ${check.status}`} aria-hidden="true">
-            {check.status === "pass" ? <CheckIcon /> : <XIcon />}
-          </span>
-        </Tooltip.Trigger>
-        <Tooltip.Portal>
-          <Tooltip.Positioner
-            className="tooltip-positioner"
-            side="top"
-            sideOffset={8}
-            collisionPadding={12}
-          >
-            <Tooltip.Popup className="tooltip-popup cell-tooltip">
-              <TooltipContent check={check} agentSlug={agentSlug} />
-            </Tooltip.Popup>
-          </Tooltip.Positioner>
-        </Tooltip.Portal>
-      </div>
-    </Tooltip.Root>
+    <div className="cell-anchor-wrapper">
+      <Tooltip.Trigger
+        handle={handle}
+        payload={check}
+        render={
+          <Link
+            to={`/${agentSlug}#check-${check.slug}`}
+            aria-label={`${check.label}: ${statusLabel}`}
+            className="cell-anchor cursor-pointer"
+          />
+        }
+      >
+        <span className={`cell ${check.status}`} aria-hidden="true">
+          {check.status === "pass" ? <CheckIcon /> : <XIcon />}
+        </span>
+      </Tooltip.Trigger>
+    </div>
   );
 }
 
@@ -110,6 +101,12 @@ export default function AgentCard({
   const passed = checks.filter((c) => c.status === "pass").length;
   const pct = Math.round((passed / checks.length) * 100);
   const logo = logoPath(slug);
+
+  const tooltipHandleRef = useRef<Tooltip.Handle<Check> | null>(null);
+  if (!tooltipHandleRef.current) tooltipHandleRef.current = Tooltip.createHandle<Check>();
+  const tooltipHandle = tooltipHandleRef.current;
+  const [anchorEl, setAnchorEl] = useState<Element | null>(null);
+  const lastPayloadRef = useRef<Check | null>(null);
 
   return (
     <CursorGlowCard className="group relative p-6" glowImageSrc={logo}>
@@ -138,9 +135,47 @@ export default function AgentCard({
       <Tooltip.Provider delay={0} closeDelay={120} timeout={400}>
         <div className="relative z-10 check-grid">
           {checks.map((check) => (
-            <CheckCell key={check.slug} check={check} agentSlug={slug} />
+            <CheckCell
+              key={check.slug}
+              check={check}
+              agentSlug={slug}
+              handle={tooltipHandle}
+            />
           ))}
         </div>
+        <Tooltip.Root
+          handle={tooltipHandle}
+          onOpenChange={(open, eventDetails) => {
+            if (open && eventDetails.trigger) {
+              setAnchorEl(eventDetails.trigger);
+            }
+          }}
+        >
+          {({ payload }) => {
+            if (payload) {
+              lastPayloadRef.current = payload;
+            }
+            const check = payload ?? lastPayloadRef.current;
+
+            return (
+              <Tooltip.Portal keepMounted>
+                <Tooltip.Positioner
+                  className="tooltip-positioner"
+                  anchor={anchorEl}
+                  side="top"
+                  sideOffset={8}
+                  collisionPadding={12}
+                >
+                  <Tooltip.Popup className="tooltip-popup cell-tooltip">
+                    {check && (
+                      <TooltipContent check={check} agentSlug={slug} />
+                    )}
+                  </Tooltip.Popup>
+                </Tooltip.Positioner>
+              </Tooltip.Portal>
+            );
+          }}
+        </Tooltip.Root>
       </Tooltip.Provider>
     </CursorGlowCard>
   );
