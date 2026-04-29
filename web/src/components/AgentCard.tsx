@@ -1,6 +1,8 @@
 import { Link } from "react-router";
 import Balancer from "react-wrap-balancer";
 
+import CursorGlowCard from "./CursorGlowCard";
+
 interface Check {
   slug: string;
   label: string;
@@ -126,7 +128,7 @@ export default function AgentCard({
   const pct = Math.round((passed / checks.length) * 100);
 
   return (
-    <div className="group relative bg-surface border border-border p-6 transition-colors hover:border-border-hover">
+    <CursorGlowCard className="group relative bg-surface border border-border p-6 transition-colors hover:border-border-hover">
       <Link
         to={`/${slug}`}
         aria-label={`View ${name} details`}
@@ -154,6 +156,6 @@ export default function AgentCard({
           <CheckCell key={check.slug} check={check} agentSlug={slug} />
         ))}
       </div>
-    </div>
+    </CursorGlowCard>
   );
 }

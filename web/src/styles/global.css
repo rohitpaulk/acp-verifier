@@ -26,6 +26,53 @@
   --font-mono: 'JetBrains Mono', monospace;
 }
 
+.cursor-glow-card {
+  --cursor-glow-x: -999px;
+  --cursor-glow-y: -999px;
+  --cursor-glow-size: 350px;
+  --cursor-glow-color: rgba(45, 212, 104, 0.12);
+  position: relative;
+}
+
+.cursor-glow-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    var(--cursor-glow-size) circle at var(--cursor-glow-x) var(--cursor-glow-y),
+    var(--cursor-glow-color),
+    transparent 70%
+  );
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.cursor-glow-card:hover::before {
+  opacity: 1;
+}
+
+.cursor-glow-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    200px circle at var(--cursor-glow-x) var(--cursor-glow-y),
+    var(--cursor-glow-color),
+    transparent 70%
+  );
+  filter: blur(40px);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.cursor-glow-card:hover::after {
+  opacity: 0.6;
+}
+
 .tooltip-positioner {
   z-index: 50;
 }
