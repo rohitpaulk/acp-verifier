@@ -2,7 +2,9 @@ import { Tooltip } from "@base-ui/react/tooltip";
 import { Link } from "react-router";
 import Balancer from "react-wrap-balancer";
 
+import { CheckIcon } from "./CheckIcon";
 import CursorGlowCard from "./CursorGlowCard";
+import { XIcon } from "./XIcon";
 
 interface Check {
   slug: string;
@@ -24,41 +26,6 @@ function logoPath(slug: string) {
     codex: "openai",
   };
   return `/logos/${map[slug] ?? slug}.svg`;
-}
-
-function CheckIcon({ size = 14 }: { size?: number }) {
-  return (
-    <svg
-      width={size}
-      height={size}
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth={3}
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="M20 6 9 17l-5-5" />
-    </svg>
-  );
-}
-
-function XIcon({ size = 14 }: { size?: number }) {
-  return (
-    <svg
-      width={size}
-      height={size}
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth={3}
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="M18 6 6 18" />
-      <path d="m6 6 12 12" />
-    </svg>
-  );
 }
 
 function TooltipContent({
