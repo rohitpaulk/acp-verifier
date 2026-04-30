@@ -1,4 +1,4 @@
-import { Link, Outlet, useParams } from "react-router";
+import { Link, Outlet, useLocation, useParams } from "react-router";
 
 import Button from "../components/Button";
 import { GitHubIcon } from "../components/GitHubIcon";
@@ -48,6 +48,7 @@ function TopNav({ showBackLink }: { showBackLink: boolean }) {
 
 export default function AppLayout() {
   const { slug } = useParams();
+  const location = useLocation();
   const agent = findAgent(slug);
 
   if (slug && !agent) {
@@ -65,7 +66,7 @@ export default function AppLayout() {
 
         <QuestionHeadline agentName={agent?.name} />
 
-        <StatusPill />
+        <StatusPill key={location.pathname} />
       </header>
 
       <Outlet />

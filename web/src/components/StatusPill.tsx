@@ -1,9 +1,14 @@
 import { Tooltip } from "@base-ui/react/tooltip";
 import { Typewriter } from "motion-plus/react";
-import { useLocation } from "react-router";
+import { useEffect, useState } from "react";
 
 export default function StatusPill() {
-  const location = useLocation();
+  const [play, setPlay] = useState(false);
+
+  useEffect(() => {
+    const timeout = setTimeout(() => setPlay(true), 500);
+    return () => clearTimeout(timeout);
+  }, []);
 
   return (
     <Tooltip.Provider delay={0} closeDelay={120} timeout={400}>
@@ -18,7 +23,7 @@ export default function StatusPill() {
             }
           >
             <span className="h-1.5 w-1.5 bg-red" />
-            <span>Status: <Typewriter key={location.pathname} speed="slow" cursorBlinkRepeat={1}>Not Ready</Typewriter></span>
+            <span>Status: <Typewriter speed="slow" play={play} cursorBlinkRepeat={1}>Not Ready</Typewriter></span>
           </Tooltip.Trigger>
           <Tooltip.Portal>
             <Tooltip.Positioner
