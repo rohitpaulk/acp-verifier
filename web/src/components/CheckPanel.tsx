@@ -1,4 +1,5 @@
 import { CheckIcon } from "./CheckIcon";
+import { ChevronIcon } from "./ChevronIcon";
 import { XIcon } from "./XIcon";
 import type { Check } from "./AgentCard";
 
@@ -13,10 +14,7 @@ export function CheckPanel({ check }: { check: Check }) {
     >
       <summary className="check-summary">
         <span className="flex min-w-0 items-center gap-3">
-          <span
-            className={`check-status-icon ${didPass ? "pass" : "fail"}`}
-            aria-hidden="true"
-          >
+          <span className={`check-status-icon ${didPass ? "pass" : "fail"}`} aria-hidden="true">
             {didPass ? <CheckIcon size={13} /> : <XIcon size={13} />}
           </span>
           <span className="min-w-0">
@@ -28,20 +26,9 @@ export function CheckPanel({ check }: { check: Check }) {
         </span>
         <span className="ml-auto flex shrink-0 items-center gap-3">
           <span className={`check-status-badge ${didPass ? "pass" : "fail"}`}>{statusLabel}</span>
-          <svg
-            className="check-chevron text-text-muted"
-            width="16"
-            height="16"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2.5"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            aria-hidden="true"
-          >
-            <path d="m6 9 6 6 6-6" />
-          </svg>
+          <span className="check-chevron text-text-muted">
+            <ChevronIcon />
+          </span>
         </span>
       </summary>
       <div className="check-body">
