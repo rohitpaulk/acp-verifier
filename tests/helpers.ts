@@ -3,10 +3,14 @@ import { dirname, join } from "node:path";
 import * as acp from "@agentclientprotocol/sdk";
 import type { Agent } from "../lib/agent";
 
-export async function initAndAuth(proc: { connection: acp.ClientSideConnection }, agent: Agent) {
+export async function initAndAuth(
+  proc: { connection: acp.ClientSideConnection },
+  agent: Agent,
+  clientCapabilities: acp.ClientCapabilities = {},
+) {
   const initResult = await proc.connection.initialize({
     protocolVersion: acp.PROTOCOL_VERSION,
-    clientCapabilities: {},
+    clientCapabilities,
     clientInfo: { name: "acp-verifier", version: "0.1.0" },
   });
 

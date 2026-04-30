@@ -1,4 +1,4 @@
-import AgentCard from "../components/AgentCard";
+import AgentCard, { type AgentCardProps } from "../components/AgentCard";
 import resultsData from "../../data/results.json";
 
 function formatHumanDate(value: string) {
@@ -12,7 +12,7 @@ function formatHumanDate(value: string) {
 }
 
 export function HomePage() {
-  const agents = [...resultsData.agents].sort((a, b) => {
+  const agents = [...(resultsData.agents as unknown as AgentCardProps[])].sort((a, b) => {
     const pctA = a.checks.filter((check) => check.status === "pass").length / a.checks.length;
     const pctB = b.checks.filter((check) => check.status === "pass").length / b.checks.length;
     return pctB - pctA;

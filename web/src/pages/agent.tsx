@@ -3,10 +3,7 @@ import { useLocation } from "react-router";
 
 import { CheckIcon } from "../components/CheckIcon";
 import { XIcon } from "../components/XIcon";
-import resultsData from "../../data/results.json";
-
-export type Agent = (typeof resultsData.agents)[number];
-type Check = Agent["checks"][number];
+import type { AgentCardProps as Agent, Check } from "../components/AgentCard";
 
 const failureMessages: Record<string, Record<string, string>> = {
   codex: {

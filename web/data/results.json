@@ -70,6 +70,38 @@
           "description": "Can resume a previously started session and restore its state without losing context",
           "explanation_markdown": "<p>This check verifies that the agent supports the <code>session/resume</code> capability.</p>\n<h3>Why is this important?</h3>\n<p><code>session/resume</code> allows clients to reconnect to a previously created session without losing conversation history.</p>\n",
           "status": "fail"
+        },
+        {
+          "slug": "executes-terminal-commands",
+          "position": 9,
+          "label": "Executes terminal commands",
+          "description": "Uses the ACP terminal capability to run commands in the client environment",
+          "explanation_markdown": "<p>This check verifies that when the client advertises terminal support, the agent can execute a command through the ACP <a href=\"https://agentclientprotocol.com/protocol/terminals#executing-commands\"><code>terminal/create</code></a> method.</p>\n<h3>Why is this important?</h3>\n<p>Agents often need to run tests, builds, formatters, and other command-line tools. Using ACP terminals lets clients keep command execution in the user&#39;s environment while retaining visibility and control over the process.</p>\n",
+          "status": "fail"
+        },
+        {
+          "slug": "streams-terminal-command-output",
+          "position": 10,
+          "label": "Streams terminal output",
+          "description": "Polls terminal output while commands are running so command progress can be streamed",
+          "explanation_markdown": "<p>This check verifies that after creating a terminal, the agent requests the command&#39;s output through <a href=\"https://agentclientprotocol.com/protocol/terminals#getting-output\"><code>terminal/output</code></a>.</p>\n<h3>Why is this important?</h3>\n<p>Long-running commands should not feel like black boxes. Polling terminal output lets the agent observe progress, react to failures, and keep users informed while work is still in progress.</p>\n",
+          "status": "fail"
+        },
+        {
+          "slug": "displays-terminal-command-when-in-progress",
+          "position": 11,
+          "label": "Displays running terminal command",
+          "description": "Embeds the active terminal in an in-progress execute tool call",
+          "explanation_markdown": "<p>This check verifies that the agent includes terminal content in a <code>tool_call</code> or <code>tool_call_update</code> while the command is in progress.</p>\n<h3>Why is this important?</h3>\n<p>Clients can only render a live terminal UI when the agent embeds the terminal ID in a tool call. This gives users immediate visibility into which command is running and where to watch its progress.</p>\n",
+          "status": "fail"
+        },
+        {
+          "slug": "displays-terminal-command-output",
+          "position": 12,
+          "label": "Displays terminal output",
+          "description": "Leaves terminal output visible to the user through terminal content embedded in tool calls",
+          "explanation_markdown": "<p>This check verifies that terminal output remains displayable by embedding the terminal in a tool call whose output contains the command result.</p>\n<h3>Why is this important?</h3>\n<p>Users need to see the command output that led to the agent&#39;s next steps, especially for test failures, build errors, and generated logs. Terminal content in tool calls lets clients display this output directly in the conversation.</p>\n",
+          "status": "fail"
         }
       ]
     },
@@ -141,6 +173,38 @@
           "label": "Session resume",
           "description": "Can resume a previously started session and restore its state without losing context",
           "explanation_markdown": "<p>This check verifies that the agent supports the <code>session/resume</code> capability.</p>\n<h3>Why is this important?</h3>\n<p><code>session/resume</code> allows clients to reconnect to a previously created session without losing conversation history.</p>\n",
+          "status": "fail"
+        },
+        {
+          "slug": "executes-terminal-commands",
+          "position": 9,
+          "label": "Executes terminal commands",
+          "description": "Uses the ACP terminal capability to run commands in the client environment",
+          "explanation_markdown": "<p>This check verifies that when the client advertises terminal support, the agent can execute a command through the ACP <a href=\"https://agentclientprotocol.com/protocol/terminals#executing-commands\"><code>terminal/create</code></a> method.</p>\n<h3>Why is this important?</h3>\n<p>Agents often need to run tests, builds, formatters, and other command-line tools. Using ACP terminals lets clients keep command execution in the user&#39;s environment while retaining visibility and control over the process.</p>\n",
+          "status": "fail"
+        },
+        {
+          "slug": "streams-terminal-command-output",
+          "position": 10,
+          "label": "Streams terminal output",
+          "description": "Polls terminal output while commands are running so command progress can be streamed",
+          "explanation_markdown": "<p>This check verifies that after creating a terminal, the agent requests the command&#39;s output through <a href=\"https://agentclientprotocol.com/protocol/terminals#getting-output\"><code>terminal/output</code></a>.</p>\n<h3>Why is this important?</h3>\n<p>Long-running commands should not feel like black boxes. Polling terminal output lets the agent observe progress, react to failures, and keep users informed while work is still in progress.</p>\n",
+          "status": "fail"
+        },
+        {
+          "slug": "displays-terminal-command-when-in-progress",
+          "position": 11,
+          "label": "Displays running terminal command",
+          "description": "Embeds the active terminal in an in-progress execute tool call",
+          "explanation_markdown": "<p>This check verifies that the agent includes terminal content in a <code>tool_call</code> or <code>tool_call_update</code> while the command is in progress.</p>\n<h3>Why is this important?</h3>\n<p>Clients can only render a live terminal UI when the agent embeds the terminal ID in a tool call. This gives users immediate visibility into which command is running and where to watch its progress.</p>\n",
+          "status": "fail"
+        },
+        {
+          "slug": "displays-terminal-command-output",
+          "position": 12,
+          "label": "Displays terminal output",
+          "description": "Leaves terminal output visible to the user through terminal content embedded in tool calls",
+          "explanation_markdown": "<p>This check verifies that terminal output remains displayable by embedding the terminal in a tool call whose output contains the command result.</p>\n<h3>Why is this important?</h3>\n<p>Users need to see the command output that led to the agent&#39;s next steps, especially for test failures, build errors, and generated logs. Terminal content in tool calls lets clients display this output directly in the conversation.</p>\n",
           "status": "fail"
         }
       ]
@@ -214,6 +278,38 @@
           "description": "Can resume a previously started session and restore its state without losing context",
           "explanation_markdown": "<p>This check verifies that the agent supports the <code>session/resume</code> capability.</p>\n<h3>Why is this important?</h3>\n<p><code>session/resume</code> allows clients to reconnect to a previously created session without losing conversation history.</p>\n",
           "status": "pass"
+        },
+        {
+          "slug": "executes-terminal-commands",
+          "position": 9,
+          "label": "Executes terminal commands",
+          "description": "Uses the ACP terminal capability to run commands in the client environment",
+          "explanation_markdown": "<p>This check verifies that when the client advertises terminal support, the agent can execute a command through the ACP <a href=\"https://agentclientprotocol.com/protocol/terminals#executing-commands\"><code>terminal/create</code></a> method.</p>\n<h3>Why is this important?</h3>\n<p>Agents often need to run tests, builds, formatters, and other command-line tools. Using ACP terminals lets clients keep command execution in the user&#39;s environment while retaining visibility and control over the process.</p>\n",
+          "status": "fail"
+        },
+        {
+          "slug": "streams-terminal-command-output",
+          "position": 10,
+          "label": "Streams terminal output",
+          "description": "Polls terminal output while commands are running so command progress can be streamed",
+          "explanation_markdown": "<p>This check verifies that after creating a terminal, the agent requests the command&#39;s output through <a href=\"https://agentclientprotocol.com/protocol/terminals#getting-output\"><code>terminal/output</code></a>.</p>\n<h3>Why is this important?</h3>\n<p>Long-running commands should not feel like black boxes. Polling terminal output lets the agent observe progress, react to failures, and keep users informed while work is still in progress.</p>\n",
+          "status": "fail"
+        },
+        {
+          "slug": "displays-terminal-command-when-in-progress",
+          "position": 11,
+          "label": "Displays running terminal command",
+          "description": "Embeds the active terminal in an in-progress execute tool call",
+          "explanation_markdown": "<p>This check verifies that the agent includes terminal content in a <code>tool_call</code> or <code>tool_call_update</code> while the command is in progress.</p>\n<h3>Why is this important?</h3>\n<p>Clients can only render a live terminal UI when the agent embeds the terminal ID in a tool call. This gives users immediate visibility into which command is running and where to watch its progress.</p>\n",
+          "status": "fail"
+        },
+        {
+          "slug": "displays-terminal-command-output",
+          "position": 12,
+          "label": "Displays terminal output",
+          "description": "Leaves terminal output visible to the user through terminal content embedded in tool calls",
+          "explanation_markdown": "<p>This check verifies that terminal output remains displayable by embedding the terminal in a tool call whose output contains the command result.</p>\n<h3>Why is this important?</h3>\n<p>Users need to see the command output that led to the agent&#39;s next steps, especially for test failures, build errors, and generated logs. Terminal content in tool calls lets clients display this output directly in the conversation.</p>\n",
+          "status": "fail"
         }
       ]
     }

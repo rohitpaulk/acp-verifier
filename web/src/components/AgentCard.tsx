@@ -8,15 +8,16 @@ import { CheckIcon } from "./CheckIcon";
 import CursorGlowCard from "./CursorGlowCard";
 import { XIcon } from "./XIcon";
 
-interface Check {
+export interface Check {
   slug: string;
   position: number;
   label: string;
   description: string;
+  explanation_markdown: string;
   status: string;
 }
 
-interface AgentCardProps {
+export interface AgentCardProps {
   slug: string;
   name: string;
   company: string;

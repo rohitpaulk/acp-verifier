@@ -1,5 +1,6 @@
 import { AgentPage } from "../pages/agent";
 import { NotFoundPage } from "../pages/not-found";
+import type { AgentCardProps as Agent } from "../components/AgentCard";
 import resultsData from "../../data/results.json";
 
 type AgentRouteProps = {
@@ -9,7 +10,7 @@ type AgentRouteProps = {
 };
 
 function findAgent(slug = "") {
-  return resultsData.agents.find((candidate) => candidate.slug === slug);
+  return (resultsData.agents as unknown as Agent[]).find((candidate) => candidate.slug === slug);
 }
 
 export function meta({ params }: AgentRouteProps) {
