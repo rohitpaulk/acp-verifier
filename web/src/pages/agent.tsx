@@ -19,9 +19,7 @@ export function AgentPage({ agent }: { agent: Agent }) {
     }
   }, [agent.slug, hash]);
 
-  const sortedChecks = [...agent.checks].sort(
-    (a, b) => a.position - b.position,
-  );
+  const sortedChecks = [...agent.checks].sort((a, b) => a.position - b.position);
   const passed = sortedChecks.filter((check) => check.status === "pass").length;
   const failed = sortedChecks.length - passed;
 
@@ -31,14 +29,12 @@ export function AgentPage({ agent }: { agent: Agent }) {
         <div>
           <h2 className="text-2xl font-bold tracking-tight">Checks</h2>
           <p className="mt-1 text-sm text-text-muted">
-            {passed} of {sortedChecks.length} checks passed for {agent.name}.
+            {passed}/{sortedChecks.length} checks passed
           </p>
         </div>
         <div className="grid grid-cols-3 border border-border bg-surface text-center">
           <div className="px-4 py-2">
-            <div className="text-lg font-bold text-text">
-              {sortedChecks.length}
-            </div>
+            <div className="text-lg font-bold text-text">{sortedChecks.length}</div>
             <div className="text-[10px] font-semibold tracking-wide text-text-muted uppercase">
               Total
             </div>
@@ -81,15 +77,11 @@ export function AgentPage({ agent }: { agent: Agent }) {
                     <span className="block truncate text-sm font-bold tracking-tight text-text">
                       {check.label}
                     </span>
-                    <span className="block truncate text-xs text-text-muted">
-                      #{check.slug}
-                    </span>
+                    <span className="block truncate text-xs text-text-muted">#{check.slug}</span>
                   </span>
                 </span>
                 <span className="ml-auto flex shrink-0 items-center gap-3">
-                  <span
-                    className={`check-status-badge ${didPass ? "pass" : "fail"}`}
-                  >
+                  <span className={`check-status-badge ${didPass ? "pass" : "fail"}`}>
                     {statusLabel}
                   </span>
                   <svg
@@ -119,9 +111,7 @@ export function AgentPage({ agent }: { agent: Agent }) {
                       }}
                     />
                   </div>
-                  <div
-                    className={`check-detail-panel ${didPass ? "result-pass" : "result-fail"}`}
-                  >
+                  <div className={`check-detail-panel ${didPass ? "result-pass" : "result-fail"}`}>
                     <div className="check-detail-label">
                       {didPass ? "Result" : "Failure message"}
                     </div>

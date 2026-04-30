@@ -1,7 +1,6 @@
 import { useRef, useState } from "react";
 import { Popover } from "@base-ui/react/popover";
 import { Link } from "react-router";
-import Balancer from "react-wrap-balancer";
 
 import Button from "./Button";
 import { CheckIcon } from "./CheckIcon";
@@ -30,28 +29,18 @@ function logoPath(slug: string) {
   return `/logos/${slug}.svg`;
 }
 
-function PopoverContent({
-  check,
-  agentSlug,
-}: {
-  check: Check;
-  agentSlug: string;
-}) {
+function PopoverContent({ check, agentSlug }: { check: Check; agentSlug: string }) {
   return (
     <>
       <div className="flex items-center gap-1.5 font-bold text-sm mb-2.5">
         <span className={`tooltip-icon ${check.status}`}>
-          {check.status === "pass" ? (
-            <CheckIcon size={12} />
-          ) : (
-            <XIcon size={12} />
-          )}
+          {check.status === "pass" ? <CheckIcon size={12} /> : <XIcon size={12} />}
         </span>
         {check.label}
       </div>
-      <Balancer as="div" className="text-xs text-text-dim leading-snug">
-        {check.description}
-      </Balancer>
+      <div className="text-xs text-text-dim leading-snug overflow-hidden [display:-webkit-box] [-webkit-line-clamp:2] [-webkit-box-orient:vertical]">
+        {check.message}
+      </div>
       <Link
         to={`/${agentSlug}#check-${check.slug}`}
         className="inline-flex items-center gap-1 mt-3 text-xs font-semibold text-text-muted no-underline transition-colors hover:text-text"
@@ -97,21 +86,14 @@ function CheckCell({
   );
 }
 
-export default function AgentCard({
-  slug,
-  name,
-  company,
-  version_string,
-  checks,
-}: AgentCardProps) {
+export default function AgentCard({ slug, name, company, version_string, checks }: AgentCardProps) {
   const sortedChecks = [...checks].sort((a, b) => a.position - b.position);
   const passed = sortedChecks.filter((c) => c.status === "pass").length;
   const pct = Math.round((passed / sortedChecks.length) * 100);
   const logo = logoPath(slug);
 
   const popoverHandleRef = useRef<Popover.Handle<Check> | null>(null);
-  if (!popoverHandleRef.current)
-    popoverHandleRef.current = Popover.createHandle<Check>();
+  if (!popoverHandleRef.current) popoverHandleRef.current = Popover.createHandle<Check>();
   const popoverHandle = popoverHandleRef.current;
   const [anchorEl, setAnchorEl] = useState<Element | null>(null);
   const lastPayloadRef = useRef<Check | null>(null);
@@ -134,9 +116,7 @@ export default function AgentCard({
             />
           </div>
           <div>
-            <h2 className="text-xl font-bold tracking-tight leading-tight">
-              {name}
-            </h2>
+            <h2 className="text-xl font-bold tracking-tight leading-tight">{name}</h2>
             <div className="text-xs text-text-muted mt-0.5">by {company}</div>
           </div>
         </div>
@@ -146,12 +126,7 @@ export default function AgentCard({
       </div>
       <div className="relative z-10 check-grid">
         {sortedChecks.map((check) => (
-          <CheckCell
-            key={check.slug}
-            check={check}
-            agentSlug={slug}
-            handle={popoverHandle}
-          />
+          <CheckCell key={check.slug} check={check} agentSlug={slug} handle={popoverHandle} />
         ))}
       </div>
       <div className="relative z-10 border-t border-white/5 mt-3 pt-2.5 flex items-center justify-between">
