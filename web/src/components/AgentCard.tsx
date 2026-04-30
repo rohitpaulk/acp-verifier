@@ -104,14 +104,12 @@ export default function AgentCard({ slug, name, checks }: AgentCardProps) {
   const lastPayloadRef = useRef<Check | null>(null);
 
   return (
-    <CursorGlowCard className="group relative p-6" glowImageSrc={logo}>
+    <CursorGlowCard className="group relative p-6 pb-5" glowImageSrc={logo}>
       <Link to={`/${slug}`} aria-label={`View ${name} details`} className="absolute inset-0 z-0" />
       <div className="relative z-10 flex items-center justify-between mb-5 pointer-events-none">
         <div>
           <h2 className="text-xl font-bold tracking-tight leading-tight">{name}</h2>
-          <div className="text-xs text-text-muted mt-0.5">
-            <span className="text-text-dim font-semibold">{pct}%</span> passed
-          </div>
+          <div className="text-xs text-text-muted mt-0.5">by Anthropic</div>
         </div>
         <div className="w-8 h-8 flex items-center justify-center shrink-0">
           <img
@@ -125,6 +123,19 @@ export default function AgentCard({ slug, name, checks }: AgentCardProps) {
         {checks.map((check) => (
           <CheckCell key={check.slug} check={check} agentSlug={slug} handle={popoverHandle} />
         ))}
+      </div>
+      <div className="relative z-10 border-t border-white/5 mt-4 pt-4 flex items-center justify-between">
+        <div>
+          <div className="text-xs text-text-muted">SUCCESS RATE</div>
+          <div className="font-semibold text-lg">{pct}%</div>
+        </div>
+        <a
+          href="https://github.com/rohitpaulk/acp-verifier"
+          target="_blank"
+          className="inline-flex items-center gap-1.5 border border-border bg-surface px-3 py-1.5 text-xs font-semibold text-text-muted no-underline transition-colors hover:border-border-hover hover:text-text"
+        >
+          View details &rarr;
+        </a>
       </div>
       <Popover.Root
         handle={popoverHandle}
