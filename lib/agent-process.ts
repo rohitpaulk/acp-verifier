@@ -16,7 +16,10 @@ export class AgentProcess {
     const options = isAgentProcessOptions(clientOrOptions)
       ? clientOrOptions
       : { client: clientOrOptions };
-    const envFlags = agent.envVars.flatMap((v) => ["-e", v]);
+    const envFlags = agent.envVars.flatMap((v) => {
+      const value = agent.envValue(v);
+      return value === undefined ? [] : ["-e", `${v}=${value}`];
+    });
     const mountFlags = (options.mounts ?? []).flatMap((mount) => [
       "--mount",
       `type=bind,source=${mount.source},target=${mount.target}${mount.readonly ? ",readonly" : ""}`,

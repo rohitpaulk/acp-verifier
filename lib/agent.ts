@@ -1,6 +1,7 @@
-import { readFileSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { parse as parseYaml } from "yaml";
+import { parse as parseDotenv } from "dotenv";
 import { execa } from "execa";
 import chalk from "chalk";
 
@@ -20,6 +21,7 @@ export class Agent {
   readonly company: string;
   readonly dockerContext: string;
   readonly envVars: string[];
+  readonly env: Record<string, string>;
   readonly symlinks: Record<string, string>;
 
   constructor(opts: {
@@ -28,6 +30,7 @@ export class Agent {
     company: string;
     dockerContext: string;
     envVars: string[];
+    env: Record<string, string>;
     symlinks: Record<string, string>;
   }) {
     this.slug = opts.slug;
@@ -35,11 +38,15 @@ export class Agent {
     this.company = opts.company;
     this.dockerContext = opts.dockerContext;
     this.envVars = opts.envVars;
+    this.env = opts.env;
     this.symlinks = opts.symlinks;
   }
 
   static fromDir(dir: string): Agent {
-    const configPath = resolve(AGENTS_DIR, dir, "agent.yaml");
+    const agentDir = resolve(AGENTS_DIR, dir);
+    const env = loadEnvFile(resolve(agentDir, ".env"));
+
+    const configPath = resolve(agentDir, "agent.yaml");
     const raw = readFileSync(configPath, "utf-8");
     const config = parseYaml(raw) as AgentYAML;
     return new Agent({
@@ -48,6 +55,7 @@ export class Agent {
       company: config.company,
       dockerContext: `agents/${dir}`,
       envVars: config.env_vars,
+      env,
       symlinks: config.symlinks ?? {},
     });
   }
@@ -56,8 +64,12 @@ export class Agent {
     return `acp-verifier-${this.slug}`;
   }
 
+  envValue(name: string): string | undefined {
+    return this.env[name] ?? process.env[name];
+  }
+
   async buildImage(): Promise<void> {
-    const missing = this.envVars.filter((v) => !process.env[v]);
+    const missing = this.envVars.filter((v) => !this.envValue(v));
     if (missing.length > 0) {
       throw new Error(`Missing required env vars for ${this.slug}: ${missing.join(", ")}`);
     }
@@ -81,4 +93,9 @@ export class Agent {
 
     await proc;
   }
+}
+
+function loadEnvFile(path: string): Record<string, string> {
+  if (!existsSync(path)) return {};
+  return parseDotenv(readFileSync(path));
 }
