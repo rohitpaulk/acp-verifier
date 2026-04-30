@@ -14,7 +14,7 @@
           "description": "Server cold-starts and responds to the first health-check request within 500 milliseconds",
           "explanation_markdown": "<p>This check verifies that the agent boots and responds to the <code>session/new</code> request within 500ms.</p>\n",
           "status": "fail",
-          "message": "Copilot booted and responded to initialize in 3213ms, exceeding the 500ms target."
+          "message": "Copilot booted and responded to initialize in 2930ms, exceeding the 500ms target."
         },
         {
           "slug": "listing-modes",
@@ -41,7 +41,7 @@
           "description": "Changes the mode session configuration option within 500 milliseconds",
           "explanation_markdown": "<p>This check verifies that the agent responds to a mode config option change within 500ms.</p>\n<h3>Why is this important?</h3>\n<p>Mode switching is often exposed through keyboard shortcuts like <code>Shift+Tab</code>, so changing the mode config option should feel instantaneous. Slow config option updates make the client feel laggy and can interrupt the user&#39;s flow.</p>\n",
           "status": "pass",
-          "message": "Copilot switched mode from https://agentclientprotocol.com/protocol/session-modes#agent to https://agentclientprotocol.com/protocol/session-modes#plan in 6ms."
+          "message": "Copilot switched mode from https://agentclientprotocol.com/protocol/session-modes#agent to https://agentclientprotocol.com/protocol/session-modes#plan in 4ms."
         },
         {
           "slug": "loads-skills",
@@ -130,7 +130,7 @@
           "description": "Server cold-starts and responds to the first health-check request within 500 milliseconds",
           "explanation_markdown": "<p>This check verifies that the agent boots and responds to the <code>session/new</code> request within 500ms.</p>\n",
           "status": "pass",
-          "message": "Codex booted and responded to initialize in 152ms."
+          "message": "Codex booted and responded to initialize in 135ms."
         },
         {
           "slug": "listing-modes",
@@ -157,7 +157,7 @@
           "description": "Changes the mode session configuration option within 500 milliseconds",
           "explanation_markdown": "<p>This check verifies that the agent responds to a mode config option change within 500ms.</p>\n<h3>Why is this important?</h3>\n<p>Mode switching is often exposed through keyboard shortcuts like <code>Shift+Tab</code>, so changing the mode config option should feel instantaneous. Slow config option updates make the client feel laggy and can interrupt the user&#39;s flow.</p>\n",
           "status": "pass",
-          "message": "Codex switched mode from read-only to auto in 1ms."
+          "message": "Codex switched mode from read-only to auto in 2ms."
         },
         {
           "slug": "loads-skills",
@@ -246,7 +246,7 @@
           "description": "Server cold-starts and responds to the first health-check request within 500 milliseconds",
           "explanation_markdown": "<p>This check verifies that the agent boots and responds to the <code>session/new</code> request within 500ms.</p>\n",
           "status": "fail",
-          "message": "OpenCode booted and responded to initialize in 777ms, exceeding the 500ms target."
+          "message": "OpenCode booted and responded to initialize in 768ms, exceeding the 500ms target."
         },
         {
           "slug": "listing-modes",
@@ -291,7 +291,7 @@
           "description": "Loads `.agents/skills` slash commands within 500 milliseconds of session creation",
           "explanation_markdown": "<p>This check verifies that skills from the session working directory are advertised as slash commands within 500ms of calling <code>session/new</code>.</p>\n<h3>Why is this important?</h3>\n<p>Project skills affect the commands a client presents immediately after a session starts. Slow skill discovery can make command menus feel incomplete or laggy.</p>\n",
           "status": "pass",
-          "message": "OpenCode advertised the acp-verifier-skill skill in 162ms."
+          "message": "OpenCode advertised the acp-verifier-skill skill in 177ms."
         },
         {
           "slug": "supports-session-close",
