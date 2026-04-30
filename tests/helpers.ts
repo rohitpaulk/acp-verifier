@@ -15,6 +15,7 @@ export async function initAndAuth(proc: { connection: acp.ClientSideConnection }
         m.type === "env_var" &&
         m.vars.every((v) => v.optional || agent.envVars.includes(v.name)),
     );
+
     if (envVarMethod) {
       await proc.connection.authenticate({ methodId: envVarMethod.id });
     }
