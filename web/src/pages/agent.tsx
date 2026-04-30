@@ -167,7 +167,10 @@ export function AgentPage({ agent }: { agent: Agent }) {
                 <div className="grid gap-3 md:grid-cols-2">
                   <div className="check-detail-panel">
                     <div className="check-detail-label">Check explanation</div>
-                    <p>{check.description}</p>
+                    <div
+                      className="check-explanation-markdown"
+                      dangerouslySetInnerHTML={{ __html: check.explanation_markdown }}
+                    />
                   </div>
                   <div className={`check-detail-panel ${didPass ? "result-pass" : "result-fail"}`}>
                     <div className="check-detail-label">

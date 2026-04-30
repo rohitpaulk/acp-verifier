@@ -1,5 +1,6 @@
 import { mkdirSync, writeFileSync } from "node:fs";
 import { resolve, dirname } from "node:path";
+import { marked } from "marked";
 import type { CheckCollectorRegistry } from "./check-collector-registry";
 import { loadCheckMetadata } from "./check-metadata";
 
@@ -27,6 +28,7 @@ export function writeResults(collectorRegistry: CheckCollectorRegistry): void {
         slug: meta.slug,
         label: meta.label,
         description: meta.description,
+        explanation_markdown: marked.parse(meta.explanationMarkdown, { async: false }) as string,
         status,
       };
     });

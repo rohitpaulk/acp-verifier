@@ -15,14 +15,18 @@ export type CheckMetadata = {
   slug: CheckSlug;
   label: string;
   description: string;
+  explanationMarkdown: string;
 };
 
-function parseFrontmatter(content: string): CheckFrontmatter {
-  const match = content.match(/^---\n([\s\S]*?)\n---/);
+function parseCheckFile(content: string): { frontmatter: CheckFrontmatter; body: string } {
+  const match = content.match(/^---\n([\s\S]*?)\n---\n?([\s\S]*)$/);
   if (!match) {
     throw new Error("No frontmatter found");
   }
-  return parseYaml(match[1]) as CheckFrontmatter;
+  return {
+    frontmatter: parseYaml(match[1]) as CheckFrontmatter,
+    body: match[2].trim(),
+  };
 }
 
 export function loadCheckMetadata(): Map<CheckSlug, CheckMetadata> {
@@ -34,8 +38,13 @@ export function loadCheckMetadata(): Map<CheckSlug, CheckMetadata> {
   for (const file of files) {
     const slug = file.name.replace(/\.md$/, "") as CheckSlug;
     const raw = readFileSync(resolve(CHECKS_DIR, file.name), "utf-8");
-    const fm = parseFrontmatter(raw);
-    map.set(slug, { slug, label: fm.label, description: fm.description });
+    const { frontmatter, body } = parseCheckFile(raw);
+    map.set(slug, {
+      slug,
+      label: frontmatter.label,
+      description: frontmatter.description,
+      explanationMarkdown: body,
+    });
   }
 
   return map;
