@@ -5,7 +5,7 @@ import { expect, test, setDefaultTimeout } from "bun:test";
 import * as acp from "@agentclientprotocol/sdk";
 import { AgentProcess } from "../../lib/agent-process";
 import { checkCollectorRegistry, registry } from "../setup";
-import { initAndAuth } from "../helpers";
+import { applyAgentSymlinks, initAndAuth } from "../helpers";
 
 setDefaultTimeout(15_000);
 
@@ -17,6 +17,7 @@ test.each(registry.agentSlugs)("loads skills as slash commands (%s)", async (slu
   const check = checkCollectorRegistry.get(slug);
   const agent = registry.agentBySlug(slug);
   const hostWorkspace = createWorkspaceWithSkill();
+  applyAgentSymlinks(agent, hostWorkspace);
   const updates: acp.SessionUpdate[] = [];
 
   try {

@@ -11,6 +11,7 @@ type AgentYAML = {
   name: string;
   company: string;
   env_vars: string[];
+  symlinks?: Record<string, string>;
 };
 
 export class Agent {
@@ -19,13 +20,22 @@ export class Agent {
   readonly company: string;
   readonly dockerContext: string;
   readonly envVars: string[];
+  readonly symlinks: Record<string, string>;
 
-  constructor(opts: { slug: string; name: string; company: string; dockerContext: string; envVars: string[] }) {
+  constructor(opts: {
+    slug: string;
+    name: string;
+    company: string;
+    dockerContext: string;
+    envVars: string[];
+    symlinks: Record<string, string>;
+  }) {
     this.slug = opts.slug;
     this.name = opts.name;
     this.company = opts.company;
     this.dockerContext = opts.dockerContext;
     this.envVars = opts.envVars;
+    this.symlinks = opts.symlinks;
   }
 
   static fromDir(dir: string): Agent {
@@ -38,6 +48,7 @@ export class Agent {
       company: config.company,
       dockerContext: `agents/${dir}`,
       envVars: config.env_vars,
+      symlinks: config.symlinks ?? {},
     });
   }
 
