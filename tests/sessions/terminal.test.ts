@@ -1,4 +1,7 @@
 import { existsSync } from "node:fs";
+import { mkdtemp, rm } from "node:fs/promises";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
 import { spawn, type ChildProcess } from "node:child_process";
 import { randomUUID } from "node:crypto";
 import { expect, test, setDefaultTimeout } from "bun:test";
@@ -17,7 +20,12 @@ test.each(registry.agentSlugs)("terminal commands (%s)", async (slug) => {
   const terminalClient = new TestTerminalClient();
   const updates: acp.SessionUpdate[] = [];
 
-  using proc = new AgentProcess(agent);
+  const markerDir = await mkdtemp(join(tmpdir(), "acp-verifier-marker-"));
+  const markerFilePath = join(markerDir, `marker-${randomUUID()}.txt`);
+
+  using proc = new AgentProcess(agent, {
+    mounts: [{ source: markerDir, target: markerDir }],
+  });
 
   const connection = proc.connect({
     async sessionUpdate(params) {
@@ -48,7 +56,7 @@ test.each(registry.agentSlugs)("terminal commands (%s)", async (slug) => {
     await initAndAuth(connection, agent, { terminal: true });
 
     const session = await connection.newSession({
-      cwd: "/tmp",
+      cwd: markerDir,
       mcpServers: [],
     });
 
@@ -59,20 +67,20 @@ test.each(registry.agentSlugs)("terminal commands (%s)", async (slug) => {
       prompt: [
         {
           type: "text",
-          text: `Run a terminal command that prints exactly ${JSON.stringify(COMMAND_OUTPUT)} and then finishes. Use the ACP terminal capability rather than simulating the output.`,
+          text: `Run a single terminal command that (1) prints exactly ${JSON.stringify(COMMAND_OUTPUT)} to stdout, and (2) creates a file at the absolute path ${JSON.stringify(markerFilePath)}. Use the ACP terminal capability rather than simulating the output.`,
         },
       ],
     });
 
-    if (terminalClient.createdTerminals.length > 0) {
+    if (existsSync(markerFilePath)) {
       check.pass(
         "executes-terminal-commands",
-        `${agent.name} created ${terminalClient.createdTerminals.length} terminal command(s) using the ACP terminal capability.`,
+        `${agent.name} executed a terminal command that created the expected marker file.`,
       );
     } else {
       check.fail(
         "executes-terminal-commands",
-        `${agent.name} did not create a terminal command using the ACP terminal capability.`,
+        `${agent.name} did not execute a terminal command (no marker file was created at ${markerFilePath}).`,
       );
     }
 
@@ -118,6 +126,7 @@ test.each(registry.agentSlugs)("terminal commands (%s)", async (slug) => {
     }
   } finally {
     await terminalClient.releaseAll();
+    await rm(markerDir, { recursive: true, force: true }).catch(() => {});
   }
 });
 

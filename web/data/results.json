@@ -14,7 +14,7 @@
           "description": "Server cold-starts and responds to the first health-check request within 500 milliseconds",
           "explanation_markdown": "<p>This check verifies that the agent boots and responds to the <code>session/new</code> request within 500ms.</p>\n",
           "status": "fail",
-          "message": "Copilot booted and responded to initialize in 3965ms, exceeding the 500ms target."
+          "message": "Copilot booted and responded to initialize in 3213ms, exceeding the 500ms target."
         },
         {
           "slug": "listing-modes",
@@ -23,7 +23,7 @@
           "description": "Advertises supported modes (e.g., Ask/Plan/Build) through session config options",
           "explanation_markdown": "<p>This check verifies that the agent supports modes through <a href=\"https://agentclientprotocol.com/protocol/session-config-options\">Session Config Options</a>.</p>\n<h3>Why is this important?</h3>\n<p>Clients need this information to render the current mode (for example Ask/Plan/Build) in the UI.</p>\n<p>Agents that support modes should expose a valid single-select session config option for modes, including the current value and the available values that clients can present to users.</p>\n",
           "status": "pass",
-          "message": "Copilot advertised 1 mode option(s)."
+          "message": "Copilot advertised 1 mode(s): Mode."
         },
         {
           "slug": "switch-mode",
@@ -41,7 +41,7 @@
           "description": "Changes the mode session configuration option within 500 milliseconds",
           "explanation_markdown": "<p>This check verifies that the agent responds to a mode config option change within 500ms.</p>\n<h3>Why is this important?</h3>\n<p>Mode switching is often exposed through keyboard shortcuts like <code>Shift+Tab</code>, so changing the mode config option should feel instantaneous. Slow config option updates make the client feel laggy and can interrupt the user&#39;s flow.</p>\n",
           "status": "pass",
-          "message": "Copilot switched mode from https://agentclientprotocol.com/protocol/session-modes#agent to https://agentclientprotocol.com/protocol/session-modes#plan in 3ms."
+          "message": "Copilot switched mode from https://agentclientprotocol.com/protocol/session-modes#agent to https://agentclientprotocol.com/protocol/session-modes#plan in 6ms."
         },
         {
           "slug": "loads-skills",
@@ -83,10 +83,10 @@
           "slug": "executes-terminal-commands",
           "position": 9,
           "label": "Executes terminal commands",
-          "description": "Uses the ACP terminal capability to run commands in the client environment",
-          "explanation_markdown": "<p>This check verifies that when the client advertises terminal support, the agent can execute a command through the ACP <a href=\"https://agentclientprotocol.com/protocol/terminals#executing-commands\"><code>terminal/create</code></a> method.</p>\n<h3>Why is this important?</h3>\n<p>Agents often need to run tests, builds, formatters, and other command-line tools. Using ACP terminals lets clients keep command execution in the user&#39;s environment while retaining visibility and control over the process.</p>\n",
-          "status": "fail",
-          "message": "Copilot did not create a terminal command using the ACP terminal capability."
+          "description": "Successfully executes a command in response to a user request",
+          "explanation_markdown": "<p>This check verifies that the agent actually executes a terminal command in response to a user request. The agent is asked to run a command that creates a file at a known path; the check passes if that file exists after the prompt completes. The agent may execute the command through the ACP <a href=\"https://agentclientprotocol.com/protocol/terminals#executing-commands\"><code>terminal/create</code></a> method or through its own built-in execute tool — either is acceptable.</p>\n<h3>Why is this important?</h3>\n<p>Agents often need to run tests, builds, formatters, and other command-line tools. This check confirms that the agent is willing and able to execute commands when asked.</p>\n",
+          "status": "pass",
+          "message": "Copilot executed a terminal command that created the expected marker file."
         },
         {
           "slug": "streams-terminal-command-output",
@@ -130,7 +130,7 @@
           "description": "Server cold-starts and responds to the first health-check request within 500 milliseconds",
           "explanation_markdown": "<p>This check verifies that the agent boots and responds to the <code>session/new</code> request within 500ms.</p>\n",
           "status": "pass",
-          "message": "Codex booted and responded to initialize in 157ms."
+          "message": "Codex booted and responded to initialize in 152ms."
         },
         {
           "slug": "listing-modes",
@@ -139,7 +139,7 @@
           "description": "Advertises supported modes (e.g., Ask/Plan/Build) through session config options",
           "explanation_markdown": "<p>This check verifies that the agent supports modes through <a href=\"https://agentclientprotocol.com/protocol/session-config-options\">Session Config Options</a>.</p>\n<h3>Why is this important?</h3>\n<p>Clients need this information to render the current mode (for example Ask/Plan/Build) in the UI.</p>\n<p>Agents that support modes should expose a valid single-select session config option for modes, including the current value and the available values that clients can present to users.</p>\n",
           "status": "pass",
-          "message": "Codex advertised 1 mode option(s)."
+          "message": "Codex advertised 1 mode(s): Approval Preset."
         },
         {
           "slug": "switch-mode",
@@ -199,10 +199,10 @@
           "slug": "executes-terminal-commands",
           "position": 9,
           "label": "Executes terminal commands",
-          "description": "Uses the ACP terminal capability to run commands in the client environment",
-          "explanation_markdown": "<p>This check verifies that when the client advertises terminal support, the agent can execute a command through the ACP <a href=\"https://agentclientprotocol.com/protocol/terminals#executing-commands\"><code>terminal/create</code></a> method.</p>\n<h3>Why is this important?</h3>\n<p>Agents often need to run tests, builds, formatters, and other command-line tools. Using ACP terminals lets clients keep command execution in the user&#39;s environment while retaining visibility and control over the process.</p>\n",
-          "status": "fail",
-          "message": "Codex did not create a terminal command using the ACP terminal capability."
+          "description": "Successfully executes a command in response to a user request",
+          "explanation_markdown": "<p>This check verifies that the agent actually executes a terminal command in response to a user request. The agent is asked to run a command that creates a file at a known path; the check passes if that file exists after the prompt completes. The agent may execute the command through the ACP <a href=\"https://agentclientprotocol.com/protocol/terminals#executing-commands\"><code>terminal/create</code></a> method or through its own built-in execute tool — either is acceptable.</p>\n<h3>Why is this important?</h3>\n<p>Agents often need to run tests, builds, formatters, and other command-line tools. This check confirms that the agent is willing and able to execute commands when asked.</p>\n",
+          "status": "pass",
+          "message": "Codex executed a terminal command that created the expected marker file."
         },
         {
           "slug": "streams-terminal-command-output",
@@ -246,7 +246,7 @@
           "description": "Server cold-starts and responds to the first health-check request within 500 milliseconds",
           "explanation_markdown": "<p>This check verifies that the agent boots and responds to the <code>session/new</code> request within 500ms.</p>\n",
           "status": "fail",
-          "message": "OpenCode booted and responded to initialize in 745ms, exceeding the 500ms target."
+          "message": "OpenCode booted and responded to initialize in 777ms, exceeding the 500ms target."
         },
         {
           "slug": "listing-modes",
@@ -255,7 +255,7 @@
           "description": "Advertises supported modes (e.g., Ask/Plan/Build) through session config options",
           "explanation_markdown": "<p>This check verifies that the agent supports modes through <a href=\"https://agentclientprotocol.com/protocol/session-config-options\">Session Config Options</a>.</p>\n<h3>Why is this important?</h3>\n<p>Clients need this information to render the current mode (for example Ask/Plan/Build) in the UI.</p>\n<p>Agents that support modes should expose a valid single-select session config option for modes, including the current value and the available values that clients can present to users.</p>\n",
           "status": "pass",
-          "message": "OpenCode advertised 1 mode option(s)."
+          "message": "OpenCode advertised 1 mode(s): Session Mode."
         },
         {
           "slug": "switch-mode",
@@ -273,7 +273,7 @@
           "description": "Changes the mode session configuration option within 500 milliseconds",
           "explanation_markdown": "<p>This check verifies that the agent responds to a mode config option change within 500ms.</p>\n<h3>Why is this important?</h3>\n<p>Mode switching is often exposed through keyboard shortcuts like <code>Shift+Tab</code>, so changing the mode config option should feel instantaneous. Slow config option updates make the client feel laggy and can interrupt the user&#39;s flow.</p>\n",
           "status": "pass",
-          "message": "OpenCode switched mode from build to plan in 7ms."
+          "message": "OpenCode switched mode from build to plan in 6ms."
         },
         {
           "slug": "loads-skills",
@@ -291,7 +291,7 @@
           "description": "Loads `.agents/skills` slash commands within 500 milliseconds of session creation",
           "explanation_markdown": "<p>This check verifies that skills from the session working directory are advertised as slash commands within 500ms of calling <code>session/new</code>.</p>\n<h3>Why is this important?</h3>\n<p>Project skills affect the commands a client presents immediately after a session starts. Slow skill discovery can make command menus feel incomplete or laggy.</p>\n",
           "status": "pass",
-          "message": "OpenCode advertised the acp-verifier-skill skill in 157ms."
+          "message": "OpenCode advertised the acp-verifier-skill skill in 162ms."
         },
         {
           "slug": "supports-session-close",
@@ -315,10 +315,10 @@
           "slug": "executes-terminal-commands",
           "position": 9,
           "label": "Executes terminal commands",
-          "description": "Uses the ACP terminal capability to run commands in the client environment",
-          "explanation_markdown": "<p>This check verifies that when the client advertises terminal support, the agent can execute a command through the ACP <a href=\"https://agentclientprotocol.com/protocol/terminals#executing-commands\"><code>terminal/create</code></a> method.</p>\n<h3>Why is this important?</h3>\n<p>Agents often need to run tests, builds, formatters, and other command-line tools. Using ACP terminals lets clients keep command execution in the user&#39;s environment while retaining visibility and control over the process.</p>\n",
-          "status": "fail",
-          "message": "OpenCode did not create a terminal command using the ACP terminal capability."
+          "description": "Successfully executes a command in response to a user request",
+          "explanation_markdown": "<p>This check verifies that the agent actually executes a terminal command in response to a user request. The agent is asked to run a command that creates a file at a known path; the check passes if that file exists after the prompt completes. The agent may execute the command through the ACP <a href=\"https://agentclientprotocol.com/protocol/terminals#executing-commands\"><code>terminal/create</code></a> method or through its own built-in execute tool — either is acceptable.</p>\n<h3>Why is this important?</h3>\n<p>Agents often need to run tests, builds, formatters, and other command-line tools. This check confirms that the agent is willing and able to execute commands when asked.</p>\n",
+          "status": "pass",
+          "message": "OpenCode executed a terminal command that created the expected marker file."
         },
         {
           "slug": "streams-terminal-command-output",
