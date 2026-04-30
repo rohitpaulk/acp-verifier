@@ -5,6 +5,7 @@
       "slug": "copilot",
       "name": "Copilot",
       "company": "GitHub",
+      "version_string": "v1.0.39",
       "checks": [
         {
           "slug": "boot-time-500ms",
@@ -68,6 +69,7 @@
       "slug": "codex",
       "name": "Codex",
       "company": "OpenAI",
+      "version_string": "v0.12.0",
       "checks": [
         {
           "slug": "boot-time-500ms",
@@ -131,6 +133,7 @@
       "slug": "opencode",
       "name": "OpenCode",
       "company": "Anomaly",
+      "version_string": "v1.14.30",
       "checks": [
         {
           "slug": "boot-time-500ms",

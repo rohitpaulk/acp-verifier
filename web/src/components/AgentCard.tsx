@@ -19,6 +19,7 @@ interface AgentCardProps {
   slug: string;
   name: string;
   company: string;
+  version_string: string;
   checks: Check[];
 }
 
@@ -83,7 +84,7 @@ function CheckCell({
   );
 }
 
-export default function AgentCard({ slug, name, company, checks }: AgentCardProps) {
+export default function AgentCard({ slug, name, company, version_string, checks }: AgentCardProps) {
   const passed = checks.filter((c) => c.status === "pass").length;
   const pct = Math.round((passed / checks.length) * 100);
   const logo = logoPath(slug);
@@ -112,7 +113,7 @@ export default function AgentCard({ slug, name, company, checks }: AgentCardProp
           </div>
         </div>
         <div className="border border-white/5 px-1 py-0.5">
-          <div className="text-xs text-text-muted">v1.2.0</div>
+          <div className="text-xs text-text-muted">{version_string}</div>
         </div>
       </div>
       <div className="relative z-10 check-grid">

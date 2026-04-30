@@ -11,6 +11,7 @@ const AGENTS_DIR = resolve(PROJECT_ROOT, "agents");
 type AgentYAML = {
   name: string;
   company: string;
+  version_string: string;
   env_vars: string[];
   symlinks?: Record<string, string>;
 };
@@ -19,6 +20,7 @@ export class Agent {
   readonly slug: string;
   readonly name: string;
   readonly company: string;
+  readonly versionString: string;
   readonly dockerContext: string;
   readonly envVars: string[];
   readonly env: Record<string, string>;
@@ -28,6 +30,7 @@ export class Agent {
     slug: string;
     name: string;
     company: string;
+    versionString: string;
     dockerContext: string;
     envVars: string[];
     env: Record<string, string>;
@@ -36,6 +39,7 @@ export class Agent {
     this.slug = opts.slug;
     this.name = opts.name;
     this.company = opts.company;
+    this.versionString = opts.versionString;
     this.dockerContext = opts.dockerContext;
     this.envVars = opts.envVars;
     this.env = opts.env;
@@ -53,6 +57,7 @@ export class Agent {
       slug: dir,
       name: config.name,
       company: config.company,
+      versionString: config.version_string,
       dockerContext: `agents/${dir}`,
       envVars: config.env_vars,
       env,

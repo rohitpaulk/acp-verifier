@@ -1,5 +1,6 @@
 name: Copilot
 company: GitHub
+version_string: v1.0.39
 env_vars:
   - COPILOT_GITHUB_TOKEN
 symlinks:

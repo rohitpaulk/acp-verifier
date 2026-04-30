@@ -37,6 +37,7 @@ export function writeResults(collectorRegistry: CheckCollectorRegistry): void {
       slug: collector.agent.slug,
       name: collector.agent.name,
       company: collector.agent.company,
+      version_string: collector.agent.versionString,
       checks,
     };
   });
