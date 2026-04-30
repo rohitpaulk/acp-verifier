@@ -29,11 +29,45 @@ function logoPath(slug: string) {
   return `/logos/${slug}.svg`;
 }
 
+const tooltipIconClass = (status: string) =>
+  [
+    "inline-flex h-5 w-5 shrink-0 items-center justify-center border-[1.5px]",
+    status === "pass"
+      ? "border-green-border bg-green-bg text-green"
+      : "border-red-border bg-red-bg text-red",
+  ].join(" ");
+
+const tooltipPositionerClass =
+  "z-50 h-[var(--positioner-height)] w-[var(--positioner-width)] transition-[top,left,right,bottom] duration-150 ease data-[instant]:duration-0";
+
+const tooltipPopupClass =
+  "z-50 max-w-[280px] border border-tooltip-border bg-tooltip-bg px-4 py-3.5 text-left text-[0.85rem] font-medium text-text shadow-[0_8px_24px_rgba(0,0,0,0.5)] [--tooltip-fade-duration:120ms]";
+
+const cellTooltipClass =
+  "w-max origin-[var(--transform-origin)] opacity-100 transition-[opacity,transform] duration-[var(--tooltip-fade-duration)] ease data-[ending-style]:scale-[0.96] data-[ending-style]:opacity-0 data-[instant]:duration-0 data-[starting-style]:scale-[0.96] data-[starting-style]:opacity-0";
+
+const cellTooltipViewportClass =
+  "[&>[data-current]]:opacity-100 [&>[data-current]]:transition-opacity [&>[data-current]]:duration-[120ms] [&>[data-previous]]:hidden data-[instant]:[&>[data-current]]:duration-0";
+
+const checkCellWrapperClass =
+  "group/cell relative aspect-square w-full hover:z-10 focus-within:z-10 has-[[data-cell-anchor][data-popup-open]]:z-10";
+
+const checkCellAnchorClass =
+  "relative flex aspect-square h-full w-full cursor-pointer appearance-none items-center justify-center border-0 bg-transparent p-0 font-inherit";
+
+const checkCellClass = (status: string) =>
+  [
+    "flex h-full w-full items-center justify-center transition-[transform,box-shadow] duration-[120ms] ease group-hover/cell:scale-125 group-focus-within/cell:scale-125 group-has-[[data-cell-anchor][data-popup-open]]/cell:scale-125",
+    status === "pass"
+      ? "border-[1.5px] border-green-border bg-[color-mix(in_srgb,var(--color-green)_12%,var(--color-surface))] text-green group-hover/cell:bg-[color-mix(in_srgb,var(--color-green)_20%,var(--color-surface))] group-hover/cell:shadow-[0_0_12px_rgba(45,212,104,0.15)] group-focus-within/cell:bg-[color-mix(in_srgb,var(--color-green)_20%,var(--color-surface))] group-focus-within/cell:shadow-[0_0_12px_rgba(45,212,104,0.15)] group-has-[[data-cell-anchor][data-popup-open]]/cell:bg-[color-mix(in_srgb,var(--color-green)_20%,var(--color-surface))] group-has-[[data-cell-anchor][data-popup-open]]/cell:shadow-[0_0_12px_rgba(45,212,104,0.15)]"
+      : "border-[1.5px] border-red-border bg-[color-mix(in_srgb,var(--color-red)_12%,var(--color-surface))] text-red group-hover/cell:bg-[color-mix(in_srgb,var(--color-red)_20%,var(--color-surface))] group-hover/cell:shadow-[0_0_12px_rgba(240,72,72,0.15)] group-focus-within/cell:bg-[color-mix(in_srgb,var(--color-red)_20%,var(--color-surface))] group-focus-within/cell:shadow-[0_0_12px_rgba(240,72,72,0.15)] group-has-[[data-cell-anchor][data-popup-open]]/cell:bg-[color-mix(in_srgb,var(--color-red)_20%,var(--color-surface))] group-has-[[data-cell-anchor][data-popup-open]]/cell:shadow-[0_0_12px_rgba(240,72,72,0.15)]",
+  ].join(" ");
+
 function PopoverContent({ check, agentSlug }: { check: Check; agentSlug: string }) {
   return (
     <>
       <div className="flex items-center gap-1.5 font-bold text-sm mb-2.5">
-        <span className={`tooltip-icon ${check.status}`}>
+        <span className={tooltipIconClass(check.status)}>
           {check.status === "pass" ? <CheckIcon size={12} /> : <XIcon size={12} />}
         </span>
         {check.label}
@@ -63,7 +97,7 @@ function CheckCell({
   const statusLabel = check.status === "pass" ? "Passed" : "Failed";
 
   return (
-    <div className="cell-anchor-wrapper">
+    <div className={checkCellWrapperClass} data-cell-wrapper="">
       <Popover.Trigger
         handle={handle}
         payload={check}
@@ -74,11 +108,12 @@ function CheckCell({
           <Link
             to={`/${agentSlug}#check-${check.slug}`}
             aria-label={`${check.label}: ${statusLabel}`}
-            className="cell-anchor cursor-pointer"
+            data-cell-anchor=""
+            className={checkCellAnchorClass}
           />
         }
       >
-        <span className={`cell ${check.status}`} aria-hidden="true">
+        <span className={checkCellClass(check.status)} aria-hidden="true">
           {check.status === "pass" ? <CheckIcon /> : <XIcon />}
         </span>
       </Popover.Trigger>
@@ -124,7 +159,7 @@ export default function AgentCard({ slug, name, company, version_string, checks 
           <div className="text-xs text-text-muted">{version_string}</div>
         </div>
       </div>
-      <div className="relative z-10 check-grid">
+      <div className="relative z-10 grid grid-cols-[repeat(auto-fill,minmax(28px,1fr))] gap-1">
         {sortedChecks.map((check) => (
           <CheckCell key={check.slug} check={check} agentSlug={slug} handle={popoverHandle} />
         ))}
@@ -153,14 +188,14 @@ export default function AgentCard({ slug, name, company, version_string, checks 
           return (
             <Popover.Portal keepMounted>
               <Popover.Positioner
-                className="tooltip-positioner"
+                className={tooltipPositionerClass}
                 anchor={anchorEl}
                 side="top"
                 sideOffset={8}
                 collisionPadding={12}
               >
-                <Popover.Popup className="tooltip-popup cell-tooltip">
-                  <Popover.Viewport className="cell-tooltip-viewport">
+                <Popover.Popup className={`${tooltipPopupClass} ${cellTooltipClass}`}>
+                  <Popover.Viewport className={cellTooltipViewportClass}>
                     {check && <PopoverContent check={check} agentSlug={slug} />}
                   </Popover.Viewport>
                 </Popover.Popup>
