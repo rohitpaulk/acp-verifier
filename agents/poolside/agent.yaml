@@ -1,0 +1,5 @@
+name: Pool
+company: Poolside
+version_string: v1.0.0
+env_vars:
+  - POOLSIDE_API_KEY
