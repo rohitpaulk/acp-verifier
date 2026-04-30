@@ -166,7 +166,7 @@ export function AgentPage({ agent }: { agent: Agent }) {
                   <div className="check-detail-panel">
                     <div className="check-detail-label">Check explanation</div>
                     <div
-                      className="check-explanation-markdown"
+                      className="check-explanation-markdown prose prose-invert prose-sm max-w-none"
                       dangerouslySetInnerHTML={{ __html: check.explanation_markdown }}
                     />
                   </div>
