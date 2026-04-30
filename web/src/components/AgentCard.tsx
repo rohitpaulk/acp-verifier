@@ -106,7 +106,7 @@ export default function AgentCard({ slug, name, company, checks }: AgentCardProp
 
   return (
     <CursorGlowCard className="group relative p-6 pb-5" glowImageSrc={logo}>
-      <Link to={`/${slug}`} aria-label={`View ${name} details`} className="absolute inset-0 z-0" />
+      <Link to={`/${slug}`} prefetch="render" aria-label={`View ${name} details`} className="absolute inset-0 z-0" />
       <div className="relative z-10 flex items-center justify-between mb-5 pointer-events-none">
         <div className="flex items-center gap-3">
           <div className="w-8 h-8 flex items-center justify-center shrink-0">
