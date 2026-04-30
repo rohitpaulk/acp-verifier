@@ -24,16 +24,17 @@ function parseCheckFile(content: string): { frontmatter: CheckFrontmatter; body:
     throw new Error("No frontmatter found");
   }
   return {
-    frontmatter: parseYaml(match[1]) as CheckFrontmatter,
-    body: match[2].trim(),
+    frontmatter: parseYaml(match[1]!) as CheckFrontmatter,
+    body: match[2]!.trim(),
   };
 }
 
 export function loadCheckMetadata(): Map<CheckSlug, CheckMetadata> {
   const map = new Map<CheckSlug, CheckMetadata>();
 
-  const files = readdirSync(CHECKS_DIR, { withFileTypes: true })
-    .filter((e) => e.isFile() && e.name.endsWith(".md"));
+  const files = readdirSync(CHECKS_DIR, { withFileTypes: true }).filter(
+    (e) => e.isFile() && e.name.endsWith(".md"),
+  );
 
   for (const file of files) {
     const slug = file.name.replace(/\.md$/, "") as CheckSlug;
