@@ -90,6 +90,11 @@ export function HomePage() {
 
   return (
     <>
+      <p className="mb-8 text-base leading-relaxed text-text-muted text-center">
+        <span className="font-semibold text-green">Green</span> checks pass.{" "}
+        <span className="font-semibold text-red">Red</span> checks fail. <br />
+      </p>
+
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {agents.map((agent) => (
           <AgentCard key={agent.slug} {...agent} />
@@ -179,11 +184,7 @@ export function AgentPage({ agent }: { agent: Agent }) {
                     className={`check-status-icon ${didPass ? "pass" : "fail"}`}
                     aria-hidden="true"
                   >
-                    {didPass ? (
-                      <CheckIcon size={13} />
-                    ) : (
-                      <XIcon size={13} />
-                    )}
+                    {didPass ? <CheckIcon size={13} /> : <XIcon size={13} />}
                   </span>
                   <span className="min-w-0">
                     <span className="block truncate text-sm font-bold tracking-tight text-text">

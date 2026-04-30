@@ -11,15 +11,6 @@ function findAgent(slug = "") {
   return mockData.agents.find((candidate) => candidate.slug === slug);
 }
 
-function HomeHeaderDetails() {
-  return (
-    <p className="mt-8 text-base leading-relaxed text-text-muted">
-      <span className="font-semibold text-green">Green</span> checks pass,{" "}
-      <span className="font-semibold text-red">red</span> checks fail. <br />
-    </p>
-  );
-}
-
 function TopRightLinks() {
   return (
     <div className="flex items-center justify-end gap-2">
@@ -67,17 +58,14 @@ export default function AppLayout() {
     <div className="relative mx-auto max-w-5xl px-7">
       <TopNav showBackLink={Boolean(agent)} />
 
-      <header className="pt-24 pb-12 text-center">
-        {agent ? (
-          <Link to="/">
-            <img src="/logos/acp.svg" alt="ACP" className="mb-5 inline-block h-10 opacity-70" />
-          </Link>
-        ) : (
+      <header className="pt-24 pb-8 text-center">
+        <Link to="/">
           <img src="/logos/acp.svg" alt="ACP" className="mb-5 inline-block h-10 opacity-70" />
-        )}
+        </Link>
+
         <QuestionHeadline agentName={agent?.name} />
+
         <StatusPill />
-        {agent ? null : <HomeHeaderDetails />}
       </header>
 
       <Outlet />
