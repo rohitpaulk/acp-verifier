@@ -1,13 +1,11 @@
 import type { Config } from "@react-router/dev/config";
-import { readdirSync } from "fs";
-import { resolve } from "path";
 
-const agentsDir = resolve(__dirname, "../agents");
-const agentSlugs = readdirSync(agentsDir, { withFileTypes: true }).filter((d) => d.isDirectory());
+// TODO: dynamically pull from agent results JSON
+const agentSlugs = ["codex", "copilot"];
 
 export default {
   appDirectory: "src",
   buildDirectory: "dist",
   ssr: false,
-  prerender: ["/", "/404", ...agentSlugs.map((d) => `/${d.name}`)],
+  prerender: ["/", "/404", ...agentSlugs.map((slug) => `/${slug}`)],
 } satisfies Config;
