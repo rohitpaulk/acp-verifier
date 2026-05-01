@@ -4,7 +4,7 @@ import * as acp from "@agentclientprotocol/sdk";
 import type { Agent } from "./agent";
 
 type AgentProcessOptions = {
-  mounts?: { source: string; target: string; readonly?: boolean }[];
+  mounts?: { source: string; target: string }[];
 };
 
 export class AgentProcess {
@@ -18,7 +18,7 @@ export class AgentProcess {
 
     const mountFlags = (options.mounts ?? []).flatMap((mount) => [
       "--mount",
-      `type=bind,source=${mount.source},target=${mount.target}${mount.readonly ? ",readonly" : ""}`,
+      `type=bind,source=${mount.source},target=${mount.target}`,
     ]);
 
     this.childProcess = spawn("docker", ["run", "-i", "--rm", ...envFlags, ...mountFlags, agent.imageName], {
