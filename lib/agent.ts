@@ -3,6 +3,7 @@ import { existsSync, readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { parse as parseYaml } from "yaml";
 import CommandRunner from "./command-runner";
+import { build } from "bun";
 
 const AGENTS_DIR = resolve(import.meta.dir, "../agents");
 
@@ -19,7 +20,6 @@ export class Agent {
   readonly name: string;
   readonly company: string;
   readonly versionString: string;
-  readonly requiredEnvVars: string[];
   readonly env: Record<string, string>;
   readonly symlinks: Record<string, string>;
 
@@ -28,7 +28,6 @@ export class Agent {
     name: string;
     company: string;
     versionString: string;
-    requiredEnvVars: string[];
     env: Record<string, string>;
     symlinks: Record<string, string>;
   }) {
@@ -36,7 +35,6 @@ export class Agent {
     this.name = opts.name;
     this.company = opts.company;
     this.versionString = opts.versionString;
-    this.requiredEnvVars = opts.requiredEnvVars;
     this.env = opts.env;
     this.symlinks = opts.symlinks;
   }
@@ -49,12 +47,17 @@ export class Agent {
     const raw = readFileSync(configPath, "utf-8");
     const config = parseYaml(raw) as AgentConfigYAML;
 
+    const missingEnvVars = config.env_vars.filter((v) => !env[v]);
+
+    if (missingEnvVars.length > 0) {
+      throw new Error(`Missing required env vars for ${dir}: ${missingEnvVars.join(", ")}`);
+    }
+
     return new Agent({
       slug: dir,
       name: config.name,
       company: config.company,
       versionString: config.version_string,
-      requiredEnvVars: config.env_vars,
       env,
       symlinks: config.symlinks ?? {},
     });
@@ -64,18 +67,14 @@ export class Agent {
     return `acp-verifier-${this.slug}`;
   }
 
-  envValue(name: string): string | undefined {
-    return this.env[name] ?? process.env[name];
+  async buildImage(): Promise<void> {
+    const buildCommand = `docker build -t ${this.imageName} ${this.#dockerBuildContext}`;
+
+    await CommandRunner.run(buildCommand, { logPrefix: `build-${this.slug}` });
   }
 
-  async buildImage(): Promise<void> {
-    const missingEnvVars = this.requiredEnvVars.filter((v) => !this.envValue(v));
-
-    if (missingEnvVars.length > 0) {
-      throw new Error(`Missing required env vars for ${this.slug}: ${missingEnvVars.join(", ")}`);
-    }
-
-    await CommandRunner.run(`docker build -t ${this.imageName} .`, { logPrefix: `build-${this.slug}` });
+  get #dockerBuildContext(): string {
+    return resolve(AGENTS_DIR, this.slug);
   }
 }
 

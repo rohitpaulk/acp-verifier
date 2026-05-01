@@ -12,9 +12,8 @@ export class AgentProcess {
   private childProcess: ChildProcess;
 
   constructor(agent: Agent, options: AgentProcessOptions = {}) {
-    const envFlags = agent.requiredEnvVars.flatMap((v) => {
-      const value = agent.envValue(v);
-      return value === undefined ? [] : ["-e", `${v}=${value}`];
+    const envFlags = Object.entries(agent.env).flatMap((k, v) => {
+      return ["-e", `${k}=${v}`];
     });
 
     const mountFlags = (options.mounts ?? []).flatMap((mount) => [
@@ -22,13 +21,9 @@ export class AgentProcess {
       `type=bind,source=${mount.source},target=${mount.target}${mount.readonly ? ",readonly" : ""}`,
     ]);
 
-    this.childProcess = spawn(
-      "docker",
-      ["run", "-i", "--rm", ...envFlags, ...mountFlags, agent.imageName],
-      {
-        stdio: ["pipe", "pipe", "inherit"],
-      },
-    );
+    this.childProcess = spawn("docker", ["run", "-i", "--rm", ...envFlags, ...mountFlags, agent.imageName], {
+      stdio: ["pipe", "pipe", "inherit"],
+    });
   }
 
   connect(clientOptions: Partial<acp.Client> = {}): acp.ClientSideConnection {

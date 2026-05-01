@@ -14,7 +14,7 @@
           "description": "Server cold-starts and responds to the first health-check request within 500 milliseconds",
           "explanation_markdown": "This check verifies that the agent boots and responds to the [`initialize`](https://agentclientprotocol.com/protocol/initialization) request within 500ms.\n\n**Why is this important?**\n\n- This affects the load time of the first chat session.",
           "status": "fail",
-          "message": "Copilot booted and responded to initialize in 2635ms, exceeding the 500ms target."
+          "message": "Copilot booted and responded to initialize in 1300ms, exceeding the 500ms target."
         },
         {
           "slug": "new-session-500ms",
@@ -139,7 +139,7 @@
           "description": "Server cold-starts and responds to the first health-check request within 500 milliseconds",
           "explanation_markdown": "This check verifies that the agent boots and responds to the [`initialize`](https://agentclientprotocol.com/protocol/initialization) request within 500ms.\n\n**Why is this important?**\n\n- This affects the load time of the first chat session.",
           "status": "pass",
-          "message": "Codex booted and responded to initialize in 171ms."
+          "message": "Codex booted and responded to initialize in 164ms."
         },
         {
           "slug": "new-session-500ms",
@@ -264,7 +264,7 @@
           "description": "Server cold-starts and responds to the first health-check request within 500 milliseconds",
           "explanation_markdown": "This check verifies that the agent boots and responds to the [`initialize`](https://agentclientprotocol.com/protocol/initialization) request within 500ms.\n\n**Why is this important?**\n\n- This affects the load time of the first chat session.",
           "status": "fail",
-          "message": "OpenCode booted and responded to initialize in 745ms, exceeding the 500ms target."
+          "message": "OpenCode booted and responded to initialize in 767ms, exceeding the 500ms target."
         },
         {
           "slug": "new-session-500ms",
@@ -273,7 +273,7 @@
           "description": "Server cold-starts and handles a new session creation rqeuest within 500 milliseconds",
           "explanation_markdown": "This check verifies that the agent boots and responds to the `session/new` request within 500ms.",
           "status": "fail",
-          "message": "OpenCode took 910ms to initialize and create a new session, exceeding the 500ms target."
+          "message": "OpenCode took 995ms to initialize and create a new session, exceeding the 500ms target."
         },
         {
           "slug": "listing-modes",
@@ -389,7 +389,7 @@
           "description": "Server cold-starts and responds to the first health-check request within 500 milliseconds",
           "explanation_markdown": "This check verifies that the agent boots and responds to the [`initialize`](https://agentclientprotocol.com/protocol/initialization) request within 500ms.\n\n**Why is this important?**\n\n- This affects the load time of the first chat session.",
           "status": "pass",
-          "message": "Claude Code booted and responded to initialize in 204ms."
+          "message": "Claude Code booted and responded to initialize in 206ms."
         },
         {
           "slug": "new-session-500ms",
@@ -397,8 +397,8 @@
           "label": "New session < 500ms",
           "description": "Server cold-starts and handles a new session creation rqeuest within 500 milliseconds",
           "explanation_markdown": "This check verifies that the agent boots and responds to the `session/new` request within 500ms.",
-          "status": "fail",
-          "message": "Claude Code took 751ms to initialize and create a new session, exceeding the 500ms target."
+          "status": "pass",
+          "message": "Claude Code initialized and created a new session in 461ms."
         },
         {
           "slug": "listing-modes",

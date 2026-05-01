@@ -6,7 +6,7 @@ const AGENTS_DIR = resolve(import.meta.dir, "../agents");
 
 class CommandRunner {
   public static async run(commandWithArgs: string, options: { logPrefix: string }): Promise<void> {
-    const colorizedPrefix = `${chalk.cyan(options.logPrefix)}]`;
+    const colorizedPrefix = chalk.cyan(`[${options.logPrefix}]`);
 
     const logTransform = function* (line: unknown) {
       yield `${colorizedPrefix} ${line}`;
