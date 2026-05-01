@@ -1,9 +1,5 @@
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname } from "node:path";
-import type { CheckCollector } from "./check-collector";
-import type { CheckCollectorRegistry } from "./check-collector-registry";
-import type { CheckSlug } from "./generated/check-slugs";
-import { loadCheckMetadata } from "./check-metadata";
 
 export type CheckResult = {
   slug: string;
@@ -50,53 +46,6 @@ export class ResultsFile {
     });
   }
 
-  static fromCheckCollectorRegistry(collectorRegistry: CheckCollectorRegistry): ResultsFile {
-    const checkMetadata = loadCheckMetadata();
-
-    const agents = [...collectorRegistry.map.values()].flatMap((collector) => {
-      const checks = recordedCheckSlugs(collector).map((slug) => {
-        const meta = checkMetadata.get(slug);
-        if (!meta) {
-          throw new Error(`No metadata found for check: ${slug}`);
-        }
-
-        const message = collector.checkMessages.get(slug);
-        if (!message) {
-          throw new Error(`No result message recorded for check: ${slug}`);
-        }
-
-        return {
-          slug: meta.slug,
-          position: meta.position,
-          label: meta.label,
-          description: meta.description,
-          explanation_markdown: meta.explanationMarkdown,
-          status: checkStatus(collector, slug),
-          message,
-        };
-      });
-
-      if (checks.length === 0) {
-        return [];
-      }
-
-      return [
-        {
-          slug: collector.agent.slug,
-          name: collector.agent.name,
-          company: collector.agent.company,
-          version_string: collector.agent.versionString,
-          checks,
-        },
-      ];
-    });
-
-    return new ResultsFile({
-      lastUpdated: today(),
-      agents,
-    });
-  }
-
   merge(partial: ResultsFile): ResultsFile {
     const agentsBySlug = new Map(this.agents.map((agent) => [agent.slug, agent]));
 
@@ -127,24 +76,6 @@ export class ResultsFile {
   private static empty(): ResultsFile {
     return new ResultsFile({ lastUpdated: "", agents: [] });
   }
-}
-
-function recordedCheckSlugs(collector: CheckCollector): CheckSlug[] {
-  return [...collector.checkSlugs].filter(
-    (slug) => collector.passedCheckSlugs.has(slug) || collector.failedCheckSlugs.has(slug),
-  );
-}
-
-function checkStatus(collector: CheckCollector, slug: CheckSlug): "pass" | "fail" {
-  if (collector.passedCheckSlugs.has(slug)) {
-    return "pass";
-  }
-
-  if (collector.failedCheckSlugs.has(slug)) {
-    return "fail";
-  }
-
-  throw new Error(`Check ${slug} was not run for agent ${collector.agent.slug}`);
 }
 
 function mergeChecks(existingChecks: CheckResult[], partialChecks: CheckResult[]): CheckResult[] {

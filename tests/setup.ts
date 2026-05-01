@@ -21,7 +21,7 @@ afterAll(() => {
   checkCollectorRegistry.printResults();
 
   const oldResults = ResultsFile.fromFile(OUTPUT_PATH);
-  const newResults = ResultsFile.fromCheckCollectorRegistry(checkCollectorRegistry);
+  const newResults = checkCollectorRegistry.toResultsFile();
 
   oldResults.merge(newResults).write(OUTPUT_PATH);
 
