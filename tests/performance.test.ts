@@ -36,7 +36,7 @@ test.each(registry.agentSlugs)("responds to initialize within 500ms (%s)", async
   }
 });
 
-test.each(registry.agentSlugs)("new session within 500ms (%s)", async (slug) => {
+test.each(registry.agentSlugs)("new session within 100ms (%s)", async (slug) => {
   const agent = registry.agentBySlug(slug);
   const check = checkCollectorRegistry.get(slug);
 
@@ -64,12 +64,12 @@ test.each(registry.agentSlugs)("new session within 500ms (%s)", async (slug) => 
 
   expect(nextSession.sessionId).toBeTruthy();
 
-  if (elapsedMs <= 500) {
-    check.pass("new-session-500ms", `${agent.name} created a new session in ${elapsedMs}ms.`);
+  if (elapsedMs <= 100) {
+    check.pass("new-session-100ms", `${agent.name} created a new session in ${elapsedMs}ms.`);
   } else {
     check.fail(
-      "new-session-500ms",
-      `${agent.name} took ${elapsedMs}ms to create a new session, exceeding the 500ms target.`,
+      "new-session-100ms",
+      `${agent.name} took ${elapsedMs}ms to create a new session, exceeding the 100ms target.`,
     );
   }
 });
