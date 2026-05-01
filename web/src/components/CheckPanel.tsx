@@ -1,8 +1,11 @@
+import { useMemo } from "react";
+import { marked } from "marked";
+import clsx from "clsx";
+
 import { CheckIcon } from "./CheckIcon";
 import { ChevronIcon } from "./ChevronIcon";
 import { XIcon } from "./XIcon";
 import type { Check } from "./AgentCard";
-import clsx from "clsx";
 
 const checkCardClass =
   "group/check-card scroll-mt-6 border border-border bg-surface transition-colors duration-120 ease hover:border-border-hover hover:bg-surface-hover open:border-border-hover open:bg-surface-hover target:border-text-muted";
@@ -54,6 +57,13 @@ function ResultPanel({
 export function CheckPanel({ check }: { check: Check }) {
   const didPass = check.status === "pass";
   const statusLabel = didPass ? "Passed" : "Failed";
+  const explanationHtml = useMemo(
+    () =>
+      marked.parse(check.explanation_markdown, {
+        async: false,
+      }) as string,
+    [check.explanation_markdown],
+  );
 
   return (
     <details id={`check-${check.slug}`} className={checkCardClass}>
@@ -85,7 +95,7 @@ export function CheckPanel({ check }: { check: Check }) {
 
           <div
             className="prose prose-invert prose-sm"
-            dangerouslySetInnerHTML={{ __html: check.explanation_markdown }}
+            dangerouslySetInnerHTML={{ __html: explanationHtml }}
           />
         </div>
       </div>

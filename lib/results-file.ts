@@ -1,6 +1,5 @@
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname } from "node:path";
-import { marked } from "marked";
 import type { CheckCollector } from "./check-collector";
 import type { CheckCollectorRegistry } from "./check-collector-registry";
 import type { CheckSlug } from "./generated/check-slugs";
@@ -71,9 +70,7 @@ export class ResultsFile {
           position: meta.position,
           label: meta.label,
           description: meta.description,
-          explanation_markdown: marked.parse(meta.explanationMarkdown, {
-            async: false,
-          }) as string,
+          explanation_markdown: meta.explanationMarkdown,
           status: checkStatus(collector, slug),
           message,
         };
