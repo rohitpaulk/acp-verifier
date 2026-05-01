@@ -1,6 +1,7 @@
 import chalk from "chalk";
 import { CheckCollector } from "./check-collector";
 import { AgentRegistry } from "./agent-registry";
+import { type CheckSlug } from "./generated/check-slugs";
 
 export class CheckCollectorRegistry {
   readonly map: Map<string, CheckCollector>;
@@ -23,7 +24,13 @@ export class CheckCollectorRegistry {
 
   printResults(): void {
     const collectors = [...this.map.values()];
-    const checkSlugs = collectors[0]!.checkSlugs;
+    const checkSlugs = new Set<CheckSlug>();
+
+    for (const collector of collectors) {
+      for (const slug of collector.collectedCheckSlugs()) {
+        checkSlugs.add(slug);
+      }
+    }
 
     console.log("\n" + chalk.bold("Check Results"));
     console.log("=".repeat(60));

@@ -16,6 +16,10 @@ export class CheckCollector {
     this.checkMessages = new Map();
   }
 
+  collectedCheckSlugs(): Set<CheckSlug> {
+    return new Set([...this.passedCheckSlugs, ...this.failedCheckSlugs]);
+  }
+
   pass(slug: CheckSlug, message: string): void {
     if (this.failedCheckSlugs.has(slug)) {
       throw new Error(`Failed check ${slug} cannot be marked as passed`);
