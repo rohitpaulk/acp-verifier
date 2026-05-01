@@ -83,7 +83,7 @@
           "slug": "executes-terminal-commands",
           "position": 10,
           "label": "Executes terminal commands",
-          "explanation_markdown": "This check verifies that the agent actually executes a terminal command in response to a user request. The agent is asked to run a command that creates a file at a known path; the check passes if that file exists after the prompt completes. The agent may execute the command through the ACP [`terminal/create`](https://agentclientprotocol.com/protocol/terminals#executing-commands) method or through its own built-in execute tool \u2014 either is acceptable.\n\n**Why is this important?**\n\nAgents often need to run tests, builds, formatters, and other command-line tools. This check confirms that the agent is willing and able to execute commands when asked.",
+          "explanation_markdown": "This check verifies that the agent actually executes a terminal command in response to a user request. The agent is asked to run a command that creates a file at a known path; the check passes if that file exists after the prompt completes. The agent may execute the command through the ACP [`terminal/create`](https://agentclientprotocol.com/protocol/terminals#executing-commands) method or through its own built-in execute tool — either is acceptable.\n\n**Why is this important?**\n\nAgents often need to run tests, builds, formatters, and other command-line tools. This check confirms that the agent is willing and able to execute commands when asked.",
           "status": "pass",
           "message": "Copilot executed a terminal command that created the expected marker file."
         },
@@ -195,7 +195,7 @@
           "slug": "executes-terminal-commands",
           "position": 10,
           "label": "Executes terminal commands",
-          "explanation_markdown": "This check verifies that the agent actually executes a terminal command in response to a user request. The agent is asked to run a command that creates a file at a known path; the check passes if that file exists after the prompt completes. The agent may execute the command through the ACP [`terminal/create`](https://agentclientprotocol.com/protocol/terminals#executing-commands) method or through its own built-in execute tool \u2014 either is acceptable.\n\n**Why is this important?**\n\nAgents often need to run tests, builds, formatters, and other command-line tools. This check confirms that the agent is willing and able to execute commands when asked.",
+          "explanation_markdown": "This check verifies that the agent actually executes a terminal command in response to a user request. The agent is asked to run a command that creates a file at a known path; the check passes if that file exists after the prompt completes. The agent may execute the command through the ACP [`terminal/create`](https://agentclientprotocol.com/protocol/terminals#executing-commands) method or through its own built-in execute tool — either is acceptable.\n\n**Why is this important?**\n\nAgents often need to run tests, builds, formatters, and other command-line tools. This check confirms that the agent is willing and able to execute commands when asked.",
           "status": "pass",
           "message": "Codex executed a terminal command that created the expected marker file."
         },
@@ -240,12 +240,20 @@
           "message": "OpenCode booted and responded to initialize in 785ms, exceeding the 500ms target."
         },
         {
+          "slug": "first-session-500ms",
+          "position": 1,
+          "label": "First session < 500ms",
+          "explanation_markdown": "This check verifies that the agent boots and responds to the [`initialize`](https://agentclientprotocol.com/protocol/initialization) and [`session/new`](https://agentclientprotocol.com/protocol/session-setup#creating-a-session) within 500ms.\n\n**Why is this important?**\n\n- This affects the load time of the first chat session.\n- For native agents like Cursor & Zed this load time is usually ~zero.\n\n**Notes**\n\n- There's a separate \"New session < 500ms\" check that tracks load times for subsequent sessions.",
+          "status": "fail",
+          "message": "OpenCode took 817ms to boot and create a new session, exceeding the 500ms target."
+        },
+        {
           "slug": "new-session-500ms",
           "position": 2,
           "label": "New session < 500ms",
           "explanation_markdown": "This check verifies that the agent boots and responds to the `session/new` request within 500ms.",
-          "status": "fail",
-          "message": "OpenCode took 1003ms to initialize and create a new session, exceeding the 500ms target."
+          "status": "pass",
+          "message": "OpenCode created a new session in 18ms."
         },
         {
           "slug": "listing-modes",
@@ -307,7 +315,7 @@
           "slug": "executes-terminal-commands",
           "position": 10,
           "label": "Executes terminal commands",
-          "explanation_markdown": "This check verifies that the agent actually executes a terminal command in response to a user request. The agent is asked to run a command that creates a file at a known path; the check passes if that file exists after the prompt completes. The agent may execute the command through the ACP [`terminal/create`](https://agentclientprotocol.com/protocol/terminals#executing-commands) method or through its own built-in execute tool \u2014 either is acceptable.\n\n**Why is this important?**\n\nAgents often need to run tests, builds, formatters, and other command-line tools. This check confirms that the agent is willing and able to execute commands when asked.",
+          "explanation_markdown": "This check verifies that the agent actually executes a terminal command in response to a user request. The agent is asked to run a command that creates a file at a known path; the check passes if that file exists after the prompt completes. The agent may execute the command through the ACP [`terminal/create`](https://agentclientprotocol.com/protocol/terminals#executing-commands) method or through its own built-in execute tool — either is acceptable.\n\n**Why is this important?**\n\nAgents often need to run tests, builds, formatters, and other command-line tools. This check confirms that the agent is willing and able to execute commands when asked.",
           "status": "pass",
           "message": "OpenCode executed a terminal command that created the expected marker file."
         },
@@ -352,12 +360,20 @@
           "message": "Claude Code booted and responded to initialize in 237ms."
         },
         {
+          "slug": "first-session-500ms",
+          "position": 1,
+          "label": "First session < 500ms",
+          "explanation_markdown": "This check verifies that the agent boots and responds to the [`initialize`](https://agentclientprotocol.com/protocol/initialization) and [`session/new`](https://agentclientprotocol.com/protocol/session-setup#creating-a-session) within 500ms.\n\n**Why is this important?**\n\n- This affects the load time of the first chat session.\n- For native agents like Cursor & Zed this load time is usually ~zero.\n\n**Notes**\n\n- There's a separate \"New session < 500ms\" check that tracks load times for subsequent sessions.",
+          "status": "pass",
+          "message": "Claude Code booted and created a new session in 419ms."
+        },
+        {
           "slug": "new-session-500ms",
           "position": 2,
           "label": "New session < 500ms",
           "explanation_markdown": "This check verifies that the agent boots and responds to the `session/new` request within 500ms.",
-          "status": "fail",
-          "message": "Claude Code took 528ms to initialize and create a new session, exceeding the 500ms target."
+          "status": "pass",
+          "message": "Claude Code created a new session in 229ms."
         },
         {
           "slug": "listing-modes",
@@ -419,7 +435,7 @@
           "slug": "executes-terminal-commands",
           "position": 10,
           "label": "Executes terminal commands",
-          "explanation_markdown": "This check verifies that the agent actually executes a terminal command in response to a user request. The agent is asked to run a command that creates a file at a known path; the check passes if that file exists after the prompt completes. The agent may execute the command through the ACP [`terminal/create`](https://agentclientprotocol.com/protocol/terminals#executing-commands) method or through its own built-in execute tool \u2014 either is acceptable.\n\n**Why is this important?**\n\nAgents often need to run tests, builds, formatters, and other command-line tools. This check confirms that the agent is willing and able to execute commands when asked.",
+          "explanation_markdown": "This check verifies that the agent actually executes a terminal command in response to a user request. The agent is asked to run a command that creates a file at a known path; the check passes if that file exists after the prompt completes. The agent may execute the command through the ACP [`terminal/create`](https://agentclientprotocol.com/protocol/terminals#executing-commands) method or through its own built-in execute tool — either is acceptable.\n\n**Why is this important?**\n\nAgents often need to run tests, builds, formatters, and other command-line tools. This check confirms that the agent is willing and able to execute commands when asked.",
           "status": "pass",
           "message": "Claude Code executed a terminal command that created the expected marker file."
         },
@@ -531,7 +547,7 @@
           "slug": "executes-terminal-commands",
           "position": 10,
           "label": "Executes terminal commands",
-          "explanation_markdown": "This check verifies that the agent actually executes a terminal command in response to a user request. The agent is asked to run a command that creates a file at a known path; the check passes if that file exists after the prompt completes. The agent may execute the command through the ACP [`terminal/create`](https://agentclientprotocol.com/protocol/terminals#executing-commands) method or through its own built-in execute tool \u2014 either is acceptable.\n\n**Why is this important?**\n\nAgents often need to run tests, builds, formatters, and other command-line tools. This check confirms that the agent is willing and able to execute commands when asked.",
+          "explanation_markdown": "This check verifies that the agent actually executes a terminal command in response to a user request. The agent is asked to run a command that creates a file at a known path; the check passes if that file exists after the prompt completes. The agent may execute the command through the ACP [`terminal/create`](https://agentclientprotocol.com/protocol/terminals#executing-commands) method or through its own built-in execute tool — either is acceptable.\n\n**Why is this important?**\n\nAgents often need to run tests, builds, formatters, and other command-line tools. This check confirms that the agent is willing and able to execute commands when asked.",
           "status": "pass",
           "message": "Docker Agent executed a terminal command that created the expected marker file."
         },
