@@ -9,7 +9,7 @@ const results = ResultsFile.fromJSON(resultsData);
 const HIDDEN_AGENT_SLUGS = ["docker-agent"];
 
 export function HomePage() {
-  const agents = [...(results.agents as AgentCardProps[])]
+  const agents = results.agents
     .sort((a, b) => {
       const pctA = a.checks.filter((check) => check.status === "pass").length / a.checks.length;
       const pctB = b.checks.filter((check) => check.status === "pass").length / b.checks.length;
@@ -38,6 +38,7 @@ export function HomePage() {
             Last updated: <span className="text-text-dim">{lastUpdated}</span>
           </span>
         </div>
+
         <a
           href="https://github.com/rohitpaulk/acp-verifier"
           target="_blank"
