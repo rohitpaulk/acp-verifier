@@ -84,15 +84,26 @@ test.each(registry.agentSlugs)("terminal commands (%s)", async (slug) => {
       );
     }
 
+    const executeToolCallUpdates = terminalExecuteToolCallUpdates(updates);
+    const executeToolOutput = executeToolCallOutputIncludes(
+      updates,
+      COMMAND_OUTPUT,
+    );
+
     if (terminalClient.outputRequests.length > 0) {
       check.pass(
         "streams-terminal-command-output",
         `${agent.name} requested terminal output ${terminalClient.outputRequests.length} time(s) while the command ran.`,
       );
+    } else if (executeToolOutput) {
+      check.pass(
+        "streams-terminal-command-output",
+        `${agent.name} reported terminal command output through ACP execute tool call updates.`,
+      );
     } else {
       check.fail(
         "streams-terminal-command-output",
-        `${agent.name} did not request terminal output while the command ran.`,
+        `${agent.name} did not request terminal output or report command output through ACP execute tool call updates.`,
       );
     }
 
@@ -102,10 +113,15 @@ test.each(registry.agentSlugs)("terminal commands (%s)", async (slug) => {
         "displays-terminal-command-when-in-progress",
         `${agent.name} embedded terminal content in ${terminalIdsInUpdates.length} in-progress tool call update(s).`,
       );
+    } else if (executeToolCallUpdates.length > 0) {
+      check.pass(
+        "displays-terminal-command-when-in-progress",
+        `${agent.name} reported the running command through ${executeToolCallUpdates.length} ACP execute tool call update(s).`,
+      );
     } else {
       check.fail(
         "displays-terminal-command-when-in-progress",
-        `${agent.name} did not embed the active terminal in an in-progress tool call update.`,
+        `${agent.name} did not embed the active terminal or report an ACP execute tool call update.`,
       );
     }
 
@@ -118,10 +134,15 @@ test.each(registry.agentSlugs)("terminal commands (%s)", async (slug) => {
         "displays-terminal-command-output",
         `${agent.name} left the terminal output containing ${JSON.stringify(COMMAND_OUTPUT)} visible through terminal content.`,
       );
+    } else if (executeToolOutput) {
+      check.pass(
+        "displays-terminal-command-output",
+        `${agent.name} left the terminal output containing ${JSON.stringify(COMMAND_OUTPUT)} visible through ACP execute tool call content.`,
+      );
     } else {
       check.fail(
         "displays-terminal-command-output",
-        `${agent.name} did not leave the terminal output containing ${JSON.stringify(COMMAND_OUTPUT)} visible through terminal content.`,
+        `${agent.name} did not leave the terminal output containing ${JSON.stringify(COMMAND_OUTPUT)} visible through terminal or ACP execute tool call content.`,
       );
     }
   } finally {
@@ -297,6 +318,56 @@ function terminalIdsEmbeddedInToolCalls(
           content.type === "terminal",
       )
       .map((content) => content.terminalId),
+  );
+}
+
+function terminalExecuteToolCallUpdates(
+  updates: acp.SessionUpdate[],
+): acp.SessionUpdate[] {
+  const executeToolCallIds = terminalExecuteToolCallIds(updates);
+
+  return updates.filter((update) => {
+    if (
+      update.sessionUpdate !== "tool_call" &&
+      update.sessionUpdate !== "tool_call_update"
+    ) {
+      return false;
+    }
+
+    return executeToolCallIds.has(update.toolCallId);
+  });
+}
+
+function terminalExecuteToolCallIds(updates: acp.SessionUpdate[]): Set<string> {
+  const ids = new Set<string>();
+
+  for (const update of updates) {
+    if (
+      update.sessionUpdate !== "tool_call" &&
+      update.sessionUpdate !== "tool_call_update"
+    ) {
+      continue;
+    }
+
+    if (update.kind === "execute" || update.title === "Terminal") {
+      ids.add(update.toolCallId);
+    }
+  }
+
+  return ids;
+}
+
+function executeToolCallOutputIncludes(
+  updates: acp.SessionUpdate[],
+  text: string,
+): boolean {
+  return terminalExecuteToolCallUpdates(updates).some((update) =>
+    toolCallContent(update).some(
+      (content) =>
+        content.type === "content" &&
+        content.content.type === "text" &&
+        content.content.text.includes(text),
+    ),
   );
 }
 

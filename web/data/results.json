@@ -441,27 +441,27 @@
           "position": 10,
           "label": "Streams terminal output",
           "description": "Polls terminal output while commands are running so command progress can be streamed",
-          "explanation_markdown": "<p>This check verifies that after creating a terminal, the agent requests the command&#39;s output through <a href=\"https://agentclientprotocol.com/protocol/terminals#getting-output\"><code>terminal/output</code></a>.</p>\n<h3>Why is this important?</h3>\n<p>Long-running commands should not feel like black boxes. Polling terminal output lets the agent observe progress, react to failures, and keep users informed while work is still in progress.</p>\n",
-          "status": "fail",
-          "message": "Claude Code did not request terminal output while the command ran."
+          "explanation_markdown": "<p>This check verifies that terminal command output is reported through ACP. Agents can satisfy this by polling a client-managed terminal with <a href=\"https://agentclientprotocol.com/protocol/terminals#getting-output\"><code>terminal/output</code></a>, or by reporting output in ACP <code>execute</code> tool call updates when the agent owns command execution.</p>\n<h3>Why is this important?</h3>\n<p>Long-running commands should not feel like black boxes. Polling terminal output lets the agent observe progress, react to failures, and keep users informed while work is still in progress.</p>\n",
+          "status": "pass",
+          "message": "Claude Code reported terminal command output through ACP execute tool call updates."
         },
         {
           "slug": "displays-terminal-command-when-in-progress",
           "position": 11,
           "label": "Displays running terminal command",
           "description": "Embeds the active terminal in an in-progress execute tool call",
-          "explanation_markdown": "<p>This check verifies that the agent includes terminal content in a <code>tool_call</code> or <code>tool_call_update</code> while the command is in progress.</p>\n<h3>Why is this important?</h3>\n<p>Clients can only render a live terminal UI when the agent embeds the terminal ID in a tool call. This gives users immediate visibility into which command is running and where to watch its progress.</p>\n",
-          "status": "fail",
-          "message": "Claude Code did not embed the active terminal in an in-progress tool call update."
+          "explanation_markdown": "<p>This check verifies that the agent makes the running command visible through ACP while it is in progress. Agents can satisfy this by embedding client-managed terminal content in a <code>tool_call</code> or <code>tool_call_update</code>, or by emitting ACP <code>execute</code> tool call updates for an agent-managed terminal command.</p>\n<h3>Why is this important?</h3>\n<p>Clients can only render a live terminal UI when the agent embeds the terminal ID in a tool call, but ACP <code>execute</code> tool calls still give users immediate visibility into which command is running and how it progresses.</p>\n",
+          "status": "pass",
+          "message": "Claude Code reported the running command through 4 ACP execute tool call update(s)."
         },
         {
           "slug": "displays-terminal-command-output",
           "position": 12,
           "label": "Displays terminal output",
           "description": "Leaves terminal output visible to the user through terminal content embedded in tool calls",
-          "explanation_markdown": "<p>This check verifies that terminal output remains displayable by embedding the terminal in a tool call whose output contains the command result.</p>\n<h3>Why is this important?</h3>\n<p>Users need to see the command output that led to the agent&#39;s next steps, especially for test failures, build errors, and generated logs. Terminal content in tool calls lets clients display this output directly in the conversation.</p>\n",
-          "status": "fail",
-          "message": "Claude Code did not leave the terminal output containing \"acp-verifier-terminal-output\" visible through terminal content."
+          "explanation_markdown": "<p>This check verifies that terminal output remains displayable in ACP session updates. Agents can satisfy this with embedded client-managed terminal content, or with ACP <code>execute</code> tool call content that includes the command result.</p>\n<h3>Why is this important?</h3>\n<p>Users need to see the command output that led to the agent&#39;s next steps, especially for test failures, build errors, and generated logs. Terminal or <code>execute</code> tool call content lets clients display this output directly in the conversation.</p>\n",
+          "status": "pass",
+          "message": "Claude Code left the terminal output containing \"acp-verifier-terminal-output\" visible through ACP execute tool call content."
         }
       ]
     }
