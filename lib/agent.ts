@@ -1,9 +1,8 @@
+import { parse as parseDotenv } from "dotenv";
 import { existsSync, readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { parse as parseYaml } from "yaml";
-import { parse as parseDotenv } from "dotenv";
-import { execa } from "execa";
-import chalk from "chalk";
+import CommandRunner from "./command-runner";
 
 const AGENTS_DIR = resolve(import.meta.dir, "../agents");
 
@@ -70,23 +69,13 @@ export class Agent {
   }
 
   async buildImage(): Promise<void> {
-    const missing = this.requiredEnvVars.filter((v) => !this.envValue(v));
+    const missingEnvVars = this.requiredEnvVars.filter((v) => !this.envValue(v));
 
-    if (missing.length > 0) {
-      throw new Error(`Missing required env vars for ${this.slug}: ${missing.join(", ")}`);
+    if (missingEnvVars.length > 0) {
+      throw new Error(`Missing required env vars for ${this.slug}: ${missingEnvVars.join(", ")}`);
     }
 
-    const prefix = chalk.cyan(`[build-${this.slug}]`);
-    const context = resolve(AGENTS_DIR, this.slug);
-
-    const logTransform = function* (line: unknown) {
-      yield `${prefix} ${line}`;
-    };
-
-    await execa({
-      stdout: [logTransform, "inherit"],
-      stderr: [logTransform, "inherit"],
-    })`docker build -t ${this.imageName} ${context}`;
+    await CommandRunner.run(`docker build -t ${this.imageName} .`, { logPrefix: `build-${this.slug}` });
   }
 }
 
