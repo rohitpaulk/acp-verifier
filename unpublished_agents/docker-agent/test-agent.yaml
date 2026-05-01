@@ -1,0 +1,9 @@
+agents:
+  root:
+    model: openai/gpt-5-mini
+    description: Coding agent.
+    instruction: |
+      You are a coding agent.
+    toolsets:
+      - type: filesystem
+      - type: shell
