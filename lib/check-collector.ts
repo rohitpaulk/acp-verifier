@@ -16,7 +16,7 @@ export class CheckCollector {
     this.checkMessages = new Map();
   }
 
-  collectedCheckSlugs(): Set<CheckSlug> {
+  get recordedCheckSlugs(): Set<CheckSlug> {
     return new Set([...this.passedCheckSlugs, ...this.failedCheckSlugs]);
   }
 

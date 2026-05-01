@@ -34,10 +34,11 @@ export class CheckCollectorRegistry {
     const checkRegistry = CheckRegistry.loadFromDir(CHECKS_DIR);
 
     const agents = [...this.map.values()].flatMap((collector): AgentResult[] => {
-      const checks = recordedCheckSlugs(collector).map((slug) => {
+      const checks = [...collector.recordedCheckSlugs].map((slug) => {
         const check = checkRegistry.checkBySlug(slug);
 
         const message = collector.checkMessages.get(slug);
+
         if (!message) {
           throw new Error(`No result message recorded for check: ${slug}`);
         }
@@ -78,7 +79,7 @@ export class CheckCollectorRegistry {
     const checkSlugs = new Set<CheckSlug>();
 
     for (const collector of collectors) {
-      for (const slug of collector.collectedCheckSlugs()) {
+      for (const slug of collector.recordedCheckSlugs) {
         checkSlugs.add(slug);
       }
     }
@@ -107,12 +108,6 @@ export class CheckCollectorRegistry {
 
     console.log("\n" + "=".repeat(60));
   }
-}
-
-function recordedCheckSlugs(collector: CheckCollector): CheckSlug[] {
-  return [...collector.checkSlugs].filter(
-    (slug) => collector.passedCheckSlugs.has(slug) || collector.failedCheckSlugs.has(slug),
-  );
 }
 
 function checkStatus(collector: CheckCollector, slug: CheckSlug): "pass" | "fail" {
