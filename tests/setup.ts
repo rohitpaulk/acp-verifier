@@ -7,7 +7,7 @@ await import("../scripts/generate-check-slugs");
 
 const { AgentRegistry } = await import("../lib/agent-registry");
 const { CheckCollectorRegistry } = await import("../lib/check-collector-registry");
-const { ResultsFile } = await import("../lib/results-file");
+const { readResultsFile, writeResultsFile } = await import("../lib/results-file-io");
 
 const PROJECT_ROOT = resolve(import.meta.dir, "..");
 const OUTPUT_PATH = resolve(PROJECT_ROOT, "web/data/results.json");
@@ -20,10 +20,10 @@ export const checkCollectorRegistry = new CheckCollectorRegistry(registry);
 afterAll(() => {
   checkCollectorRegistry.printResults();
 
-  const oldResults = ResultsFile.fromFile(OUTPUT_PATH);
+  const oldResults = readResultsFile(OUTPUT_PATH);
   const newResults = checkCollectorRegistry.toResultsFile();
 
-  oldResults.merge(newResults).write(OUTPUT_PATH);
+  writeResultsFile(OUTPUT_PATH, oldResults.merge(newResults));
 
   console.log(`\nWrote results to ${OUTPUT_PATH}`);
 });

@@ -4,7 +4,7 @@ import { CheckCollector } from "./check-collector";
 import { AgentRegistry } from "./agent-registry";
 import { type CheckSlug } from "./generated/check-slugs";
 import { CheckRegistry } from "./check-registry";
-import { type AgentResult, ResultsFile } from "./results-file";
+import { type AgentResult, ResultsFile } from "../web/src/results-file";
 
 const PROJECT_ROOT = resolve(import.meta.dir, "..");
 const CHECKS_DIR = resolve(PROJECT_ROOT, "checks");

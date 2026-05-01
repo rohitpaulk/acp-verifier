@@ -6,9 +6,12 @@ import { HelpIcon } from "../components/HelpIcon";
 import QuestionHeadline from "../components/QuestionHeadline";
 import StatusPill from "../components/StatusPill";
 import resultsData from "../../data/results.json";
+import { ResultsFile } from "../results-file";
+
+const results = ResultsFile.fromJSON(resultsData);
 
 function findAgent(slug = "") {
-  return resultsData.agents.find((candidate) => candidate.slug === slug);
+  return results.agents.find((candidate) => candidate.slug === slug);
 }
 
 function TopRightLinks() {

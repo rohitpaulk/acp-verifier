@@ -1,5 +1,8 @@
 import AgentCard, { type AgentCardProps } from "../components/AgentCard";
 import resultsData from "../../data/results.json";
+import { ResultsFile } from "../results-file";
+
+const results = ResultsFile.fromJSON(resultsData);
 
 function formatHumanDate(value: string) {
   const [year, month, day] = value.split("-").map(Number);
@@ -12,12 +15,12 @@ function formatHumanDate(value: string) {
 }
 
 export function HomePage() {
-  const agents = [...(resultsData.agents as unknown as AgentCardProps[])].sort((a, b) => {
+  const agents = [...(results.agents as AgentCardProps[])].sort((a, b) => {
     const pctA = a.checks.filter((check) => check.status === "pass").length / a.checks.length;
     const pctB = b.checks.filter((check) => check.status === "pass").length / b.checks.length;
     return pctB - pctA;
   });
-  const lastUpdated = formatHumanDate(resultsData.lastUpdated);
+  const lastUpdated = formatHumanDate(results.lastUpdated);
 
   return (
     <>

@@ -1,6 +1,3 @@
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
-import { dirname } from "node:path";
-
 export type CheckResult = {
   slug: string;
   position: number;
@@ -18,9 +15,22 @@ export type AgentResult = {
   checks: CheckResult[];
 };
 
-type ResultsFileJSON = {
+export type ResultsFileJSON = {
   lastUpdated?: string;
-  agents?: AgentResult[];
+  agents?: Array<{
+    slug: string;
+    name: string;
+    company: string;
+    version_string: string;
+    checks: Array<{
+      slug: string;
+      position: number;
+      label: string;
+      explanation_markdown: string;
+      status: string;
+      message: string;
+    }>;
+  }>;
 };
 
 export class ResultsFile {
@@ -32,17 +42,15 @@ export class ResultsFile {
     this.agents = agents;
   }
 
-  static fromFile(path: string): ResultsFile {
-    if (!existsSync(path)) {
-      return ResultsFile.empty();
-    }
-
-    const parsed = JSON.parse(readFileSync(path, "utf-8")) as ResultsFileJSON;
-
+  static fromJSON(parsed: ResultsFileJSON): ResultsFile {
     return new ResultsFile({
       lastUpdated: parsed.lastUpdated ?? "",
-      agents: parsed.agents ?? [],
+      agents: (parsed.agents ?? []) as AgentResult[],
     });
+  }
+
+  static empty(): ResultsFile {
+    return new ResultsFile({ lastUpdated: "", agents: [] });
   }
 
   merge(partial: ResultsFile): ResultsFile {
@@ -65,15 +73,6 @@ export class ResultsFile {
       lastUpdated: today(),
       agents: [...agentsBySlug.values()],
     });
-  }
-
-  write(path: string): void {
-    mkdirSync(dirname(path), { recursive: true });
-    writeFileSync(path, JSON.stringify(this, null, 2) + "\n");
-  }
-
-  private static empty(): ResultsFile {
-    return new ResultsFile({ lastUpdated: "", agents: [] });
   }
 }
 
