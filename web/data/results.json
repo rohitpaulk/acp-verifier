@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-05-01",
+  "lastUpdated": "2026-05-02",
   "agents": [
     {
       "slug": "copilot",
@@ -11,17 +11,17 @@
           "slug": "first-session-500ms",
           "position": 1,
           "label": "First session < 500ms",
-          "explanation_markdown": "This check verifies that the agent boots and responds to the [`initialize`](https://agentclientprotocol.com/protocol/initialization) and [`session/new`](https://agentclientprotocol.com/protocol/session-setup#creating-a-session) within 500ms.\n\n**Why is this important?**\n\n- This affects the load time of the first chat session.\n- For native agents like Cursor & Zed this load time is usually ~zero.\n\n**Notes**\n\n- There's a separate \"New session < 500ms\" check that tracks load times for subsequent sessions.",
+          "explanation_markdown": "This check verifies that the agent boots and responds to [`initialize`](https://agentclientprotocol.com/protocol/initialization) and [`session/new`](https://agentclientprotocol.com/protocol/session-setup#creating-a-session) within 500ms.\n\n**Why is this important?**\n\n- This affects the load time of the first chat session.\n- For native agents like Cursor & Zed this load time is usually ~zero.\n\n**Notes**\n\n- There's a separate \"New session < 500ms\" check that tracks load times for subsequent sessions.",
           "status": "fail",
-          "message": "Copilot took 5584ms to boot and create a new session, exceeding the 500ms target."
+          "message": "Copilot took 5813ms to boot and create a new session, exceeding the 500ms target."
         },
         {
           "slug": "new-session-100ms",
           "position": 2,
           "label": "New session < 100ms",
-          "explanation_markdown": "This check verifies that the agent boots and responds to the `session/new` request within 100ms.",
+          "explanation_markdown": "This check verifies that the agent responds to the `session/new` request within 100ms. The check is performed after the agent has booted and created at least one session.\n\n**Why is this important?**\n\n- This affects the load time of chat sessions after the first one, which is something users will run into multiple times a day.\n- For native agents like Cursor & Zed this load time is usually ~zero.\n\n**Notes**\n\n- There's a separate \"First session < 500ms\" check that tracks load times for the first session, which includes the agent boot time.",
           "status": "fail",
-          "message": "Copilot took 1028ms to create a new session, exceeding the 100ms target."
+          "message": "Copilot took 796ms to create a new session, exceeding the 100ms target."
         },
         {
           "slug": "listing-modes",
@@ -123,17 +123,17 @@
           "slug": "first-session-500ms",
           "position": 1,
           "label": "First session < 500ms",
-          "explanation_markdown": "This check verifies that the agent boots and responds to the [`initialize`](https://agentclientprotocol.com/protocol/initialization) and [`session/new`](https://agentclientprotocol.com/protocol/session-setup#creating-a-session) within 500ms.\n\n**Why is this important?**\n\n- This affects the load time of the first chat session.\n- For native agents like Cursor & Zed this load time is usually ~zero.\n\n**Notes**\n\n- There's a separate \"New session < 500ms\" check that tracks load times for subsequent sessions.",
+          "explanation_markdown": "This check verifies that the agent boots and responds to [`initialize`](https://agentclientprotocol.com/protocol/initialization) and [`session/new`](https://agentclientprotocol.com/protocol/session-setup#creating-a-session) within 500ms.\n\n**Why is this important?**\n\n- This affects the load time of the first chat session.\n- For native agents like Cursor & Zed this load time is usually ~zero.\n\n**Notes**\n\n- There's a separate \"New session < 500ms\" check that tracks load times for subsequent sessions.",
           "status": "pass",
-          "message": "Codex booted and created a new session in 260ms."
+          "message": "Codex booted and created a new session in 257ms."
         },
         {
           "slug": "new-session-100ms",
           "position": 2,
           "label": "New session < 100ms",
-          "explanation_markdown": "This check verifies that the agent boots and responds to the `session/new` request within 100ms.",
+          "explanation_markdown": "This check verifies that the agent responds to the `session/new` request within 100ms. The check is performed after the agent has booted and created at least one session.\n\n**Why is this important?**\n\n- This affects the load time of chat sessions after the first one, which is something users will run into multiple times a day.\n- For native agents like Cursor & Zed this load time is usually ~zero.\n\n**Notes**\n\n- There's a separate \"First session < 500ms\" check that tracks load times for the first session, which includes the agent boot time.",
           "status": "pass",
-          "message": "Codex created a new session in 15ms."
+          "message": "Codex created a new session in 8ms."
         },
         {
           "slug": "listing-modes",
@@ -235,17 +235,17 @@
           "slug": "first-session-500ms",
           "position": 1,
           "label": "First session < 500ms",
-          "explanation_markdown": "This check verifies that the agent boots and responds to the [`initialize`](https://agentclientprotocol.com/protocol/initialization) and [`session/new`](https://agentclientprotocol.com/protocol/session-setup#creating-a-session) within 500ms.\n\n**Why is this important?**\n\n- This affects the load time of the first chat session.\n- For native agents like Cursor & Zed this load time is usually ~zero.\n\n**Notes**\n\n- There's a separate \"New session < 500ms\" check that tracks load times for subsequent sessions.",
+          "explanation_markdown": "This check verifies that the agent boots and responds to [`initialize`](https://agentclientprotocol.com/protocol/initialization) and [`session/new`](https://agentclientprotocol.com/protocol/session-setup#creating-a-session) within 500ms.\n\n**Why is this important?**\n\n- This affects the load time of the first chat session.\n- For native agents like Cursor & Zed this load time is usually ~zero.\n\n**Notes**\n\n- There's a separate \"New session < 500ms\" check that tracks load times for subsequent sessions.",
           "status": "fail",
-          "message": "OpenCode took 890ms to boot and create a new session, exceeding the 500ms target."
+          "message": "OpenCode took 953ms to boot and create a new session, exceeding the 500ms target."
         },
         {
           "slug": "new-session-100ms",
           "position": 2,
           "label": "New session < 100ms",
-          "explanation_markdown": "This check verifies that the agent boots and responds to the `session/new` request within 100ms.",
+          "explanation_markdown": "This check verifies that the agent responds to the `session/new` request within 100ms. The check is performed after the agent has booted and created at least one session.\n\n**Why is this important?**\n\n- This affects the load time of chat sessions after the first one, which is something users will run into multiple times a day.\n- For native agents like Cursor & Zed this load time is usually ~zero.\n\n**Notes**\n\n- There's a separate \"First session < 500ms\" check that tracks load times for the first session, which includes the agent boot time.",
           "status": "pass",
-          "message": "OpenCode created a new session in 16ms."
+          "message": "OpenCode created a new session in 24ms."
         },
         {
           "slug": "listing-modes",
@@ -347,17 +347,17 @@
           "slug": "first-session-500ms",
           "position": 1,
           "label": "First session < 500ms",
-          "explanation_markdown": "This check verifies that the agent boots and responds to the [`initialize`](https://agentclientprotocol.com/protocol/initialization) and [`session/new`](https://agentclientprotocol.com/protocol/session-setup#creating-a-session) within 500ms.\n\n**Why is this important?**\n\n- This affects the load time of the first chat session.\n- For native agents like Cursor & Zed this load time is usually ~zero.\n\n**Notes**\n\n- There's a separate \"New session < 500ms\" check that tracks load times for subsequent sessions.",
+          "explanation_markdown": "This check verifies that the agent boots and responds to [`initialize`](https://agentclientprotocol.com/protocol/initialization) and [`session/new`](https://agentclientprotocol.com/protocol/session-setup#creating-a-session) within 500ms.\n\n**Why is this important?**\n\n- This affects the load time of the first chat session.\n- For native agents like Cursor & Zed this load time is usually ~zero.\n\n**Notes**\n\n- There's a separate \"New session < 500ms\" check that tracks load times for subsequent sessions.",
           "status": "fail",
-          "message": "Claude Code took 771ms to boot and create a new session, exceeding the 500ms target."
+          "message": "Claude Code took 797ms to boot and create a new session, exceeding the 500ms target."
         },
         {
           "slug": "new-session-100ms",
           "position": 2,
           "label": "New session < 100ms",
-          "explanation_markdown": "This check verifies that the agent boots and responds to the `session/new` request within 100ms.",
+          "explanation_markdown": "This check verifies that the agent responds to the `session/new` request within 100ms. The check is performed after the agent has booted and created at least one session.\n\n**Why is this important?**\n\n- This affects the load time of chat sessions after the first one, which is something users will run into multiple times a day.\n- For native agents like Cursor & Zed this load time is usually ~zero.\n\n**Notes**\n\n- There's a separate \"First session < 500ms\" check that tracks load times for the first session, which includes the agent boot time.",
           "status": "fail",
-          "message": "Claude Code took 525ms to create a new session, exceeding the 100ms target."
+          "message": "Claude Code took 252ms to create a new session, exceeding the 100ms target."
         },
         {
           "slug": "listing-modes",
@@ -542,6 +542,102 @@
           "explanation_markdown": "This check verifies that terminal output remains displayable in ACP session updates. Agents can satisfy this with embedded client-managed terminal content, or with ACP `execute` tool call content that includes the command result.\n\n**Why is this important?**\n\nUsers need to see the command output that led to the agent's next steps, especially for test failures, build errors, and generated logs. Terminal or `execute` tool call content lets clients display this output directly in the conversation.",
           "status": "pass",
           "message": "Docker Agent left the terminal output containing \"acp-verifier-terminal-output\" visible through ACP execute tool call content."
+        }
+      ]
+    },
+    {
+      "slug": "junie",
+      "name": "Junie",
+      "company": "JetBrains",
+      "version_string": "v1468.30.0",
+      "checks": [
+        {
+          "slug": "first-session-500ms",
+          "position": 1,
+          "label": "First session < 500ms",
+          "explanation_markdown": "This check verifies that the agent boots and responds to [`initialize`](https://agentclientprotocol.com/protocol/initialization) and [`session/new`](https://agentclientprotocol.com/protocol/session-setup#creating-a-session) within 500ms.\n\n**Why is this important?**\n\n- This affects the load time of the first chat session.\n- For native agents like Cursor & Zed this load time is usually ~zero.\n\n**Notes**\n\n- There's a separate \"New session < 500ms\" check that tracks load times for subsequent sessions.",
+          "status": "fail",
+          "message": "Junie took 947ms to boot and create a new session, exceeding the 500ms target."
+        },
+        {
+          "slug": "new-session-100ms",
+          "position": 2,
+          "label": "New session < 100ms",
+          "explanation_markdown": "This check verifies that the agent responds to the `session/new` request within 100ms. The check is performed after the agent has booted and created at least one session.\n\n**Why is this important?**\n\n- This affects the load time of chat sessions after the first one, which is something users will run into multiple times a day.\n- For native agents like Cursor & Zed this load time is usually ~zero.\n\n**Notes**\n\n- There's a separate \"First session < 500ms\" check that tracks load times for the first session, which includes the agent boot time.",
+          "status": "pass",
+          "message": "Junie created a new session in 9ms."
+        },
+        {
+          "slug": "listing-modes",
+          "position": 3,
+          "label": "Listing session modes",
+          "explanation_markdown": "This check verifies that the agent supports modes through [Session Config Options](https://agentclientprotocol.com/protocol/session-config-options).\n\n**Why is this important?**\n\nClients need this information to render the current mode (for example Ask/Plan/Build) in the UI.\n\nAgents that support modes should expose a valid single-select session config option for modes, including the current value and the available values that clients can present to users.",
+          "status": "fail",
+          "message": "Junie did not advertise any session modes (e.g. Ask/Build/Plan)."
+        },
+        {
+          "slug": "loads-skills",
+          "position": 6,
+          "label": "Loads skills",
+          "explanation_markdown": "This check verifies that when a session is created with a working directory containing `.agents/skills`, the agent advertises those skills through [Slash Commands](https://agentclientprotocol.com/protocol/slash-commands).\n\n**Why is this important?**\n\nClients use slash command updates to show users which project-specific skills are available in the current workspace.\n\nAgents should discover skills from the session working directory and send an `available_commands_update` notification that includes each user-invocable skill.",
+          "status": "fail",
+          "message": "Junie did not advertise the acp-verifier-skill skill as a slash command within 5000ms."
+        },
+        {
+          "slug": "loads-skills-500ms",
+          "position": 7,
+          "label": "Loads skills < 500ms",
+          "explanation_markdown": "This check verifies that skills from the session working directory are advertised as slash commands within 500ms of calling `session/new`.\n\n**Why is this important?**\n\nProject skills affect the commands a client presents immediately after a session starts. Slow skill discovery can make command menus feel incomplete or laggy.",
+          "status": "fail",
+          "message": "Junie did not advertise the acp-verifier-skill skill within the 500ms target."
+        },
+        {
+          "slug": "supports-session-close",
+          "position": 8,
+          "label": "Session close",
+          "explanation_markdown": "This check verifies that the agent supports the `session/close` capability.\n\n**Why is this important?**\n\n`session/close` is required to terminate a running session and free up resources.\n\n<!-- TODO: See if this is used to remove threads from the sidebar -->",
+          "status": "fail",
+          "message": "Junie did not advertise session close support during initialization."
+        },
+        {
+          "slug": "supports-session-resume",
+          "position": 9,
+          "label": "Session resume",
+          "explanation_markdown": "This check verifies that the agent supports the `session/resume` capability.\n\n**Why is this important?**\n\n`session/resume` allows clients to reconnect to a previously created session without losing conversation history.",
+          "status": "pass",
+          "message": "Junie advertised session resume support during initialization."
+        },
+        {
+          "slug": "executes-terminal-commands",
+          "position": 10,
+          "label": "Executes terminal commands",
+          "explanation_markdown": "This check verifies that the agent actually executes a terminal command in response to a user request. The agent is asked to run a command that creates a file at a known path; the check passes if that file exists after the prompt completes. The agent may execute the command through the ACP [`terminal/create`](https://agentclientprotocol.com/protocol/terminals#executing-commands) method or through its own built-in execute tool — either is acceptable.\n\n**Why is this important?**\n\nAgents often need to run tests, builds, formatters, and other command-line tools. This check confirms that the agent is willing and able to execute commands when asked.",
+          "status": "pass",
+          "message": "Junie executed a terminal command that created the expected marker file."
+        },
+        {
+          "slug": "streams-terminal-command-output",
+          "position": 11,
+          "label": "Streams terminal output",
+          "explanation_markdown": "This check verifies that terminal command output is reported through ACP. Agents can satisfy this by polling a client-managed terminal with [`terminal/output`](https://agentclientprotocol.com/protocol/terminals#getting-output), or by reporting output in ACP `execute` tool call updates when the agent owns command execution.\n\n**Why is this important?**\n\nLong-running commands should not feel like black boxes. Polling terminal output lets the agent observe progress, react to failures, and keep users informed while work is still in progress.",
+          "status": "fail",
+          "message": "Junie did not request terminal output or report command output through ACP execute tool call updates."
+        },
+        {
+          "slug": "displays-terminal-command-when-in-progress",
+          "position": 12,
+          "label": "Displays running terminal command",
+          "explanation_markdown": "This check verifies that the agent makes the running command visible through ACP while it is in progress. Agents can satisfy this by embedding client-managed terminal content in a `tool_call` or `tool_call_update`, or by emitting ACP `execute` tool call updates for an agent-managed terminal command.\n\n**Why is this important?**\n\nClients can only render a live terminal UI when the agent embeds the terminal ID in a tool call, but ACP `execute` tool calls still give users immediate visibility into which command is running and how it progresses.",
+          "status": "pass",
+          "message": "Junie embedded terminal content in 80 in-progress tool call update(s)."
+        },
+        {
+          "slug": "displays-terminal-command-output",
+          "position": 13,
+          "label": "Displays terminal output",
+          "explanation_markdown": "This check verifies that terminal output remains displayable in ACP session updates. Agents can satisfy this with embedded client-managed terminal content, or with ACP `execute` tool call content that includes the command result.\n\n**Why is this important?**\n\nUsers need to see the command output that led to the agent's next steps, especially for test failures, build errors, and generated logs. Terminal or `execute` tool call content lets clients display this output directly in the conversation.",
+          "status": "fail",
+          "message": "Junie did not leave the terminal output containing \"acp-verifier-terminal-output\" visible through terminal or ACP execute tool call content."
         }
       ]
     }
