@@ -1,0 +1,7 @@
+name: Junie
+company: JetBrains
+version_string: v1468.30.0
+env_vars:
+  - JUNIE_API_KEY
+symlinks:
+  .junie/skills: .agents/skills
