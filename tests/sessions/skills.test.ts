@@ -33,22 +33,19 @@ test.each(registry.agentSlugs)("loads skills as slash commands (%s)", async (slu
 
   if (skillCommand) {
     expect(skillCommand.description).toBeTruthy();
-    check.pass("loads-skills", `${agent.name} advertised the dummy-skill skill as a slash command.`);
+    check.pass("loads-skills", `${agent.name} loaded skills from ${agent.skillsDir} as slash commands.`);
   } else {
-    check.fail(
-      "loads-skills",
-      `${agent.name} did not advertise the dummy-skill skill as a slash command within 5000ms.`,
-    );
+    check.fail("loads-skills", `${agent.name} did not load skills from ${agent.skillsDir} as a slash commands.`);
+    check.fail("loads-skills-500ms", `${agent.name} did not load skills from ${agent.skillsDir} as slash commands.`);
+    return;
   }
 
   if (skillCommand && loadElapsedMs <= 500) {
-    check.pass("loads-skills-500ms", `${agent.name} advertised the dummy-skill skill in ${loadElapsedMs}ms.`);
-  } else if (skillCommand) {
+    check.pass("loads-skills-500ms", `${agent.name} loaded skills from ${agent.skillsDir} in ${loadElapsedMs}ms.`);
+  } else {
     check.fail(
       "loads-skills-500ms",
-      `${agent.name} advertised the dummy-skill skill in ${loadElapsedMs}ms, exceeding the 500ms target.`,
+      `${agent.name} loaded skills from ${agent.skillsDir} in ${loadElapsedMs}ms, exceeding the 500ms target.`,
     );
-  } else {
-    check.fail("loads-skills-500ms", `${agent.name} did not advertise the dummy-skill skill within the 500ms target.`);
   }
 });
