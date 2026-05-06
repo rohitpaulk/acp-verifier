@@ -4,7 +4,7 @@ import type { Agent } from "../lib/agent";
 export async function waitUntil(
   condition: () => boolean,
   timeoutMs: number = 5_000,
-  intervalMs: number = 25,
+  intervalMs: number = 1,
 ): Promise<boolean> {
   const deadline = performance.now() + timeoutMs;
 

@@ -48,10 +48,10 @@
           "message": "Copilot switched mode from https://agentclientprotocol.com/protocol/session-modes#agent to https://agentclientprotocol.com/protocol/session-modes#plan."
         },
         {
-          "slug": "loads-skills-500ms",
+          "slug": "loads-skills-100ms",
           "position": 4,
-          "label": "Loads skills < 500ms",
-          "explanation_markdown": "This check verifies that skills are loaded as [slash commands](https://agentclientprotocol.com/protocol/slash-commands) within 500ms of creating a session. \n\n**Why is this important?**\n\n- Often sessions are created with the sole purpose of running a skill (like `/bump-version`).\n- If skills aren't loaded quick enough, a chat session can feel laggy since users have to wait till they're loaded to invoke the skill.",
+          "label": "Loads skills < 100ms",
+          "explanation_markdown": "This check verifies that skills are loaded as [slash commands](https://agentclientprotocol.com/protocol/slash-commands) within 100ms of creating a session. \n\n**Why is this important?**\n\n- Often sessions are created with the sole purpose of running a skill (like `/bump-version`).\n- If skills aren't loaded quick enough, a chat session can feel laggy since users have to wait till they're loaded to invoke the skill.",
           "status": "fail",
           "message": "Copilot did not load skills from .github/skills as slash commands."
         },
@@ -160,10 +160,10 @@
           "message": "Codex switched mode from read-only to auto."
         },
         {
-          "slug": "loads-skills-500ms",
+          "slug": "loads-skills-100ms",
           "position": 4,
-          "label": "Loads skills < 500ms",
-          "explanation_markdown": "This check verifies that skills are loaded as [slash commands](https://agentclientprotocol.com/protocol/slash-commands) within 500ms of creating a session. \n\n**Why is this important?**\n\n- Often sessions are created with the sole purpose of running a skill (like `/bump-version`).\n- If skills aren't loaded quick enough, a chat session can feel laggy since users have to wait till they're loaded to invoke the skill.",
+          "label": "Loads skills < 100ms",
+          "explanation_markdown": "This check verifies that skills are loaded as [slash commands](https://agentclientprotocol.com/protocol/slash-commands) within 100ms of creating a session. \n\n**Why is this important?**\n\n- Often sessions are created with the sole purpose of running a skill (like `/bump-version`).\n- If skills aren't loaded quick enough, a chat session can feel laggy since users have to wait till they're loaded to invoke the skill.",
           "status": "fail",
           "message": "Codex did not load skills from .agents/skills as slash commands."
         },
@@ -272,10 +272,10 @@
           "message": "OpenCode switched mode from build to plan."
         },
         {
-          "slug": "loads-skills-500ms",
+          "slug": "loads-skills-100ms",
           "position": 4,
-          "label": "Loads skills < 500ms",
-          "explanation_markdown": "This check verifies that skills are loaded as [slash commands](https://agentclientprotocol.com/protocol/slash-commands) within 500ms of creating a session. \n\n**Why is this important?**\n\n- Often sessions are created with the sole purpose of running a skill (like `/bump-version`).\n- If skills aren't loaded quick enough, a chat session can feel laggy since users have to wait till they're loaded to invoke the skill.",
+          "label": "Loads skills < 100ms",
+          "explanation_markdown": "This check verifies that skills are loaded as [slash commands](https://agentclientprotocol.com/protocol/slash-commands) within 100ms of creating a session. \n\n**Why is this important?**\n\n- Often sessions are created with the sole purpose of running a skill (like `/bump-version`).\n- If skills aren't loaded quick enough, a chat session can feel laggy since users have to wait till they're loaded to invoke the skill.",
           "status": "pass",
           "message": "OpenCode loaded skills from .agents/skills in 0ms."
         },
@@ -384,10 +384,10 @@
           "message": "Claude Code switched mode from default to auto."
         },
         {
-          "slug": "loads-skills-500ms",
+          "slug": "loads-skills-100ms",
           "position": 4,
-          "label": "Loads skills < 500ms",
-          "explanation_markdown": "This check verifies that skills are loaded as [slash commands](https://agentclientprotocol.com/protocol/slash-commands) within 500ms of creating a session. \n\n**Why is this important?**\n\n- Often sessions are created with the sole purpose of running a skill (like `/bump-version`).\n- If skills aren't loaded quick enough, a chat session can feel laggy since users have to wait till they're loaded to invoke the skill.",
+          "label": "Loads skills < 100ms",
+          "explanation_markdown": "This check verifies that skills are loaded as [slash commands](https://agentclientprotocol.com/protocol/slash-commands) within 100ms of creating a session. \n\n**Why is this important?**\n\n- Often sessions are created with the sole purpose of running a skill (like `/bump-version`).\n- If skills aren't loaded quick enough, a chat session can feel laggy since users have to wait till they're loaded to invoke the skill.",
           "status": "pass",
           "message": "Claude Code loaded skills from .claude/skills in 26ms."
         },
@@ -488,12 +488,12 @@
           "message": "Docker Agent did not advertise the dummy-skill skill as a slash command within 5000ms."
         },
         {
-          "slug": "loads-skills-500ms",
+          "slug": "loads-skills-100ms",
           "position": 7,
-          "label": "Loads skills < 500ms",
-          "explanation_markdown": "This check verifies that skills from the session working directory are advertised as slash commands within 500ms of calling `session/new`.\n\n**Why is this important?**\n\nProject skills affect the commands a client presents immediately after a session starts. Slow skill discovery can make command menus feel incomplete or laggy.",
+          "label": "Loads skills < 100ms",
+          "explanation_markdown": "This check verifies that skills from the session working directory are advertised as slash commands within 100ms of calling `session/new`.\n\n**Why is this important?**\n\nProject skills affect the commands a client presents immediately after a session starts. Slow skill discovery can make command menus feel incomplete or laggy.",
           "status": "fail",
-          "message": "Docker Agent did not advertise the dummy-skill skill within the 500ms target."
+          "message": "Docker Agent did not advertise the dummy-skill skill within the 100ms target."
         },
         {
           "slug": "supports-session-close",
@@ -584,10 +584,10 @@
           "message": "Junie did not load skills from .junie/skills as a slash commands."
         },
         {
-          "slug": "loads-skills-500ms",
+          "slug": "loads-skills-100ms",
           "position": 4,
-          "label": "Loads skills < 500ms",
-          "explanation_markdown": "This check verifies that skills are loaded as [slash commands](https://agentclientprotocol.com/protocol/slash-commands) within 500ms of creating a session. \n\n**Why is this important?**\n\n- Often sessions are created with the sole purpose of running a skill (like `/bump-version`).\n- If skills aren't loaded quick enough, a chat session can feel laggy since users have to wait till they're loaded to invoke the skill.",
+          "label": "Loads skills < 100ms",
+          "explanation_markdown": "This check verifies that skills are loaded as [slash commands](https://agentclientprotocol.com/protocol/slash-commands) within 100ms of creating a session. \n\n**Why is this important?**\n\n- Often sessions are created with the sole purpose of running a skill (like `/bump-version`).\n- If skills aren't loaded quick enough, a chat session can feel laggy since users have to wait till they're loaded to invoke the skill.",
           "status": "fail",
           "message": "Junie did not load skills from .junie/skills as slash commands."
         },
