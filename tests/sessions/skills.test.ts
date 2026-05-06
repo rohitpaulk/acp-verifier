@@ -10,96 +10,77 @@ import { applyAgentSymlinks, initAndAuth } from "../helpers";
 setDefaultTimeout(15_000);
 
 const CONTAINER_WORKSPACE = "/workspace/skills-check";
-const SKILL_NAME = "acp-verifier-skill";
-const SKILL_DESCRIPTION =
-  "Skill used by ACP verifier to check slash command loading.";
+const SKILL_NAME = "dummy-skill";
+const SKILL_DESCRIPTION = "Skill used by ACP verifier to check slash command loading.";
 
-test.each(registry.agentSlugs)(
-  "loads skills as slash commands (%s)",
-  async (slug) => {
-    const check = checkCollectorRegistry.get(slug);
-    const agent = registry.agentBySlug(slug);
-    const hostWorkspace = createWorkspaceWithSkill();
-    applyAgentSymlinks(agent, hostWorkspace);
-    const updates: acp.SessionUpdate[] = [];
-    const loadStart = performance.now();
-    let skillAdvertisedAtMs: number | undefined;
+test.each(registry.agentSlugs)("loads skills as slash commands (%s)", async (slug) => {
+  const check = checkCollectorRegistry.get(slug);
+  const agent = registry.agentBySlug(slug);
+  const hostWorkspace = createWorkspaceWithSkill();
+  applyAgentSymlinks(agent, hostWorkspace);
+  const updates: acp.SessionUpdate[] = [];
+  const loadStart = performance.now();
+  let skillAdvertisedAtMs: number | undefined;
 
-    try {
-      using proc = new AgentProcess(agent, {
-        mounts: [{ source: hostWorkspace, target: CONTAINER_WORKSPACE }],
-      });
-      const connection = proc.connect({
-        async sessionUpdate(params) {
-          updates.push(params.update);
-          if (params.update.sessionUpdate === "available_commands_update") {
-            const commandNames = params.update.availableCommands.map(
-              (command) => command.name,
-            );
-            skillAdvertisedAtMs ??= commandNames.includes(SKILL_NAME)
-              ? Math.round(performance.now() - loadStart)
-              : undefined;
-          }
-        },
-      });
+  try {
+    using proc = new AgentProcess(agent, {
+      mounts: [{ source: hostWorkspace, target: CONTAINER_WORKSPACE }],
+    });
+    const connection = proc.connect({
+      async sessionUpdate(params) {
+        updates.push(params.update);
+        if (params.update.sessionUpdate === "available_commands_update") {
+          const commandNames = params.update.availableCommands.map((command) => command.name);
+          skillAdvertisedAtMs ??= commandNames.includes(SKILL_NAME)
+            ? Math.round(performance.now() - loadStart)
+            : undefined;
+        }
+      },
+    });
 
-      await initAndAuth(connection, agent);
+    await initAndAuth(connection, agent);
 
-      const session = await connection.newSession({
-        cwd: CONTAINER_WORKSPACE,
-        mcpServers: [],
-      });
+    const session = await connection.newSession({
+      cwd: CONTAINER_WORKSPACE,
+      mcpServers: [],
+    });
 
-      expect(session.sessionId).toBeTruthy();
+    expect(session.sessionId).toBeTruthy();
 
-      const availableCommands = await waitForAvailableCommands(
-        updates,
-        5_000,
-        SKILL_NAME,
+    const availableCommands = await waitForAvailableCommands(updates, 5_000, SKILL_NAME);
+    const loadElapsedMs = skillAdvertisedAtMs ?? Math.round(performance.now() - loadStart);
+    const skillCommand = availableCommands.find((command) => command.name === SKILL_NAME);
+
+    if (skillCommand) {
+      expect(skillCommand.description).toBeTruthy();
+      check.pass("loads-skills", `${agent.name} advertised the ${SKILL_NAME} skill as a slash command.`);
+    } else {
+      check.fail(
+        "loads-skills",
+        `${agent.name} did not advertise the ${SKILL_NAME} skill as a slash command within 5000ms.`,
       );
-      const loadElapsedMs =
-        skillAdvertisedAtMs ?? Math.round(performance.now() - loadStart);
-      const skillCommand = availableCommands.find(
-        (command) => command.name === SKILL_NAME,
-      );
-
-      if (skillCommand) {
-        expect(skillCommand.description).toBeTruthy();
-        check.pass(
-          "loads-skills",
-          `${agent.name} advertised the ${SKILL_NAME} skill as a slash command.`,
-        );
-      } else {
-        check.fail(
-          "loads-skills",
-          `${agent.name} did not advertise the ${SKILL_NAME} skill as a slash command within 5000ms.`,
-        );
-      }
-
-      if (skillCommand && loadElapsedMs <= 500) {
-        check.pass(
-          "loads-skills-500ms",
-          `${agent.name} advertised the ${SKILL_NAME} skill in ${loadElapsedMs}ms.`,
-        );
-      } else if (skillCommand) {
-        check.fail(
-          "loads-skills-500ms",
-          `${agent.name} advertised the ${SKILL_NAME} skill in ${loadElapsedMs}ms, exceeding the 500ms target.`,
-        );
-      } else {
-        check.fail(
-          "loads-skills-500ms",
-          `${agent.name} did not advertise the ${SKILL_NAME} skill within the 500ms target.`,
-        );
-      }
-    } finally {
-      rmSync(hostWorkspace, { recursive: true, force: true });
     }
-  },
-);
+
+    if (skillCommand && loadElapsedMs <= 500) {
+      check.pass("loads-skills-500ms", `${agent.name} advertised the ${SKILL_NAME} skill in ${loadElapsedMs}ms.`);
+    } else if (skillCommand) {
+      check.fail(
+        "loads-skills-500ms",
+        `${agent.name} advertised the ${SKILL_NAME} skill in ${loadElapsedMs}ms, exceeding the 500ms target.`,
+      );
+    } else {
+      check.fail(
+        "loads-skills-500ms",
+        `${agent.name} did not advertise the ${SKILL_NAME} skill within the 500ms target.`,
+      );
+    }
+  } finally {
+    rmSync(hostWorkspace, { recursive: true, force: true });
+  }
+});
 
 function createWorkspaceWithSkill(): string {
-  const workspace = mkdtempSync(join(tmpdir(), "acp-verifier-skills-"));
+  const workspace = mkdtempSync(join(tmpdir(), "dummy-skills-"));
   const skillDir = join(workspace, ".agents", "skills", SKILL_NAME);
   mkdirSync(skillDir, { recursive: true });
   writeFileSync(
@@ -128,10 +109,6 @@ async function waitForAvailableCommands(
   return latestAvailableCommands(updates) ?? [];
 }
 
-function latestAvailableCommands(
-  updates: acp.SessionUpdate[],
-): acp.AvailableCommand[] | undefined {
-  return updates
-    .filter((update) => update.sessionUpdate === "available_commands_update")
-    .at(-1)?.availableCommands;
+function latestAvailableCommands(updates: acp.SessionUpdate[]): acp.AvailableCommand[] | undefined {
+  return updates.filter((update) => update.sessionUpdate === "available_commands_update").at(-1)?.availableCommands;
 }

@@ -426,4 +426,4 @@ function toolCallContent(update: acp.SessionUpdate): acp.ToolCallContent[] {
   }
 
   return update.content ?? [];
-}
+ }
