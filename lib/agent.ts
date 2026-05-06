@@ -1,9 +1,10 @@
 import { parse as parseDotenv } from "dotenv";
-import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, symlinkSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, mkdtempSync, readFileSync, symlinkSync } from "node:fs";
 import { dirname, join, relative, resolve } from "node:path";
 import { tmpdir } from "node:os";
 import { parse as parseYaml } from "yaml";
 import CommandRunner from "./command-runner";
+import { AgentWorkspace } from "./agent-workspace";
 
 const AGENTS_DIR = resolve(import.meta.dir, "../agents");
 
@@ -91,29 +92,7 @@ export class Agent {
   }
 }
 
-export class AgentWorkspace {
-  readonly path: string;
-
-  constructor(path: string) {
-    this.path = resolve(path);
-  }
-
-  addSkill(name: string, description: string): void {
-    const skillDir = join(this.path, ".agents", "skills", name);
-    mkdirSync(skillDir, { recursive: true });
-    writeFileSync(join(skillDir, "SKILL.md"), skillMarkdown(name, description));
-  }
-
-  [Symbol.dispose](): void {
-    rmSync(this.path, { recursive: true, force: true });
-  }
-}
-
 function loadEnvFile(path: string): Record<string, string> {
   if (!existsSync(path)) return {};
   return parseDotenv(readFileSync(path));
-}
-
-function skillMarkdown(name: string, description: string): string {
-  return `---\nname: ${name}\ndescription: ${description}\n---\n\nUse this skill only for ACP verifier tests.\n`;
 }
