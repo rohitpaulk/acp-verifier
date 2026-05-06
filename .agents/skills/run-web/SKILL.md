@@ -1,3 +1,8 @@
+---
+name: run-web
+description: Run or validate the web app using Bun
+---
+
 # Run Web
 
 Use this skill when you need to run or validate the web app.
