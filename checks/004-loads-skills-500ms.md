@@ -2,8 +2,9 @@
 label: Loads skills < 500ms
 ---
 
-This check verifies that skills from the session working directory are advertised as slash commands within 500ms of calling `session/new`.
+This check verifies that skills are loaded as [slash commands](https://agentclientprotocol.com/protocol/slash-commands) within 500ms of creating a session. 
 
 **Why is this important?**
 
-Project skills affect the commands a client presents immediately after a session starts. Slow skill discovery can make command menus feel incomplete or laggy.
+- Often sessions are created with the sole purpose of running a skill (like `/bump-version`).
+- If skills aren't loaded quick enough, a chat session can feel laggy since users have to wait till they're loaded to invoke the skill.

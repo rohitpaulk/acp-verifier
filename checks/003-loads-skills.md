@@ -6,4 +6,5 @@ This check verifies that the agents loads skills as [Slash Commands](https://age
 
 **Why is this important?**
 
-Skills are very commonly used when working with agents, and most CLI-based agents offer them as slash commands. These same agents often don't advertise skills when running as an ACP server.
+- Skills are very commonly used when working with agents
+- Some coding agents load skills as slash commands when in their native CLI but don't do the same when running as ACP servers
