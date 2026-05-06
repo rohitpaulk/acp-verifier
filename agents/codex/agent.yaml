@@ -3,5 +3,3 @@ company: OpenAI
 version_string: v0.12.0
 env_vars:
   - OPENAI_API_KEY
-symlinks:
-  .codex/skills: .agents/skills
