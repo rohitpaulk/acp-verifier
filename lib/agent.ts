@@ -1,9 +1,9 @@
 import { parse as parseDotenv } from "dotenv";
-import { existsSync, readFileSync } from "node:fs";
-import { resolve } from "node:path";
+import { existsSync, mkdirSync, mkdtempSync, readFileSync, symlinkSync, writeFileSync } from "node:fs";
+import { dirname, join, relative, resolve } from "node:path";
+import { tmpdir } from "node:os";
 import { parse as parseYaml } from "yaml";
 import CommandRunner from "./command-runner";
-import { build } from "bun";
 
 const AGENTS_DIR = resolve(import.meta.dir, "../agents");
 
@@ -73,6 +73,25 @@ export class Agent {
     await CommandRunner.run(buildCommand, { logPrefix: `build-${this.slug}` });
   }
 
+  createWorkspace(skills: Record<string, string> = {}): string {
+    const workspace = mkdtempSync(join(tmpdir(), "acp-verifier-workspace-"));
+
+    for (const [skillName, skillDescription] of Object.entries(skills)) {
+      const skillDir = join(workspace, ".agents", "skills", skillName);
+      mkdirSync(skillDir, { recursive: true });
+      writeFileSync(join(skillDir, "SKILL.md"), skillMarkdown(skillName, skillDescription));
+    }
+
+    for (const [symlinkPath, targetPath] of Object.entries(this.symlinks)) {
+      const symlink = join(workspace, symlinkPath);
+      const target = relative(dirname(symlink), join(workspace, targetPath));
+      mkdirSync(dirname(symlink), { recursive: true });
+      symlinkSync(target, symlink, "dir");
+    }
+
+    return resolve(workspace);
+  }
+
   get #dockerBuildContext(): string {
     return resolve(AGENTS_DIR, this.slug);
   }
@@ -81,4 +100,8 @@ export class Agent {
 function loadEnvFile(path: string): Record<string, string> {
   if (!existsSync(path)) return {};
   return parseDotenv(readFileSync(path));
+}
+
+function skillMarkdown(name: string, description: string): string {
+  return `---\nname: ${name}\ndescription: ${description}\n---\n\nUse this skill only for ACP verifier tests.\n`;
 }

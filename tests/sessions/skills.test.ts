@@ -1,11 +1,9 @@
-import { mkdtempSync, mkdirSync, writeFileSync, rmSync } from "node:fs";
-import { join, resolve } from "node:path";
-import { tmpdir } from "node:os";
+import { rmSync } from "node:fs";
 import { expect, test, setDefaultTimeout } from "bun:test";
 import * as acp from "@agentclientprotocol/sdk";
 import { AgentProcess } from "../../lib/agent-process";
 import { checkCollectorRegistry, registry } from "../setup";
-import { applyAgentSymlinks, initAndAuth } from "../helpers";
+import { initAndAuth } from "../helpers";
 
 setDefaultTimeout(15_000);
 
@@ -16,8 +14,7 @@ const SKILL_DESCRIPTION = "Skill used by ACP verifier to check slash command loa
 test.each(registry.agentSlugs)("loads skills as slash commands (%s)", async (slug) => {
   const check = checkCollectorRegistry.get(slug);
   const agent = registry.agentBySlug(slug);
-  const hostWorkspace = createWorkspaceWithSkill();
-  applyAgentSymlinks(agent, hostWorkspace);
+  const hostWorkspace = agent.createWorkspace({ [SKILL_NAME]: SKILL_DESCRIPTION });
   const updates: acp.SessionUpdate[] = [];
   const loadStart = performance.now();
   let skillAdvertisedAtMs: number | undefined;
@@ -78,17 +75,6 @@ test.each(registry.agentSlugs)("loads skills as slash commands (%s)", async (slu
     rmSync(hostWorkspace, { recursive: true, force: true });
   }
 });
-
-function createWorkspaceWithSkill(): string {
-  const workspace = mkdtempSync(join(tmpdir(), "dummy-skills-"));
-  const skillDir = join(workspace, ".agents", "skills", SKILL_NAME);
-  mkdirSync(skillDir, { recursive: true });
-  writeFileSync(
-    join(skillDir, "SKILL.md"),
-    `---\nname: ${SKILL_NAME}\ndescription: ${SKILL_DESCRIPTION}\n---\n\nUse this skill only for ACP verifier tests.\n`,
-  );
-  return resolve(workspace);
-}
 
 async function waitForAvailableCommands(
   updates: acp.SessionUpdate[],
