@@ -2,10 +2,8 @@
 label: Loads skills
 ---
 
-This check verifies that when a session is created with a working directory containing `.agents/skills`, the agent advertises those skills through [Slash Commands](https://agentclientprotocol.com/protocol/slash-commands).
+This check verifies that the agents loads skills as [Slash Commands](https://agentclientprotocol.com/protocol/slash-commands).
 
 **Why is this important?**
 
-Clients use slash command updates to show users which project-specific skills are available in the current workspace.
-
-Agents should discover skills from the session working directory and send an `available_commands_update` notification that includes each user-invocable skill.
+Skills are very commonly used when working with agents, and most CLI-based agents offer them as slash commands. These same agents often don't advertise skills when running as an ACP server.
