@@ -68,6 +68,10 @@ export class Agent {
     return `acp-verifier-${this.slug}`;
   }
 
+  get skillsDir(): string {
+    return Object.entries(this.symlinks).find(([, target]) => target === ".agents/skills")?.[0] ?? ".agents/skills";
+  }
+
   async buildImage(): Promise<void> {
     const buildCommand = `docker build -t ${this.imageName} ${this.#dockerBuildContext}`;
 
