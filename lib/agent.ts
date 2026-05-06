@@ -1,5 +1,5 @@
 import { parse as parseDotenv } from "dotenv";
-import { existsSync, mkdirSync, mkdtempSync, readFileSync, symlinkSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, symlinkSync, writeFileSync } from "node:fs";
 import { dirname, join, relative, resolve } from "node:path";
 import { tmpdir } from "node:os";
 import { parse as parseYaml } from "yaml";
@@ -73,27 +73,39 @@ export class Agent {
     await CommandRunner.run(buildCommand, { logPrefix: `build-${this.slug}` });
   }
 
-  createWorkspace(skills: Record<string, string> = {}): string {
-    const workspace = mkdtempSync(join(tmpdir(), "acp-verifier-workspace-"));
-
-    for (const [skillName, skillDescription] of Object.entries(skills)) {
-      const skillDir = join(workspace, ".agents", "skills", skillName);
-      mkdirSync(skillDir, { recursive: true });
-      writeFileSync(join(skillDir, "SKILL.md"), skillMarkdown(skillName, skillDescription));
-    }
+  createWorkspace(): AgentWorkspace {
+    const workspace = new AgentWorkspace(mkdtempSync(join(tmpdir(), "acp-verifier-workspace-")));
 
     for (const [symlinkPath, targetPath] of Object.entries(this.symlinks)) {
-      const symlink = join(workspace, symlinkPath);
-      const target = relative(dirname(symlink), join(workspace, targetPath));
+      const symlink = join(workspace.path, symlinkPath);
+      const target = relative(dirname(symlink), join(workspace.path, targetPath));
       mkdirSync(dirname(symlink), { recursive: true });
       symlinkSync(target, symlink, "dir");
     }
 
-    return resolve(workspace);
+    return workspace;
   }
 
   get #dockerBuildContext(): string {
     return resolve(AGENTS_DIR, this.slug);
+  }
+}
+
+export class AgentWorkspace {
+  readonly path: string;
+
+  constructor(path: string) {
+    this.path = resolve(path);
+  }
+
+  addSkill(name: string, description: string): void {
+    const skillDir = join(this.path, ".agents", "skills", name);
+    mkdirSync(skillDir, { recursive: true });
+    writeFileSync(join(skillDir, "SKILL.md"), skillMarkdown(name, description));
+  }
+
+  [Symbol.dispose](): void {
+    rmSync(this.path, { recursive: true, force: true });
   }
 }
 

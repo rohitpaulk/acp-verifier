@@ -1,4 +1,3 @@
-import { rmSync } from "node:fs";
 import { expect, test, setDefaultTimeout } from "bun:test";
 import * as acp from "@agentclientprotocol/sdk";
 import { AgentProcess } from "../../lib/agent-process";
@@ -11,69 +10,61 @@ test.each(registry.agentSlugs)("loads skills as slash commands (%s)", async (slu
   const check = checkCollectorRegistry.get(slug);
   const agent = registry.agentBySlug(slug);
 
-  const hostWorkspace = agent.createWorkspace({
-    "dummy-skill": "Skill used by ACP verifier to check slash command loading.",
-  });
+  using hostWorkspace = agent.createWorkspace();
+  hostWorkspace.addSkill("dummy-skill", "Skill used by ACP verifier to check slash command loading.");
 
   const updates: acp.SessionUpdate[] = [];
   const loadStart = performance.now();
   let skillAdvertisedAtMs: number | undefined;
 
-  try {
-    using proc = new AgentProcess(agent, {
-      mounts: [{ source: hostWorkspace, target: "/workspace" }],
-    });
+  using proc = new AgentProcess(agent, {
+    mounts: [{ source: hostWorkspace.path, target: "/workspace" }],
+  });
 
-    const connection = proc.connect({
-      async sessionUpdate(params) {
-        updates.push(params.update);
-        if (params.update.sessionUpdate === "available_commands_update") {
-          const commandNames = params.update.availableCommands.map((command) => command.name);
-          skillAdvertisedAtMs ??= commandNames.includes("dummy-skill")
-            ? Math.round(performance.now() - loadStart)
-            : undefined;
-        }
-      },
-    });
+  const connection = proc.connect({
+    async sessionUpdate(params) {
+      updates.push(params.update);
+      if (params.update.sessionUpdate === "available_commands_update") {
+        const commandNames = params.update.availableCommands.map((command) => command.name);
+        skillAdvertisedAtMs ??= commandNames.includes("dummy-skill")
+          ? Math.round(performance.now() - loadStart)
+          : undefined;
+      }
+    },
+  });
 
-    await initAndAuth(connection, agent);
+  await initAndAuth(connection, agent);
 
-    const session = await connection.newSession({
-      cwd: "/workspace",
-      mcpServers: [],
-    });
+  const session = await connection.newSession({
+    cwd: "/workspace",
+    mcpServers: [],
+  });
 
-    expect(session.sessionId).toBeTruthy();
+  expect(session.sessionId).toBeTruthy();
 
-    const availableCommands = await waitForAvailableCommands(updates, 5_000, "dummy-skill");
-    const loadElapsedMs = skillAdvertisedAtMs ?? Math.round(performance.now() - loadStart);
-    const skillCommand = availableCommands.find((command) => command.name === "dummy-skill");
+  const availableCommands = await waitForAvailableCommands(updates, 5_000, "dummy-skill");
+  const loadElapsedMs = skillAdvertisedAtMs ?? Math.round(performance.now() - loadStart);
+  const skillCommand = availableCommands.find((command) => command.name === "dummy-skill");
 
-    if (skillCommand) {
-      expect(skillCommand.description).toBeTruthy();
-      check.pass("loads-skills", `${agent.name} advertised the dummy-skill skill as a slash command.`);
-    } else {
-      check.fail(
-        "loads-skills",
-        `${agent.name} did not advertise the dummy-skill skill as a slash command within 5000ms.`,
-      );
-    }
+  if (skillCommand) {
+    expect(skillCommand.description).toBeTruthy();
+    check.pass("loads-skills", `${agent.name} advertised the dummy-skill skill as a slash command.`);
+  } else {
+    check.fail(
+      "loads-skills",
+      `${agent.name} did not advertise the dummy-skill skill as a slash command within 5000ms.`,
+    );
+  }
 
-    if (skillCommand && loadElapsedMs <= 500) {
-      check.pass("loads-skills-500ms", `${agent.name} advertised the dummy-skill skill in ${loadElapsedMs}ms.`);
-    } else if (skillCommand) {
-      check.fail(
-        "loads-skills-500ms",
-        `${agent.name} advertised the dummy-skill skill in ${loadElapsedMs}ms, exceeding the 500ms target.`,
-      );
-    } else {
-      check.fail(
-        "loads-skills-500ms",
-        `${agent.name} did not advertise the dummy-skill skill within the 500ms target.`,
-      );
-    }
-  } finally {
-    rmSync(hostWorkspace, { recursive: true, force: true });
+  if (skillCommand && loadElapsedMs <= 500) {
+    check.pass("loads-skills-500ms", `${agent.name} advertised the dummy-skill skill in ${loadElapsedMs}ms.`);
+  } else if (skillCommand) {
+    check.fail(
+      "loads-skills-500ms",
+      `${agent.name} advertised the dummy-skill skill in ${loadElapsedMs}ms, exceeding the 500ms target.`,
+    );
+  } else {
+    check.fail("loads-skills-500ms", `${agent.name} did not advertise the dummy-skill skill within the 500ms target.`);
   }
 });
 
