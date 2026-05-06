@@ -1,5 +1,5 @@
 ---
-label: Loads skills < 500ms
+label: Loads skills < 100ms
 ---
 
 This check verifies that skills are loaded as [slash commands](https://agentclientprotocol.com/protocol/slash-commands) within 500ms of creating a session. 

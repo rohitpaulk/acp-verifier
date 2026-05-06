@@ -32,7 +32,7 @@ test.each(registry.agentSlugs)("loads skills as slash commands (%s)", async (slu
     check.pass("loads-skills", `${agent.name} loaded skills from ${agent.skillsDir} as slash commands.`);
   } else {
     check.fail("loads-skills", `${agent.name} did not load skills from ${agent.skillsDir} as a slash commands.`);
-    check.fail("loads-skills-500ms", `${agent.name} did not load skills from ${agent.skillsDir} as slash commands.`);
+    check.fail("loads-skills-100ms", `${agent.name} did not load skills from ${agent.skillsDir} as slash commands.`);
     return;
   }
 
@@ -46,12 +46,12 @@ test.each(registry.agentSlugs)("loads skills as slash commands (%s)", async (slu
 
   const timeTakenMs = Math.round(performance.now() - secondSessionStartedAt);
 
-  if (timeTakenMs <= 500) {
-    check.pass("loads-skills-500ms", `${agent.name} loaded skills from ${agent.skillsDir} in ${timeTakenMs}ms.`);
+  if (timeTakenMs <= 100) {
+    check.pass("loads-skills-100ms", `${agent.name} loaded skills from ${agent.skillsDir} in ${timeTakenMs}ms.`);
   } else {
     check.fail(
-      "loads-skills-500ms",
-      `${agent.name} loaded skills from ${agent.skillsDir} in ${timeTakenMs}ms, exceeding the 500ms target.`,
+      "loads-skills-100ms",
+      `${agent.name} loaded skills from ${agent.skillsDir} in ${timeTakenMs}ms, exceeding the 100ms target.`,
     );
   }
 });
