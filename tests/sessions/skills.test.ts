@@ -7,28 +7,29 @@ import { initAndAuth } from "../helpers";
 
 setDefaultTimeout(15_000);
 
-const CONTAINER_WORKSPACE = "/workspace/skills-check";
-const SKILL_NAME = "dummy-skill";
-const SKILL_DESCRIPTION = "Skill used by ACP verifier to check slash command loading.";
-
 test.each(registry.agentSlugs)("loads skills as slash commands (%s)", async (slug) => {
   const check = checkCollectorRegistry.get(slug);
   const agent = registry.agentBySlug(slug);
-  const hostWorkspace = agent.createWorkspace({ [SKILL_NAME]: SKILL_DESCRIPTION });
+
+  const hostWorkspace = agent.createWorkspace({
+    "dummy-skill": "Skill used by ACP verifier to check slash command loading.",
+  });
+
   const updates: acp.SessionUpdate[] = [];
   const loadStart = performance.now();
   let skillAdvertisedAtMs: number | undefined;
 
   try {
     using proc = new AgentProcess(agent, {
-      mounts: [{ source: hostWorkspace, target: CONTAINER_WORKSPACE }],
+      mounts: [{ source: hostWorkspace, target: "/workspace" }],
     });
+
     const connection = proc.connect({
       async sessionUpdate(params) {
         updates.push(params.update);
         if (params.update.sessionUpdate === "available_commands_update") {
           const commandNames = params.update.availableCommands.map((command) => command.name);
-          skillAdvertisedAtMs ??= commandNames.includes(SKILL_NAME)
+          skillAdvertisedAtMs ??= commandNames.includes("dummy-skill")
             ? Math.round(performance.now() - loadStart)
             : undefined;
         }
@@ -38,37 +39,37 @@ test.each(registry.agentSlugs)("loads skills as slash commands (%s)", async (slu
     await initAndAuth(connection, agent);
 
     const session = await connection.newSession({
-      cwd: CONTAINER_WORKSPACE,
+      cwd: "/workspace",
       mcpServers: [],
     });
 
     expect(session.sessionId).toBeTruthy();
 
-    const availableCommands = await waitForAvailableCommands(updates, 5_000, SKILL_NAME);
+    const availableCommands = await waitForAvailableCommands(updates, 5_000, "dummy-skill");
     const loadElapsedMs = skillAdvertisedAtMs ?? Math.round(performance.now() - loadStart);
-    const skillCommand = availableCommands.find((command) => command.name === SKILL_NAME);
+    const skillCommand = availableCommands.find((command) => command.name === "dummy-skill");
 
     if (skillCommand) {
       expect(skillCommand.description).toBeTruthy();
-      check.pass("loads-skills", `${agent.name} advertised the ${SKILL_NAME} skill as a slash command.`);
+      check.pass("loads-skills", `${agent.name} advertised the dummy-skill skill as a slash command.`);
     } else {
       check.fail(
         "loads-skills",
-        `${agent.name} did not advertise the ${SKILL_NAME} skill as a slash command within 5000ms.`,
+        `${agent.name} did not advertise the dummy-skill skill as a slash command within 5000ms.`,
       );
     }
 
     if (skillCommand && loadElapsedMs <= 500) {
-      check.pass("loads-skills-500ms", `${agent.name} advertised the ${SKILL_NAME} skill in ${loadElapsedMs}ms.`);
+      check.pass("loads-skills-500ms", `${agent.name} advertised the dummy-skill skill in ${loadElapsedMs}ms.`);
     } else if (skillCommand) {
       check.fail(
         "loads-skills-500ms",
-        `${agent.name} advertised the ${SKILL_NAME} skill in ${loadElapsedMs}ms, exceeding the 500ms target.`,
+        `${agent.name} advertised the dummy-skill skill in ${loadElapsedMs}ms, exceeding the 500ms target.`,
       );
     } else {
       check.fail(
         "loads-skills-500ms",
-        `${agent.name} did not advertise the ${SKILL_NAME} skill within the 500ms target.`,
+        `${agent.name} did not advertise the dummy-skill skill within the 500ms target.`,
       );
     }
   } finally {
