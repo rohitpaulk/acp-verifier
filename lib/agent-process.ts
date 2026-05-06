@@ -11,7 +11,10 @@ export class AgentProcess {
   connection?: acp.ClientSideConnection;
   private childProcess: ChildProcess;
 
-  constructor(agent: Agent, options: AgentProcessOptions = {}) {
+  constructor(
+    readonly agent: Agent,
+    options: AgentProcessOptions = {},
+  ) {
     const envFlags = Object.entries(agent.env).flatMap(([k, v]) => {
       return ["-e", `${k}=${v}`];
     });

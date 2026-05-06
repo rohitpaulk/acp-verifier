@@ -1,6 +1,24 @@
 import * as acp from "@agentclientprotocol/sdk";
 import type { Agent } from "../lib/agent";
 
+export async function waitUntil(
+  condition: () => boolean,
+  timeoutMs: number = 5_000,
+  intervalMs: number = 25,
+): Promise<boolean> {
+  const deadline = performance.now() + timeoutMs;
+
+  while (performance.now() < deadline) {
+    if (condition()) {
+      return true;
+    }
+
+    await Bun.sleep(intervalMs);
+  }
+
+  return condition();
+}
+
 export async function initAndAuth(
   connection: acp.ClientSideConnection,
   agent: Agent,
