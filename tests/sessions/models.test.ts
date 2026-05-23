@@ -1,33 +1,15 @@
-import { expect, test, setDefaultTimeout } from "bun:test";
-import { AgentProcess } from "../../lib/agent-process";
-import { checkCollectorRegistry, registry } from "../setup";
 import * as acp from "@agentclientprotocol/sdk";
+import { expect, setDefaultTimeout, test } from "bun:test";
+import { AgentProcess } from "../../lib/agent-process";
 import { initAndAuth } from "../helpers";
-import type { CheckCollector } from "../../lib/check-collector";
+import { checkCollectorRegistry, registry } from "../setup";
 
 setDefaultTimeout(15_000);
-
-type SelectConfigOption = acp.SessionConfigOption & { type: "select" };
-type SelectConfigCheckSlug = "switch-model" | "switch-thinking-effort";
-type SelectConfigTimingCheckSlug = "switch-model-100ms" | "switch-thinking-effort-100ms";
-
-function selectValues(option: SelectConfigOption): acp.SessionConfigSelectOption[] {
-  return option.options.flatMap((entry) => ("value" in entry ? [entry] : entry.options));
-}
-
-function optionMatches(option: acp.SessionConfigOption, category: string, keywords: string[]): boolean {
-  if (option.category === category) {
-    return true;
-  }
-
-  const searchableText = `${option.id} ${option.name}`.toLowerCase();
-  return keywords.some((keyword) => searchableText.includes(keyword));
-}
 
 async function switchOption(
   connection: acp.ClientSideConnection,
   sessionId: string,
-  option: SelectConfigOption,
+  option: acp.SessionConfigOption & { type: "select" },
   newValue: string,
 ): Promise<void> {
   let result: acp.SetSessionConfigOptionResponse;
@@ -104,7 +86,7 @@ test.each(registry.agentSlugs)("can list and switch models (%s)", async (slug) =
 
   const start = performance.now();
   await switchOption(connection, session.sessionId, modelOption, modelValueToSwitchTo);
-  const elapsedMs = performance.now() - start;
+  const elapsedMs = Math.round(performance.now() - start);
 
   check.pass(
     "switch-model",
@@ -123,23 +105,44 @@ test.each(registry.agentSlugs)("can list and switch models (%s)", async (slug) =
     );
   }
 
-  const thoughtLevelOption = (configOptions || []).find((configOption) => configOption.category === "thought_level");
+  const reasoningOption = (configOptions || []).find((configOption) => configOption.category === "thought_level");
 
-  if (!thoughtLevelOption) {
+  if (!reasoningOption) {
     check.fail("switch-thinking-effort", `${agent.name} does not support switching thinking effort.`);
     check.fail("switch-thinking-effort-100ms", `${agent.name} does not support switching thinking effort.`);
 
     return;
   }
 
-  // await checkSwitchSelectConfigOption({
-  //   agentName: agent.name,
-  //   check,
-  //   connection,
-  //   sessionId: session.sessionId,
-  //   option: thinkingEffortOption,
-  //   optionLabel: "thinking effort",
-  //   switchSlug: "switch-thinking-effort",
-  //   timingSlug: "switch-thinking-effort-100ms",
-  // });
+  if (reasoningOption.type != "select") {
+    throw new Error("Expected reasoningOption to be a select");
+  }
+
+  const reasoningValues = (reasoningOption.options as acp.SessionConfigSelectOption[]).map((option) => option.value);
+  const reasoningValueToSwitchTo = reasoningValues.find((value) => value != reasoningOption.currentValue);
+
+  if (!reasoningValueToSwitchTo) {
+    throw new Error("no reasoning value found to switch to");
+  }
+
+  const tStart = performance.now();
+  await switchOption(connection, session.sessionId, reasoningOption, reasoningValueToSwitchTo);
+  const tElapsedMs = Math.round(performance.now() - tStart);
+
+  check.pass(
+    "switch-thinking-effort",
+    `${agent.name} successfully switched thinking effort from "${reasoningOption.currentValue}" to "${reasoningValueToSwitchTo}".`,
+  );
+
+  if (elapsedMs <= 100) {
+    check.pass(
+      "switch-thinking-effort-100ms",
+      `${agent.name} took ${tElapsedMs}ms to switch thinking effort from "${reasoningOption.currentValue}" to "${reasoningValueToSwitchTo}".`,
+    );
+  } else {
+    check.fail(
+      "switch-thinking-effort-100ms",
+      `${agent.name} took ${tElapsedMs}ms to switch thinking effort from "${reasoningOption.currentValue}" to "${reasoningValueToSwitchTo}", exceeding the 100ms threshold.`,
+    );
+  }
 });
