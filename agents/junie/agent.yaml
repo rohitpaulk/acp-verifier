@@ -1,6 +1,6 @@
 name: Junie
 company: JetBrains
-version_string: v1468.30.0
+version_string: v1668.54
 env_vars:
   - JUNIE_API_KEY
 symlinks:

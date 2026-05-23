@@ -13,7 +13,7 @@
           "label": "First session < 500ms",
           "explanation_markdown": "This check verifies that the agent boots and responds to [`initialize`](https://agentclientprotocol.com/protocol/initialization) and [`session/new`](https://agentclientprotocol.com/protocol/session-setup#creating-a-session) within 500ms.\n\n**Why is this important?**\n\n- This affects the load time of the first chat session.\n- For native agents like Cursor & Zed this load time is usually ~zero.\n\n**Notes**\n\n- There's a separate \"New session < 500ms\" check that tracks load times for subsequent sessions.",
           "status": "fail",
-          "message": "Claude Code took 1330ms to boot and create a new session, exceeding the 500ms target."
+          "message": "Claude Code took 1398ms to boot and create a new session, exceeding the 500ms target."
         },
         {
           "slug": "new-session-100ms",
@@ -21,7 +21,7 @@
           "label": "New session < 100ms",
           "explanation_markdown": "This check verifies that the agent responds to the `session/new` request within 100ms. The check is performed after the agent has booted and created at least one session.\n\n**Why is this important?**\n\n- This affects the load time of chat sessions after the first one, which is something users will run into multiple times a day.\n- For native agents like Cursor & Zed this load time is usually ~zero.\n\n**Notes**\n\n- There's a separate \"First session < 500ms\" check that tracks load times for the first session, which includes the agent boot time.",
           "status": "fail",
-          "message": "Claude Code took 194ms to create a new session, exceeding the 100ms target."
+          "message": "Claude Code took 223ms to create a new session, exceeding the 100ms target."
         },
         {
           "slug": "list-models",
@@ -45,7 +45,7 @@
           "label": "Switch model < 100ms",
           "explanation_markdown": "This check verifies that the agent responds to a model switch request within 100ms.\n\n**Why is this important?**\n\n- This affects the time it takes to switch models, which is an action users will perform multiple times a day.\n- For native agents like Cursor & Zed the switch time is usually ~zero.",
           "status": "pass",
-          "message": "Claude Code took 3ms to switch models from \"default\" to \"sonnet\"."
+          "message": "Claude Code took 6ms to switch models from \"default\" to \"sonnet\"."
         },
         {
           "slug": "switch-thinking-effort",
@@ -61,7 +61,7 @@
           "label": "Switch thinking effort < 100ms",
           "explanation_markdown": "This check verifies that the agent responds to a thinking effort switch request within 100ms.\n\n**Why is this important?**\n\n- This affects the time it takes to switch thinking effort, which is an action users will perform multiple times a day.\n- For native agents like Cursor & Zed the switch time is usually ~zero.",
           "status": "pass",
-          "message": "Claude Code took 19ms to switch thinking effort from \"default\" to \"low\"."
+          "message": "Claude Code took 15ms to switch thinking effort from \"default\" to \"low\"."
         },
         {
           "slug": "loads-skills",
@@ -109,7 +109,7 @@
           "label": "First session < 500ms",
           "explanation_markdown": "This check verifies that the agent boots and responds to [`initialize`](https://agentclientprotocol.com/protocol/initialization) and [`session/new`](https://agentclientprotocol.com/protocol/session-setup#creating-a-session) within 500ms.\n\n**Why is this important?**\n\n- This affects the load time of the first chat session.\n- For native agents like Cursor & Zed this load time is usually ~zero.\n\n**Notes**\n\n- There's a separate \"New session < 500ms\" check that tracks load times for subsequent sessions.",
           "status": "fail",
-          "message": "Copilot took 5958ms to boot and create a new session, exceeding the 500ms target."
+          "message": "Copilot took 7244ms to boot and create a new session, exceeding the 500ms target."
         },
         {
           "slug": "new-session-100ms",
@@ -117,7 +117,7 @@
           "label": "New session < 100ms",
           "explanation_markdown": "This check verifies that the agent responds to the `session/new` request within 100ms. The check is performed after the agent has booted and created at least one session.\n\n**Why is this important?**\n\n- This affects the load time of chat sessions after the first one, which is something users will run into multiple times a day.\n- For native agents like Cursor & Zed this load time is usually ~zero.\n\n**Notes**\n\n- There's a separate \"First session < 500ms\" check that tracks load times for the first session, which includes the agent boot time.",
           "status": "fail",
-          "message": "Copilot took 758ms to create a new session, exceeding the 100ms target."
+          "message": "Copilot took 830ms to create a new session, exceeding the 100ms target."
         },
         {
           "slug": "list-models",
@@ -141,7 +141,7 @@
           "label": "Switch model < 100ms",
           "explanation_markdown": "This check verifies that the agent responds to a model switch request within 100ms.\n\n**Why is this important?**\n\n- This affects the time it takes to switch models, which is an action users will perform multiple times a day.\n- For native agents like Cursor & Zed the switch time is usually ~zero.",
           "status": "pass",
-          "message": "Copilot took 4ms to switch models from \"gpt-5-mini\" to \"auto\"."
+          "message": "Copilot took 8ms to switch models from \"gpt-5-mini\" to \"auto\"."
         },
         {
           "slug": "switch-thinking-effort",
@@ -157,7 +157,7 @@
           "label": "Switch thinking effort < 100ms",
           "explanation_markdown": "This check verifies that the agent responds to a thinking effort switch request within 100ms.\n\n**Why is this important?**\n\n- This affects the time it takes to switch thinking effort, which is an action users will perform multiple times a day.\n- For native agents like Cursor & Zed the switch time is usually ~zero.",
           "status": "pass",
-          "message": "Copilot took 3ms to switch thinking effort from \"medium\" to \"none\"."
+          "message": "Copilot took 10ms to switch thinking effort from \"medium\" to \"none\"."
         },
         {
           "slug": "loads-skills",
@@ -204,8 +204,8 @@
           "position": 1,
           "label": "First session < 500ms",
           "explanation_markdown": "This check verifies that the agent boots and responds to [`initialize`](https://agentclientprotocol.com/protocol/initialization) and [`session/new`](https://agentclientprotocol.com/protocol/session-setup#creating-a-session) within 500ms.\n\n**Why is this important?**\n\n- This affects the load time of the first chat session.\n- For native agents like Cursor & Zed this load time is usually ~zero.\n\n**Notes**\n\n- There's a separate \"New session < 500ms\" check that tracks load times for subsequent sessions.",
-          "status": "pass",
-          "message": "Codex booted and created a new session in 470ms."
+          "status": "fail",
+          "message": "Codex took 528ms to boot and create a new session, exceeding the 500ms target."
         },
         {
           "slug": "new-session-100ms",
@@ -213,7 +213,7 @@
           "label": "New session < 100ms",
           "explanation_markdown": "This check verifies that the agent responds to the `session/new` request within 100ms. The check is performed after the agent has booted and created at least one session.\n\n**Why is this important?**\n\n- This affects the load time of chat sessions after the first one, which is something users will run into multiple times a day.\n- For native agents like Cursor & Zed this load time is usually ~zero.\n\n**Notes**\n\n- There's a separate \"First session < 500ms\" check that tracks load times for the first session, which includes the agent boot time.",
           "status": "pass",
-          "message": "Codex created a new session in 4ms."
+          "message": "Codex created a new session in 7ms."
         },
         {
           "slug": "list-models",
@@ -253,7 +253,7 @@
           "label": "Switch thinking effort < 100ms",
           "explanation_markdown": "This check verifies that the agent responds to a thinking effort switch request within 100ms.\n\n**Why is this important?**\n\n- This affects the time it takes to switch thinking effort, which is an action users will perform multiple times a day.\n- For native agents like Cursor & Zed the switch time is usually ~zero.",
           "status": "pass",
-          "message": "Codex took 2ms to switch thinking effort from \"medium\" to \"low\"."
+          "message": "Codex took 1ms to switch thinking effort from \"medium\" to \"low\"."
         },
         {
           "slug": "loads-skills",
@@ -293,7 +293,7 @@
       "slug": "junie",
       "name": "Junie",
       "company": "JetBrains",
-      "version_string": "v1468.30.0",
+      "version_string": "v1668.54",
       "checks": [
         {
           "slug": "first-session-500ms",
@@ -301,7 +301,7 @@
           "label": "First session < 500ms",
           "explanation_markdown": "This check verifies that the agent boots and responds to [`initialize`](https://agentclientprotocol.com/protocol/initialization) and [`session/new`](https://agentclientprotocol.com/protocol/session-setup#creating-a-session) within 500ms.\n\n**Why is this important?**\n\n- This affects the load time of the first chat session.\n- For native agents like Cursor & Zed this load time is usually ~zero.\n\n**Notes**\n\n- There's a separate \"New session < 500ms\" check that tracks load times for subsequent sessions.",
           "status": "fail",
-          "message": "Junie took 1099ms to boot and create a new session, exceeding the 500ms target."
+          "message": "Junie took 1197ms to boot and create a new session, exceeding the 500ms target."
         },
         {
           "slug": "new-session-100ms",
@@ -381,7 +381,7 @@
           "label": "First session < 500ms",
           "explanation_markdown": "This check verifies that the agent boots and responds to [`initialize`](https://agentclientprotocol.com/protocol/initialization) and [`session/new`](https://agentclientprotocol.com/protocol/session-setup#creating-a-session) within 500ms.\n\n**Why is this important?**\n\n- This affects the load time of the first chat session.\n- For native agents like Cursor & Zed this load time is usually ~zero.\n\n**Notes**\n\n- There's a separate \"New session < 500ms\" check that tracks load times for subsequent sessions.",
           "status": "fail",
-          "message": "OpenCode took 1054ms to boot and create a new session, exceeding the 500ms target."
+          "message": "OpenCode took 1216ms to boot and create a new session, exceeding the 500ms target."
         },
         {
           "slug": "new-session-100ms",
@@ -389,7 +389,7 @@
           "label": "New session < 100ms",
           "explanation_markdown": "This check verifies that the agent responds to the `session/new` request within 100ms. The check is performed after the agent has booted and created at least one session.\n\n**Why is this important?**\n\n- This affects the load time of chat sessions after the first one, which is something users will run into multiple times a day.\n- For native agents like Cursor & Zed this load time is usually ~zero.\n\n**Notes**\n\n- There's a separate \"First session < 500ms\" check that tracks load times for the first session, which includes the agent boot time.",
           "status": "pass",
-          "message": "OpenCode created a new session in 28ms."
+          "message": "OpenCode created a new session in 32ms."
         },
         {
           "slug": "list-models",
@@ -413,7 +413,7 @@
           "label": "Switch model < 100ms",
           "explanation_markdown": "This check verifies that the agent responds to a model switch request within 100ms.\n\n**Why is this important?**\n\n- This affects the time it takes to switch models, which is an action users will perform multiple times a day.\n- For native agents like Cursor & Zed the switch time is usually ~zero.",
           "status": "pass",
-          "message": "OpenCode took 14ms to switch models from \"opencode/big-pickle\" to \"opencode-go/qwen3.6-plus\"."
+          "message": "OpenCode took 24ms to switch models from \"opencode/big-pickle\" to \"opencode-go/qwen3.6-plus\"."
         },
         {
           "slug": "switch-thinking-effort",
@@ -445,7 +445,7 @@
           "label": "Loads skills < 100ms",
           "explanation_markdown": "This check verifies that skills are loaded as [slash commands](https://agentclientprotocol.com/protocol/slash-commands) within 100ms of creating a session.\n\n**Why is this important?**\n\n- Often sessions are created with the sole purpose of running a skill (like `/bump-version`).\n- If skills aren't loaded quick enough, a chat session can feel laggy since users have to wait till they're loaded to invoke the skill.",
           "status": "pass",
-          "message": "OpenCode loaded skills from .agents/skills in 1ms."
+          "message": "OpenCode loaded skills from .agents/skills in 8ms."
         },
         {
           "slug": "supports-session-close",
