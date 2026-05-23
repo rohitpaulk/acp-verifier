@@ -123,26 +123,14 @@ test.each(registry.agentSlugs)("can list and switch models (%s)", async (slug) =
     );
   }
 
-  // if (currentModel) {
-  //   configOptions =
-  //     (await checkSwitchSelectConfigOption({
-  //       agentName: agent.name,
-  //       check,
-  //       connection,
-  //       sessionId: session.sessionId,
-  //       option: modelOption,
-  //       optionLabel: "model",
-  //       switchSlug: "switch-model",
-  //       timingSlug: "switch-model-100ms",
-  //     })) ?? configOptions;
-  // }
+  const thoughtLevelOption = (configOptions || []).find((configOption) => configOption.category === "thought_level");
 
-  // const thinkingEffortOption = findSelectConfigOption(configOptions, "thought_level", [
-  //   "thinking",
-  //   "thought",
-  //   "reasoning",
-  //   "effort",
-  // ]);
+  if (!thoughtLevelOption) {
+    check.fail("switch-thinking-effort", `${agent.name} does not support switching thinking effort.`);
+    check.fail("switch-thinking-effort-100ms", `${agent.name} does not support switching thinking effort.`);
+
+    return;
+  }
 
   // await checkSwitchSelectConfigOption({
   //   agentName: agent.name,
