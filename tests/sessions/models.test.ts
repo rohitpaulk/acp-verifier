@@ -78,7 +78,12 @@ test.each(registry.agentSlugs)("can list and switch models (%s)", async (slug) =
   );
 
   const modelValues = (modelOption.options as acp.SessionConfigSelectOption[]).map((option) => option.value);
-  const modelValueToSwitchTo = modelValues.find((modelValue) => modelValue != modelOption.currentValue);
+  const gptModelValues = modelValues.filter((modelValue) => modelValue.includes("gpt-5"));
+
+  // Prefer gpt models since we'll need to test reasoning switching later
+  const modelValueToSwitchTo =
+    gptModelValues.find((modelValue) => modelValue != modelOption.currentValue) ||
+    modelValues.find((modelValue) => modelValue != modelOption.currentValue);
 
   if (!modelValueToSwitchTo) {
     throw new Error("no model value found to switch to");
