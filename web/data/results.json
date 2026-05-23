@@ -32,12 +32,52 @@
           "message": "Claude Code loaded skills from .claude/skills as slash commands."
         },
         {
+          "slug": "list-models",
+          "position": 3,
+          "label": "Lists models",
+          "explanation_markdown": "This check verifies that the agent exposes available models through [Session Config Options](https://agentclientprotocol.com/protocol/session-config-options).\n\n**Why is this important?**\n\n- This is required to render the current model in the UI\n- The same API is also required to list other available models",
+          "status": "pass",
+          "message": "Claude Code listed 4 models as session config options."
+        },
+        {
           "slug": "loads-skills-100ms",
           "position": 4,
           "label": "Loads skills < 100ms",
           "explanation_markdown": "This check verifies that skills are loaded as [slash commands](https://agentclientprotocol.com/protocol/slash-commands) within 100ms of creating a session.\n\n**Why is this important?**\n\n- Often sessions are created with the sole purpose of running a skill (like `/bump-version`).\n- If skills aren't loaded quick enough, a chat session can feel laggy since users have to wait till they're loaded to invoke the skill.",
           "status": "pass",
           "message": "Claude Code loaded skills from .claude/skills in 1ms."
+        },
+        {
+          "slug": "switch-model",
+          "position": 4,
+          "label": "Switch model",
+          "explanation_markdown": "This check verifies that the agent can switch models using [Session Config Options](https://agentclientprotocol.com/protocol/session-config-options).\n\n**Why is this important?**\n\n- This is required to allow switching models via UI controls.",
+          "status": "pass",
+          "message": "Claude Code switched model from default to sonnet[1m]."
+        },
+        {
+          "slug": "switch-model-100ms",
+          "position": 5,
+          "label": "Switch model < 100ms",
+          "explanation_markdown": "This check verifies that the agent responds to a model switch request within 100ms.\n\n**Why is this important?**\n\n- This affects the time it takes to switch models, which is an action users will perform multiple times a day.\n- For native agents like Cursor & Zed the switch time is usually ~zero.",
+          "status": "pass",
+          "message": "Claude Code switched model in 9ms."
+        },
+        {
+          "slug": "switch-thinking-effort",
+          "position": 6,
+          "label": "Switch thinking effort",
+          "explanation_markdown": "This check verifies that the agent can switch thinking effort using [Session Config Options](https://agentclientprotocol.com/protocol/session-config-options).\n\n**Why is this important?**\n\n- This is required to allow switching thinking effort via UI controls.",
+          "status": "pass",
+          "message": "Claude Code switched thinking effort from high to low."
+        },
+        {
+          "slug": "switch-thinking-effort-100ms",
+          "position": 7,
+          "label": "Switch thinking effort < 100ms",
+          "explanation_markdown": "This check verifies that the agent responds to a thinking effort switch request within 100ms.\n\n**Why is this important?**\n\n- This affects the time it takes to switch thinking effort, which is an action users will perform multiple times a day.\n- For native agents like Cursor & Zed the switch time is usually ~zero.",
+          "status": "pass",
+          "message": "Claude Code switched thinking effort in 2ms."
         },
         {
           "slug": "supports-session-close",
@@ -88,12 +128,52 @@
           "message": "Copilot loaded skills from .github/skills as slash commands."
         },
         {
+          "slug": "list-models",
+          "position": 3,
+          "label": "Lists models",
+          "explanation_markdown": "This check verifies that the agent exposes available models through [Session Config Options](https://agentclientprotocol.com/protocol/session-config-options).\n\n**Why is this important?**\n\n- This is required to render the current model in the UI\n- The same API is also required to list other available models",
+          "status": "pass",
+          "message": "Copilot listed 4 models as session config options."
+        },
+        {
           "slug": "loads-skills-100ms",
           "position": 4,
           "label": "Loads skills < 100ms",
           "explanation_markdown": "This check verifies that skills are loaded as [slash commands](https://agentclientprotocol.com/protocol/slash-commands) within 100ms of creating a session.\n\n**Why is this important?**\n\n- Often sessions are created with the sole purpose of running a skill (like `/bump-version`).\n- If skills aren't loaded quick enough, a chat session can feel laggy since users have to wait till they're loaded to invoke the skill.",
           "status": "pass",
           "message": "Copilot loaded skills from .github/skills in 0ms."
+        },
+        {
+          "slug": "switch-model",
+          "position": 4,
+          "label": "Switch model",
+          "explanation_markdown": "This check verifies that the agent can switch models using [Session Config Options](https://agentclientprotocol.com/protocol/session-config-options).\n\n**Why is this important?**\n\n- This is required to allow switching models via UI controls.",
+          "status": "pass",
+          "message": "Copilot switched model from gpt-5-mini to auto."
+        },
+        {
+          "slug": "switch-model-100ms",
+          "position": 5,
+          "label": "Switch model < 100ms",
+          "explanation_markdown": "This check verifies that the agent responds to a model switch request within 100ms.\n\n**Why is this important?**\n\n- This affects the time it takes to switch models, which is an action users will perform multiple times a day.\n- For native agents like Cursor & Zed the switch time is usually ~zero.",
+          "status": "pass",
+          "message": "Copilot switched model in 16ms."
+        },
+        {
+          "slug": "switch-thinking-effort",
+          "position": 6,
+          "label": "Switch thinking effort",
+          "explanation_markdown": "This check verifies that the agent can switch thinking effort using [Session Config Options](https://agentclientprotocol.com/protocol/session-config-options).\n\n**Why is this important?**\n\n- This is required to allow switching thinking effort via UI controls.",
+          "status": "fail",
+          "message": "Copilot did not expose a thinking effort selector as a session config option."
+        },
+        {
+          "slug": "switch-thinking-effort-100ms",
+          "position": 7,
+          "label": "Switch thinking effort < 100ms",
+          "explanation_markdown": "This check verifies that the agent responds to a thinking effort switch request within 100ms.\n\n**Why is this important?**\n\n- This affects the time it takes to switch thinking effort, which is an action users will perform multiple times a day.\n- For native agents like Cursor & Zed the switch time is usually ~zero.",
+          "status": "fail",
+          "message": "Copilot did not expose a thinking effort selector as a session config option."
         },
         {
           "slug": "supports-session-close",
@@ -144,12 +224,52 @@
           "message": "Codex did not load skills from .agents/skills as a slash commands."
         },
         {
+          "slug": "list-models",
+          "position": 3,
+          "label": "Lists models",
+          "explanation_markdown": "This check verifies that the agent exposes available models through [Session Config Options](https://agentclientprotocol.com/protocol/session-config-options).\n\n**Why is this important?**\n\n- This is required to render the current model in the UI\n- The same API is also required to list other available models",
+          "status": "pass",
+          "message": "Codex listed 5 models as session config options."
+        },
+        {
           "slug": "loads-skills-100ms",
           "position": 4,
           "label": "Loads skills < 100ms",
           "explanation_markdown": "This check verifies that skills are loaded as [slash commands](https://agentclientprotocol.com/protocol/slash-commands) within 100ms of creating a session.\n\n**Why is this important?**\n\n- Often sessions are created with the sole purpose of running a skill (like `/bump-version`).\n- If skills aren't loaded quick enough, a chat session can feel laggy since users have to wait till they're loaded to invoke the skill.",
           "status": "fail",
           "message": "Codex did not load skills from .agents/skills as slash commands."
+        },
+        {
+          "slug": "switch-model",
+          "position": 4,
+          "label": "Switch model",
+          "explanation_markdown": "This check verifies that the agent can switch models using [Session Config Options](https://agentclientprotocol.com/protocol/session-config-options).\n\n**Why is this important?**\n\n- This is required to allow switching models via UI controls.",
+          "status": "pass",
+          "message": "Codex switched model from gpt-5.5 to gpt-5.4."
+        },
+        {
+          "slug": "switch-model-100ms",
+          "position": 5,
+          "label": "Switch model < 100ms",
+          "explanation_markdown": "This check verifies that the agent responds to a model switch request within 100ms.\n\n**Why is this important?**\n\n- This affects the time it takes to switch models, which is an action users will perform multiple times a day.\n- For native agents like Cursor & Zed the switch time is usually ~zero.",
+          "status": "pass",
+          "message": "Codex switched model in 2ms."
+        },
+        {
+          "slug": "switch-thinking-effort",
+          "position": 6,
+          "label": "Switch thinking effort",
+          "explanation_markdown": "This check verifies that the agent can switch thinking effort using [Session Config Options](https://agentclientprotocol.com/protocol/session-config-options).\n\n**Why is this important?**\n\n- This is required to allow switching thinking effort via UI controls.",
+          "status": "pass",
+          "message": "Codex switched thinking effort from medium to low."
+        },
+        {
+          "slug": "switch-thinking-effort-100ms",
+          "position": 7,
+          "label": "Switch thinking effort < 100ms",
+          "explanation_markdown": "This check verifies that the agent responds to a thinking effort switch request within 100ms.\n\n**Why is this important?**\n\n- This affects the time it takes to switch thinking effort, which is an action users will perform multiple times a day.\n- For native agents like Cursor & Zed the switch time is usually ~zero.",
+          "status": "pass",
+          "message": "Codex switched thinking effort in 1ms."
         },
         {
           "slug": "supports-session-close",
@@ -200,12 +320,52 @@
           "message": "Junie did not load skills from .junie/skills as a slash commands."
         },
         {
+          "slug": "list-models",
+          "position": 3,
+          "label": "Lists models",
+          "explanation_markdown": "This check verifies that the agent exposes available models through [Session Config Options](https://agentclientprotocol.com/protocol/session-config-options).\n\n**Why is this important?**\n\n- This is required to render the current model in the UI\n- The same API is also required to list other available models",
+          "status": "pass",
+          "message": "Junie listed 12 models as session config options."
+        },
+        {
           "slug": "loads-skills-100ms",
           "position": 4,
           "label": "Loads skills < 100ms",
           "explanation_markdown": "This check verifies that skills are loaded as [slash commands](https://agentclientprotocol.com/protocol/slash-commands) within 100ms of creating a session.\n\n**Why is this important?**\n\n- Often sessions are created with the sole purpose of running a skill (like `/bump-version`).\n- If skills aren't loaded quick enough, a chat session can feel laggy since users have to wait till they're loaded to invoke the skill.",
           "status": "fail",
           "message": "Junie did not load skills from .junie/skills as slash commands."
+        },
+        {
+          "slug": "switch-model",
+          "position": 4,
+          "label": "Switch model",
+          "explanation_markdown": "This check verifies that the agent can switch models using [Session Config Options](https://agentclientprotocol.com/protocol/session-config-options).\n\n**Why is this important?**\n\n- This is required to allow switching models via UI controls.",
+          "status": "pass",
+          "message": "Junie switched model from gemini-3-flash-preview to claude-opus-4-6."
+        },
+        {
+          "slug": "switch-model-100ms",
+          "position": 5,
+          "label": "Switch model < 100ms",
+          "explanation_markdown": "This check verifies that the agent responds to a model switch request within 100ms.\n\n**Why is this important?**\n\n- This affects the time it takes to switch models, which is an action users will perform multiple times a day.\n- For native agents like Cursor & Zed the switch time is usually ~zero.",
+          "status": "pass",
+          "message": "Junie switched model in 13ms."
+        },
+        {
+          "slug": "switch-thinking-effort",
+          "position": 6,
+          "label": "Switch thinking effort",
+          "explanation_markdown": "This check verifies that the agent can switch thinking effort using [Session Config Options](https://agentclientprotocol.com/protocol/session-config-options).\n\n**Why is this important?**\n\n- This is required to allow switching thinking effort via UI controls.",
+          "status": "fail",
+          "message": "Junie did not expose a thinking effort selector as a session config option."
+        },
+        {
+          "slug": "switch-thinking-effort-100ms",
+          "position": 7,
+          "label": "Switch thinking effort < 100ms",
+          "explanation_markdown": "This check verifies that the agent responds to a thinking effort switch request within 100ms.\n\n**Why is this important?**\n\n- This affects the time it takes to switch thinking effort, which is an action users will perform multiple times a day.\n- For native agents like Cursor & Zed the switch time is usually ~zero.",
+          "status": "fail",
+          "message": "Junie did not expose a thinking effort selector as a session config option."
         },
         {
           "slug": "supports-session-close",
@@ -256,12 +416,52 @@
           "message": "OpenCode loaded skills from .agents/skills as slash commands."
         },
         {
+          "slug": "list-models",
+          "position": 3,
+          "label": "Lists models",
+          "explanation_markdown": "This check verifies that the agent exposes available models through [Session Config Options](https://agentclientprotocol.com/protocol/session-config-options).\n\n**Why is this important?**\n\n- This is required to render the current model in the UI\n- The same API is also required to list other available models",
+          "status": "pass",
+          "message": "OpenCode listed 52 models as session config options."
+        },
+        {
           "slug": "loads-skills-100ms",
           "position": 4,
           "label": "Loads skills < 100ms",
           "explanation_markdown": "This check verifies that skills are loaded as [slash commands](https://agentclientprotocol.com/protocol/slash-commands) within 100ms of creating a session.\n\n**Why is this important?**\n\n- Often sessions are created with the sole purpose of running a skill (like `/bump-version`).\n- If skills aren't loaded quick enough, a chat session can feel laggy since users have to wait till they're loaded to invoke the skill.",
           "status": "pass",
           "message": "OpenCode loaded skills from .agents/skills in 1ms."
+        },
+        {
+          "slug": "switch-model",
+          "position": 4,
+          "label": "Switch model",
+          "explanation_markdown": "This check verifies that the agent can switch models using [Session Config Options](https://agentclientprotocol.com/protocol/session-config-options).\n\n**Why is this important?**\n\n- This is required to allow switching models via UI controls.",
+          "status": "pass",
+          "message": "OpenCode switched model from opencode/big-pickle to opencode-go/qwen3.6-plus."
+        },
+        {
+          "slug": "switch-model-100ms",
+          "position": 5,
+          "label": "Switch model < 100ms",
+          "explanation_markdown": "This check verifies that the agent responds to a model switch request within 100ms.\n\n**Why is this important?**\n\n- This affects the time it takes to switch models, which is an action users will perform multiple times a day.\n- For native agents like Cursor & Zed the switch time is usually ~zero.",
+          "status": "pass",
+          "message": "OpenCode switched model in 9ms."
+        },
+        {
+          "slug": "switch-thinking-effort",
+          "position": 6,
+          "label": "Switch thinking effort",
+          "explanation_markdown": "This check verifies that the agent can switch thinking effort using [Session Config Options](https://agentclientprotocol.com/protocol/session-config-options).\n\n**Why is this important?**\n\n- This is required to allow switching thinking effort via UI controls.",
+          "status": "fail",
+          "message": "OpenCode did not expose a thinking effort selector as a session config option."
+        },
+        {
+          "slug": "switch-thinking-effort-100ms",
+          "position": 7,
+          "label": "Switch thinking effort < 100ms",
+          "explanation_markdown": "This check verifies that the agent responds to a thinking effort switch request within 100ms.\n\n**Why is this important?**\n\n- This affects the time it takes to switch thinking effort, which is an action users will perform multiple times a day.\n- For native agents like Cursor & Zed the switch time is usually ~zero.",
+          "status": "fail",
+          "message": "OpenCode did not expose a thinking effort selector as a session config option."
         },
         {
           "slug": "supports-session-close",
