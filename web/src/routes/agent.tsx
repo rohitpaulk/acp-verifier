@@ -4,7 +4,7 @@ import type { AgentCardProps as Agent } from "../components/AgentCard";
 import resultsData from "../../data/results.json";
 import { ResultsFile } from "../results-file";
 
-const results = ResultsFile.fromJSON(resultsData);
+const results = ResultsFile.fromJSON(resultsData).filteredForWeb();
 
 type AgentRouteProps = {
   params: {

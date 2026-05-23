@@ -3,19 +3,17 @@ import AgentCard, { type AgentCardProps } from "../components/AgentCard";
 import resultsData from "../../data/results.json";
 import { ResultsFile } from "../results-file";
 
-const results = ResultsFile.fromJSON(resultsData);
+const results = ResultsFile.fromJSON(resultsData).filteredForWeb();
 
-// Hide these for now until their checks are better quality
-const HIDDEN_AGENT_SLUGS = ["docker-agent"];
+function passRate(agent: AgentCardProps) {
+  return agent.checks.filter((check) => check.status === "pass").length / agent.checks.length;
+}
 
 export function HomePage() {
   const agents = results.agents
     .sort((a, b) => {
-      const pctA = a.checks.filter((check) => check.status === "pass").length / a.checks.length;
-      const pctB = b.checks.filter((check) => check.status === "pass").length / b.checks.length;
-      return pctB - pctA;
-    })
-    .filter((agent) => !HIDDEN_AGENT_SLUGS.includes(agent.slug));
+      return passRate(b) - passRate(a);
+    });
 
   const lastUpdated = format(parseISO(results.lastUpdated), "do MMMM yyyy");
 

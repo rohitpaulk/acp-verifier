@@ -2,7 +2,7 @@ import type { Config } from "@react-router/dev/config";
 import resultsData from "./data/results.json";
 import { ResultsFile } from "./src/results-file";
 
-const results = ResultsFile.fromJSON(resultsData);
+const results = ResultsFile.fromJSON(resultsData).filteredForWeb();
 const agentSlugs = results.agents.map((agent) => agent.slug);
 
 export default {

@@ -33,6 +33,10 @@ export type ResultsFileJSON = {
   }>;
 };
 
+// Hide these for now until their checks are better quality.
+const HIDDEN_AGENT_SLUGS = ["docker-agent"];
+const HIDDEN_CHECK_SLUGS = ["listing-modes", "switch-mode", "switch-mode-500ms"];
+
 export class ResultsFile {
   readonly lastUpdated: string;
   readonly agents: AgentResult[];
@@ -51,6 +55,18 @@ export class ResultsFile {
 
   static empty(): ResultsFile {
     return new ResultsFile({ lastUpdated: "", agents: [] });
+  }
+
+  filteredForWeb(): ResultsFile {
+    return new ResultsFile({
+      lastUpdated: this.lastUpdated,
+      agents: this.agents
+        .filter((agent) => !HIDDEN_AGENT_SLUGS.includes(agent.slug))
+        .map((agent) => ({
+          ...agent,
+          checks: agent.checks.filter((check) => !HIDDEN_CHECK_SLUGS.includes(check.slug)),
+        })),
+    });
   }
 
   merge(partial: ResultsFile): ResultsFile {

@@ -8,7 +8,7 @@ import StatusPill from "../components/StatusPill";
 import resultsData from "../../data/results.json";
 import { ResultsFile } from "../results-file";
 
-const results = ResultsFile.fromJSON(resultsData);
+const results = ResultsFile.fromJSON(resultsData).filteredForWeb();
 
 function findAgent(slug = "") {
   return results.agents.find((candidate) => candidate.slug === slug);
