@@ -1,6 +1,6 @@
 name: Claude Code
 company: Anthropic
-version_string: v0.31.4
+version_string: v0.37.0
 env_vars:
   - ANTHROPIC_API_KEY
 symlinks:

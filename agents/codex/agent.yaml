@@ -1,5 +1,5 @@
 name: Codex
 company: OpenAI
-version_string: v0.12.0
+version_string: v0.15.0
 env_vars:
   - OPENAI_API_KEY
