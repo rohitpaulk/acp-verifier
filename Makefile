@@ -5,3 +5,6 @@ serve:
 
 test:
 	bun test ./tests
+
+test_junie:
+	AGENTS=junie bun test ./tests
