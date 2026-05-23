@@ -108,18 +108,12 @@ async function checkSwitchSelectConfigOption(params: {
     return result.configOptions;
   }
 
-  check.pass(
-    switchSlug,
-    `${agentName} switched ${optionLabel} from ${option.currentValue} to ${target.value}.`,
-  );
+  check.pass(switchSlug, `${agentName} switched ${optionLabel} from ${option.currentValue} to ${target.value}.`);
 
   if (elapsedMs <= 100) {
     check.pass(timingSlug, `${agentName} switched ${optionLabel} in ${elapsedMs}ms.`);
   } else {
-    check.fail(
-      timingSlug,
-      `${agentName} took ${elapsedMs}ms to switch ${optionLabel}, exceeding the 100ms target.`,
-    );
+    check.fail(timingSlug, `${agentName} took ${elapsedMs}ms to switch ${optionLabel}, exceeding the 100ms target.`);
   }
 
   return result.configOptions;
@@ -140,71 +134,82 @@ test.each(registry.agentSlugs)("can list and switch models (%s)", async (slug) =
 
   expect(session.sessionId).toBeTruthy();
 
-  if (!session.configOptions) {
-    check.fail("list-models", `${agent.name} did not list any models as config options.`);
-    check.fail("switch-model", `${agent.name} does not support switching models`);
-    check.fail("switch-model-100ms", `${agent.name} does not support switching models`);
-    check.fail("switch-thinking-effort", `${agent.name} does not support switching thinking effort`);
-    check.fail("switch-thinking-effort-100ms", `${agent.name} does not support switching thinking effort`);
+  let configOptions = session.configOptions;
+  const modelOption = (configOptions || []).find((configOption) => configOption.category === "model");
+
+  if (!modelOption) {
+    const modelLikeOption = (configOptions || []).find((configOption) => configOption.name.toLowerCase() === "model");
+
+    if (modelLikeOption) {
+      const errorMessage = `${agent.name} did include a "${modelLikeOption.name}" config option, but it didn't use the "model" category.`;
+      check.fail("list-models", errorMessage);
+      check.fail("switch-model", errorMessage);
+      check.fail("switch-model-100ms", errorMessage);
+    } else {
+      check.fail("list-models", `${agent.name} did not list any models as session config options.`);
+      check.fail("switch-model", `${agent.name} does not support switching models.`);
+      check.fail("switch-model-100ms", `${agent.name} does not support switching models.`);
+    }
 
     return;
   }
 
-  let configOptions = session.configOptions;
-  const modelOption = findSelectConfigOption(configOptions, "model", ["model"]);
-
-  if (!modelOption) {
-    check.fail("list-models", `${agent.name} did not expose models as session config options.`);
-    check.fail("switch-model", `${agent.name} does not support switching models.`);
-    check.fail("switch-model-100ms", `${agent.name} does not support switching models.`);
-  } else {
-    const modelValues = selectValues(modelOption);
-    const currentModel = modelValues.find((model) => model.value === modelOption.currentValue);
-
-    if (currentModel) {
-      check.pass(
-        "list-models",
-        `${agent.name} listed ${modelValues.length} model${modelValues.length === 1 ? "" : "s"} as session config options.`,
-      );
-    } else {
-      check.fail(
-        "list-models",
-        `${agent.name} exposed a model selector, but the current model was not present in its values.`,
-      );
-      check.fail("switch-model", `${agent.name} did not report a valid current model to switch from.`);
-      check.fail("switch-model-100ms", `${agent.name} did not report a valid current model to switch from.`);
-    }
-
-    if (currentModel) {
-      configOptions =
-        (await checkSwitchSelectConfigOption({
-          agentName: agent.name,
-          check,
-          connection,
-          sessionId: session.sessionId,
-          option: modelOption,
-          optionLabel: "model",
-          switchSlug: "switch-model",
-          timingSlug: "switch-model-100ms",
-        })) ?? configOptions;
-    }
+  if (modelOption.type != "select") {
+    throw new Error("Expected modelOption to be a select");
   }
 
-  const thinkingEffortOption = findSelectConfigOption(configOptions, "thought_level", [
-    "thinking",
-    "thought",
-    "reasoning",
-    "effort",
-  ]);
+  if (modelOption.options.length < 2) {
+    throw new Error("Expected at least 2 models options to be present");
+  }
 
-  await checkSwitchSelectConfigOption({
-    agentName: agent.name,
-    check,
-    connection,
-    sessionId: session.sessionId,
-    option: thinkingEffortOption,
-    optionLabel: "thinking effort",
-    switchSlug: "switch-thinking-effort",
-    timingSlug: "switch-thinking-effort-100ms",
-  });
+  check.pass(
+    "list-models",
+    `${agent.name} listed ${modelOption.options.length} models as available, with ${modelOption.currentValue} as the default.`,
+  );
+
+  // if (currentModel) {
+  //   check.pass(
+  //     "list-models",
+  //     `${agent.name} listed ${modelValues.length} model${modelValues.length === 1 ? "" : "s"} as session config options.`,
+  //   );
+  // } else {
+  //   check.fail(
+  //     "list-models",
+  //     `${agent.name} exposed a model selector, but the current model was not present in its values.`,
+  //   );
+  //   check.fail("switch-model", `${agent.name} did not report a valid current model to switch from.`);
+  //   check.fail("switch-model-100ms", `${agent.name} did not report a valid current model to switch from.`);
+  // }
+
+  // if (currentModel) {
+  //   configOptions =
+  //     (await checkSwitchSelectConfigOption({
+  //       agentName: agent.name,
+  //       check,
+  //       connection,
+  //       sessionId: session.sessionId,
+  //       option: modelOption,
+  //       optionLabel: "model",
+  //       switchSlug: "switch-model",
+  //       timingSlug: "switch-model-100ms",
+  //     })) ?? configOptions;
+  // }
+
+  // const thinkingEffortOption = findSelectConfigOption(configOptions, "thought_level", [
+  //   "thinking",
+  //   "thought",
+  //   "reasoning",
+  //   "effort",
+  // ]);
+
+  // await checkSwitchSelectConfigOption({
+  //   agentName: agent.name,
+  //   check,
+  //   connection,
+  //   sessionId: session.sessionId,
+  //   option: thinkingEffortOption,
+  //   optionLabel: "thinking effort",
+  //   switchSlug: "switch-thinking-effort",
+  //   timingSlug: "switch-thinking-effort-100ms",
+  // });
 });

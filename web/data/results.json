@@ -37,7 +37,7 @@
           "label": "Lists models",
           "explanation_markdown": "This check verifies that the agent exposes available models through [Session Config Options](https://agentclientprotocol.com/protocol/session-config-options).\n\n**Why is this important?**\n\n- This is required to render the current model in the UI\n- The same API is also required to list other available models",
           "status": "pass",
-          "message": "Claude Code listed 4 models as session config options."
+          "message": "Claude Code listed 4 models as available, with default as the default."
         },
         {
           "slug": "loads-skills-100ms",
@@ -133,7 +133,7 @@
           "label": "Lists models",
           "explanation_markdown": "This check verifies that the agent exposes available models through [Session Config Options](https://agentclientprotocol.com/protocol/session-config-options).\n\n**Why is this important?**\n\n- This is required to render the current model in the UI\n- The same API is also required to list other available models",
           "status": "pass",
-          "message": "Copilot listed 4 models as session config options."
+          "message": "Copilot listed 4 models as available, with gpt-5-mini as the default."
         },
         {
           "slug": "loads-skills-100ms",
@@ -229,7 +229,7 @@
           "label": "Lists models",
           "explanation_markdown": "This check verifies that the agent exposes available models through [Session Config Options](https://agentclientprotocol.com/protocol/session-config-options).\n\n**Why is this important?**\n\n- This is required to render the current model in the UI\n- The same API is also required to list other available models",
           "status": "pass",
-          "message": "Codex listed 5 models as session config options."
+          "message": "Codex listed 5 models as available, with gpt-5.5 as the default."
         },
         {
           "slug": "loads-skills-100ms",
@@ -324,8 +324,8 @@
           "position": 3,
           "label": "Lists models",
           "explanation_markdown": "This check verifies that the agent exposes available models through [Session Config Options](https://agentclientprotocol.com/protocol/session-config-options).\n\n**Why is this important?**\n\n- This is required to render the current model in the UI\n- The same API is also required to list other available models",
-          "status": "pass",
-          "message": "Junie listed 12 models as session config options."
+          "status": "fail",
+          "message": "Junie did include a model selector, but it didn't use the \"model\" category."
         },
         {
           "slug": "loads-skills-100ms",
@@ -340,16 +340,16 @@
           "position": 4,
           "label": "Switch model",
           "explanation_markdown": "This check verifies that the agent can switch models using [Session Config Options](https://agentclientprotocol.com/protocol/session-config-options).\n\n**Why is this important?**\n\n- This is required to allow switching models via UI controls.",
-          "status": "pass",
-          "message": "Junie switched model from gemini-3-flash-preview to claude-opus-4-6."
+          "status": "fail",
+          "message": "Junie did include a model selector, but it didn't use the \"model\" category."
         },
         {
           "slug": "switch-model-100ms",
           "position": 5,
           "label": "Switch model < 100ms",
           "explanation_markdown": "This check verifies that the agent responds to a model switch request within 100ms.\n\n**Why is this important?**\n\n- This affects the time it takes to switch models, which is an action users will perform multiple times a day.\n- For native agents like Cursor & Zed the switch time is usually ~zero.",
-          "status": "pass",
-          "message": "Junie switched model in 13ms."
+          "status": "fail",
+          "message": "Junie did include a model selector, but it didn't use the \"model\" category."
         },
         {
           "slug": "switch-thinking-effort",
@@ -421,7 +421,7 @@
           "label": "Lists models",
           "explanation_markdown": "This check verifies that the agent exposes available models through [Session Config Options](https://agentclientprotocol.com/protocol/session-config-options).\n\n**Why is this important?**\n\n- This is required to render the current model in the UI\n- The same API is also required to list other available models",
           "status": "pass",
-          "message": "OpenCode listed 52 models as session config options."
+          "message": "OpenCode listed 52 models as available, with opencode/big-pickle as the default."
         },
         {
           "slug": "loads-skills-100ms",
