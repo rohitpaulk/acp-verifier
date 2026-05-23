@@ -13,7 +13,7 @@
           "label": "First session < 500ms",
           "explanation_markdown": "This check verifies that the agent boots and responds to [`initialize`](https://agentclientprotocol.com/protocol/initialization) and [`session/new`](https://agentclientprotocol.com/protocol/session-setup#creating-a-session) within 500ms.\n\n**Why is this important?**\n\n- This affects the load time of the first chat session.\n- For native agents like Cursor & Zed this load time is usually ~zero.\n\n**Notes**\n\n- There's a separate \"New session < 500ms\" check that tracks load times for subsequent sessions.",
           "status": "fail",
-          "message": "Claude Code took 1031ms to boot and create a new session, exceeding the 500ms target."
+          "message": "Claude Code took 1016ms to boot and create a new session, exceeding the 500ms target."
         },
         {
           "slug": "new-session-100ms",
@@ -21,15 +21,7 @@
           "label": "New session < 100ms",
           "explanation_markdown": "This check verifies that the agent responds to the `session/new` request within 100ms. The check is performed after the agent has booted and created at least one session.\n\n**Why is this important?**\n\n- This affects the load time of chat sessions after the first one, which is something users will run into multiple times a day.\n- For native agents like Cursor & Zed this load time is usually ~zero.\n\n**Notes**\n\n- There's a separate \"First session < 500ms\" check that tracks load times for the first session, which includes the agent boot time.",
           "status": "fail",
-          "message": "Claude Code took 532ms to create a new session, exceeding the 100ms target."
-        },
-        {
-          "slug": "loads-skills",
-          "position": 3,
-          "label": "Loads skills",
-          "explanation_markdown": "This check verifies that the agents loads skills as [Slash Commands](https://agentclientprotocol.com/protocol/slash-commands).\n\n**Why is this important?**\n\n- Skills are very commonly used when working with agents\n- Some coding agents load skills as slash commands when in their native CLI but don't do the same when running as ACP servers",
-          "status": "pass",
-          "message": "Claude Code loaded skills from .claude/skills as slash commands."
+          "message": "Claude Code took 511ms to create a new session, exceeding the 100ms target."
         },
         {
           "slug": "list-models",
@@ -38,14 +30,6 @@
           "explanation_markdown": "This check verifies that the agent exposes available models through [Session Config Options](https://agentclientprotocol.com/protocol/session-config-options).\n\n**Why is this important?**\n\n- This is required to render the current model in the UI\n- The same API is also required to list other available models",
           "status": "pass",
           "message": "Claude Code listed 4 models as available, with \"default\" as the default."
-        },
-        {
-          "slug": "loads-skills-100ms",
-          "position": 4,
-          "label": "Loads skills < 100ms",
-          "explanation_markdown": "This check verifies that skills are loaded as [slash commands](https://agentclientprotocol.com/protocol/slash-commands) within 100ms of creating a session.\n\n**Why is this important?**\n\n- Often sessions are created with the sole purpose of running a skill (like `/bump-version`).\n- If skills aren't loaded quick enough, a chat session can feel laggy since users have to wait till they're loaded to invoke the skill.",
-          "status": "pass",
-          "message": "Claude Code loaded skills from .claude/skills in 1ms."
         },
         {
           "slug": "switch-model",
@@ -61,7 +45,7 @@
           "label": "Switch model < 100ms",
           "explanation_markdown": "This check verifies that the agent responds to a model switch request within 100ms.\n\n**Why is this important?**\n\n- This affects the time it takes to switch models, which is an action users will perform multiple times a day.\n- For native agents like Cursor & Zed the switch time is usually ~zero.",
           "status": "pass",
-          "message": "Claude Code took 8ms to switch models from \"default\" to \"sonnet[1m]\"."
+          "message": "Claude Code took 5ms to switch models from \"default\" to \"sonnet[1m]\"."
         },
         {
           "slug": "switch-thinking-effort",
@@ -80,8 +64,24 @@
           "message": "Claude Code took 2ms to switch thinking effort from \"high\" to \"low\"."
         },
         {
-          "slug": "supports-session-close",
+          "slug": "loads-skills",
           "position": 8,
+          "label": "Loads skills",
+          "explanation_markdown": "This check verifies that the agents loads skills as [Slash Commands](https://agentclientprotocol.com/protocol/slash-commands).\n\n**Why is this important?**\n\n- Skills are very commonly used when working with agents\n- Some coding agents load skills as slash commands when in their native CLI but don't do the same when running as ACP servers",
+          "status": "pass",
+          "message": "Claude Code loaded skills from .claude/skills as slash commands."
+        },
+        {
+          "slug": "loads-skills-100ms",
+          "position": 9,
+          "label": "Loads skills < 100ms",
+          "explanation_markdown": "This check verifies that skills are loaded as [slash commands](https://agentclientprotocol.com/protocol/slash-commands) within 100ms of creating a session.\n\n**Why is this important?**\n\n- Often sessions are created with the sole purpose of running a skill (like `/bump-version`).\n- If skills aren't loaded quick enough, a chat session can feel laggy since users have to wait till they're loaded to invoke the skill.",
+          "status": "pass",
+          "message": "Claude Code loaded skills from .claude/skills in 1ms."
+        },
+        {
+          "slug": "supports-session-close",
+          "position": 13,
           "label": "Session close",
           "explanation_markdown": "This check verifies that the agent supports the `session/close` capability.\n\n**Why is this important?**\n\n`session/close` is required to terminate a running session and free up resources.\n\n<!-- TODO: See if this is used to remove threads from the sidebar -->",
           "status": "pass",
@@ -89,7 +89,7 @@
         },
         {
           "slug": "supports-session-resume",
-          "position": 9,
+          "position": 14,
           "label": "Session resume",
           "explanation_markdown": "This check verifies that the agent supports the `session/resume` capability.\n\n**Why is this important?**\n\n`session/resume` allows clients to reconnect to a previously created session without losing conversation history.",
           "status": "pass",
@@ -109,7 +109,7 @@
           "label": "First session < 500ms",
           "explanation_markdown": "This check verifies that the agent boots and responds to [`initialize`](https://agentclientprotocol.com/protocol/initialization) and [`session/new`](https://agentclientprotocol.com/protocol/session-setup#creating-a-session) within 500ms.\n\n**Why is this important?**\n\n- This affects the load time of the first chat session.\n- For native agents like Cursor & Zed this load time is usually ~zero.\n\n**Notes**\n\n- There's a separate \"New session < 500ms\" check that tracks load times for subsequent sessions.",
           "status": "fail",
-          "message": "Copilot took 6645ms to boot and create a new session, exceeding the 500ms target."
+          "message": "Copilot took 6966ms to boot and create a new session, exceeding the 500ms target."
         },
         {
           "slug": "new-session-100ms",
@@ -117,15 +117,7 @@
           "label": "New session < 100ms",
           "explanation_markdown": "This check verifies that the agent responds to the `session/new` request within 100ms. The check is performed after the agent has booted and created at least one session.\n\n**Why is this important?**\n\n- This affects the load time of chat sessions after the first one, which is something users will run into multiple times a day.\n- For native agents like Cursor & Zed this load time is usually ~zero.\n\n**Notes**\n\n- There's a separate \"First session < 500ms\" check that tracks load times for the first session, which includes the agent boot time.",
           "status": "fail",
-          "message": "Copilot took 805ms to create a new session, exceeding the 100ms target."
-        },
-        {
-          "slug": "loads-skills",
-          "position": 3,
-          "label": "Loads skills",
-          "explanation_markdown": "This check verifies that the agents loads skills as [Slash Commands](https://agentclientprotocol.com/protocol/slash-commands).\n\n**Why is this important?**\n\n- Skills are very commonly used when working with agents\n- Some coding agents load skills as slash commands when in their native CLI but don't do the same when running as ACP servers",
-          "status": "pass",
-          "message": "Copilot loaded skills from .github/skills as slash commands."
+          "message": "Copilot took 760ms to create a new session, exceeding the 100ms target."
         },
         {
           "slug": "list-models",
@@ -133,15 +125,7 @@
           "label": "Lists models",
           "explanation_markdown": "This check verifies that the agent exposes available models through [Session Config Options](https://agentclientprotocol.com/protocol/session-config-options).\n\n**Why is this important?**\n\n- This is required to render the current model in the UI\n- The same API is also required to list other available models",
           "status": "pass",
-          "message": "Copilot listed 4 models as available, with \"claude-haiku-4.5\" as the default."
-        },
-        {
-          "slug": "loads-skills-100ms",
-          "position": 4,
-          "label": "Loads skills < 100ms",
-          "explanation_markdown": "This check verifies that skills are loaded as [slash commands](https://agentclientprotocol.com/protocol/slash-commands) within 100ms of creating a session.\n\n**Why is this important?**\n\n- Often sessions are created with the sole purpose of running a skill (like `/bump-version`).\n- If skills aren't loaded quick enough, a chat session can feel laggy since users have to wait till they're loaded to invoke the skill.",
-          "status": "pass",
-          "message": "Copilot loaded skills from .github/skills in 0ms."
+          "message": "Copilot listed 4 models as available, with \"gpt-5-mini\" as the default."
         },
         {
           "slug": "switch-model",
@@ -149,7 +133,7 @@
           "label": "Switch model",
           "explanation_markdown": "This check verifies that the agent can switch models using [Session Config Options](https://agentclientprotocol.com/protocol/session-config-options).\n\n**Why is this important?**\n\n- This is required to allow switching models via UI controls.",
           "status": "pass",
-          "message": "Copilot successfully switched models from \"claude-haiku-4.5\" to \"gpt-5-mini\"."
+          "message": "Copilot successfully switched models from \"gpt-5-mini\" to \"auto\"."
         },
         {
           "slug": "switch-model-100ms",
@@ -157,27 +141,43 @@
           "label": "Switch model < 100ms",
           "explanation_markdown": "This check verifies that the agent responds to a model switch request within 100ms.\n\n**Why is this important?**\n\n- This affects the time it takes to switch models, which is an action users will perform multiple times a day.\n- For native agents like Cursor & Zed the switch time is usually ~zero.",
           "status": "pass",
-          "message": "Copilot took 16ms to switch models from \"claude-haiku-4.5\" to \"gpt-5-mini\"."
+          "message": "Copilot took 9ms to switch models from \"gpt-5-mini\" to \"auto\"."
         },
         {
           "slug": "switch-thinking-effort",
           "position": 6,
           "label": "Switch thinking effort",
           "explanation_markdown": "This check verifies that the agent can switch thinking effort using [Session Config Options](https://agentclientprotocol.com/protocol/session-config-options).\n\n**Why is this important?**\n\n- This is required to allow switching thinking effort via UI controls.",
-          "status": "fail",
-          "message": "Copilot does not support switching thinking effort."
+          "status": "pass",
+          "message": "Copilot successfully switched thinking effort from \"medium\" to \"none\"."
         },
         {
           "slug": "switch-thinking-effort-100ms",
           "position": 7,
           "label": "Switch thinking effort < 100ms",
           "explanation_markdown": "This check verifies that the agent responds to a thinking effort switch request within 100ms.\n\n**Why is this important?**\n\n- This affects the time it takes to switch thinking effort, which is an action users will perform multiple times a day.\n- For native agents like Cursor & Zed the switch time is usually ~zero.",
-          "status": "fail",
-          "message": "Copilot does not support switching thinking effort."
+          "status": "pass",
+          "message": "Copilot took 9ms to switch thinking effort from \"medium\" to \"none\"."
+        },
+        {
+          "slug": "loads-skills",
+          "position": 8,
+          "label": "Loads skills",
+          "explanation_markdown": "This check verifies that the agents loads skills as [Slash Commands](https://agentclientprotocol.com/protocol/slash-commands).\n\n**Why is this important?**\n\n- Skills are very commonly used when working with agents\n- Some coding agents load skills as slash commands when in their native CLI but don't do the same when running as ACP servers",
+          "status": "pass",
+          "message": "Copilot loaded skills from .github/skills as slash commands."
+        },
+        {
+          "slug": "loads-skills-100ms",
+          "position": 9,
+          "label": "Loads skills < 100ms",
+          "explanation_markdown": "This check verifies that skills are loaded as [slash commands](https://agentclientprotocol.com/protocol/slash-commands) within 100ms of creating a session.\n\n**Why is this important?**\n\n- Often sessions are created with the sole purpose of running a skill (like `/bump-version`).\n- If skills aren't loaded quick enough, a chat session can feel laggy since users have to wait till they're loaded to invoke the skill.",
+          "status": "pass",
+          "message": "Copilot loaded skills from .github/skills in 0ms."
         },
         {
           "slug": "supports-session-close",
-          "position": 8,
+          "position": 13,
           "label": "Session close",
           "explanation_markdown": "This check verifies that the agent supports the `session/close` capability.\n\n**Why is this important?**\n\n`session/close` is required to terminate a running session and free up resources.\n\n<!-- TODO: See if this is used to remove threads from the sidebar -->",
           "status": "fail",
@@ -185,7 +185,7 @@
         },
         {
           "slug": "supports-session-resume",
-          "position": 9,
+          "position": 14,
           "label": "Session resume",
           "explanation_markdown": "This check verifies that the agent supports the `session/resume` capability.\n\n**Why is this important?**\n\n`session/resume` allows clients to reconnect to a previously created session without losing conversation history.",
           "status": "fail",
@@ -204,8 +204,8 @@
           "position": 1,
           "label": "First session < 500ms",
           "explanation_markdown": "This check verifies that the agent boots and responds to [`initialize`](https://agentclientprotocol.com/protocol/initialization) and [`session/new`](https://agentclientprotocol.com/protocol/session-setup#creating-a-session) within 500ms.\n\n**Why is this important?**\n\n- This affects the load time of the first chat session.\n- For native agents like Cursor & Zed this load time is usually ~zero.\n\n**Notes**\n\n- There's a separate \"New session < 500ms\" check that tracks load times for subsequent sessions.",
-          "status": "pass",
-          "message": "Codex booted and created a new session in 450ms."
+          "status": "fail",
+          "message": "Codex took 545ms to boot and create a new session, exceeding the 500ms target."
         },
         {
           "slug": "new-session-100ms",
@@ -213,15 +213,7 @@
           "label": "New session < 100ms",
           "explanation_markdown": "This check verifies that the agent responds to the `session/new` request within 100ms. The check is performed after the agent has booted and created at least one session.\n\n**Why is this important?**\n\n- This affects the load time of chat sessions after the first one, which is something users will run into multiple times a day.\n- For native agents like Cursor & Zed this load time is usually ~zero.\n\n**Notes**\n\n- There's a separate \"First session < 500ms\" check that tracks load times for the first session, which includes the agent boot time.",
           "status": "pass",
-          "message": "Codex created a new session in 3ms."
-        },
-        {
-          "slug": "loads-skills",
-          "position": 3,
-          "label": "Loads skills",
-          "explanation_markdown": "This check verifies that the agents loads skills as [Slash Commands](https://agentclientprotocol.com/protocol/slash-commands).\n\n**Why is this important?**\n\n- Skills are very commonly used when working with agents\n- Some coding agents load skills as slash commands when in their native CLI but don't do the same when running as ACP servers",
-          "status": "fail",
-          "message": "Codex did not load skills from .agents/skills as a slash commands."
+          "message": "Codex created a new session in 4ms."
         },
         {
           "slug": "list-models",
@@ -230,14 +222,6 @@
           "explanation_markdown": "This check verifies that the agent exposes available models through [Session Config Options](https://agentclientprotocol.com/protocol/session-config-options).\n\n**Why is this important?**\n\n- This is required to render the current model in the UI\n- The same API is also required to list other available models",
           "status": "pass",
           "message": "Codex listed 5 models as available, with \"gpt-5.5\" as the default."
-        },
-        {
-          "slug": "loads-skills-100ms",
-          "position": 4,
-          "label": "Loads skills < 100ms",
-          "explanation_markdown": "This check verifies that skills are loaded as [slash commands](https://agentclientprotocol.com/protocol/slash-commands) within 100ms of creating a session.\n\n**Why is this important?**\n\n- Often sessions are created with the sole purpose of running a skill (like `/bump-version`).\n- If skills aren't loaded quick enough, a chat session can feel laggy since users have to wait till they're loaded to invoke the skill.",
-          "status": "fail",
-          "message": "Codex did not load skills from .agents/skills as slash commands."
         },
         {
           "slug": "switch-model",
@@ -269,11 +253,27 @@
           "label": "Switch thinking effort < 100ms",
           "explanation_markdown": "This check verifies that the agent responds to a thinking effort switch request within 100ms.\n\n**Why is this important?**\n\n- This affects the time it takes to switch thinking effort, which is an action users will perform multiple times a day.\n- For native agents like Cursor & Zed the switch time is usually ~zero.",
           "status": "pass",
-          "message": "Codex took 2ms to switch thinking effort from \"medium\" to \"low\"."
+          "message": "Codex took 1ms to switch thinking effort from \"medium\" to \"low\"."
+        },
+        {
+          "slug": "loads-skills",
+          "position": 8,
+          "label": "Loads skills",
+          "explanation_markdown": "This check verifies that the agents loads skills as [Slash Commands](https://agentclientprotocol.com/protocol/slash-commands).\n\n**Why is this important?**\n\n- Skills are very commonly used when working with agents\n- Some coding agents load skills as slash commands when in their native CLI but don't do the same when running as ACP servers",
+          "status": "fail",
+          "message": "Codex did not load skills from .agents/skills as a slash commands."
+        },
+        {
+          "slug": "loads-skills-100ms",
+          "position": 9,
+          "label": "Loads skills < 100ms",
+          "explanation_markdown": "This check verifies that skills are loaded as [slash commands](https://agentclientprotocol.com/protocol/slash-commands) within 100ms of creating a session.\n\n**Why is this important?**\n\n- Often sessions are created with the sole purpose of running a skill (like `/bump-version`).\n- If skills aren't loaded quick enough, a chat session can feel laggy since users have to wait till they're loaded to invoke the skill.",
+          "status": "fail",
+          "message": "Codex did not load skills from .agents/skills as slash commands."
         },
         {
           "slug": "supports-session-close",
-          "position": 8,
+          "position": 13,
           "label": "Session close",
           "explanation_markdown": "This check verifies that the agent supports the `session/close` capability.\n\n**Why is this important?**\n\n`session/close` is required to terminate a running session and free up resources.\n\n<!-- TODO: See if this is used to remove threads from the sidebar -->",
           "status": "pass",
@@ -281,7 +281,7 @@
         },
         {
           "slug": "supports-session-resume",
-          "position": 9,
+          "position": 14,
           "label": "Session resume",
           "explanation_markdown": "This check verifies that the agent supports the `session/resume` capability.\n\n**Why is this important?**\n\n`session/resume` allows clients to reconnect to a previously created session without losing conversation history.",
           "status": "fail",
@@ -301,7 +301,7 @@
           "label": "First session < 500ms",
           "explanation_markdown": "This check verifies that the agent boots and responds to [`initialize`](https://agentclientprotocol.com/protocol/initialization) and [`session/new`](https://agentclientprotocol.com/protocol/session-setup#creating-a-session) within 500ms.\n\n**Why is this important?**\n\n- This affects the load time of the first chat session.\n- For native agents like Cursor & Zed this load time is usually ~zero.\n\n**Notes**\n\n- There's a separate \"New session < 500ms\" check that tracks load times for subsequent sessions.",
           "status": "fail",
-          "message": "Junie took 1032ms to boot and create a new session, exceeding the 500ms target."
+          "message": "Junie took 1056ms to boot and create a new session, exceeding the 500ms target."
         },
         {
           "slug": "new-session-100ms",
@@ -309,15 +309,7 @@
           "label": "New session < 100ms",
           "explanation_markdown": "This check verifies that the agent responds to the `session/new` request within 100ms. The check is performed after the agent has booted and created at least one session.\n\n**Why is this important?**\n\n- This affects the load time of chat sessions after the first one, which is something users will run into multiple times a day.\n- For native agents like Cursor & Zed this load time is usually ~zero.\n\n**Notes**\n\n- There's a separate \"First session < 500ms\" check that tracks load times for the first session, which includes the agent boot time.",
           "status": "pass",
-          "message": "Junie created a new session in 11ms."
-        },
-        {
-          "slug": "loads-skills",
-          "position": 3,
-          "label": "Loads skills",
-          "explanation_markdown": "This check verifies that the agents loads skills as [Slash Commands](https://agentclientprotocol.com/protocol/slash-commands).\n\n**Why is this important?**\n\n- Skills are very commonly used when working with agents\n- Some coding agents load skills as slash commands when in their native CLI but don't do the same when running as ACP servers",
-          "status": "fail",
-          "message": "Junie did not load skills from .junie/skills as a slash commands."
+          "message": "Junie created a new session in 6ms."
         },
         {
           "slug": "list-models",
@@ -326,14 +318,6 @@
           "explanation_markdown": "This check verifies that the agent exposes available models through [Session Config Options](https://agentclientprotocol.com/protocol/session-config-options).\n\n**Why is this important?**\n\n- This is required to render the current model in the UI\n- The same API is also required to list other available models",
           "status": "fail",
           "message": "Junie did include a \"Model\" config option, but it didn't use the \"model\" category."
-        },
-        {
-          "slug": "loads-skills-100ms",
-          "position": 4,
-          "label": "Loads skills < 100ms",
-          "explanation_markdown": "This check verifies that skills are loaded as [slash commands](https://agentclientprotocol.com/protocol/slash-commands) within 100ms of creating a session.\n\n**Why is this important?**\n\n- Often sessions are created with the sole purpose of running a skill (like `/bump-version`).\n- If skills aren't loaded quick enough, a chat session can feel laggy since users have to wait till they're loaded to invoke the skill.",
-          "status": "fail",
-          "message": "Junie did not load skills from .junie/skills as slash commands."
         },
         {
           "slug": "switch-model",
@@ -352,24 +336,24 @@
           "message": "Junie did include a \"Model\" config option, but it didn't use the \"model\" category."
         },
         {
-          "slug": "switch-thinking-effort",
-          "position": 6,
-          "label": "Switch thinking effort",
-          "explanation_markdown": "This check verifies that the agent can switch thinking effort using [Session Config Options](https://agentclientprotocol.com/protocol/session-config-options).\n\n**Why is this important?**\n\n- This is required to allow switching thinking effort via UI controls.",
+          "slug": "loads-skills",
+          "position": 8,
+          "label": "Loads skills",
+          "explanation_markdown": "This check verifies that the agents loads skills as [Slash Commands](https://agentclientprotocol.com/protocol/slash-commands).\n\n**Why is this important?**\n\n- Skills are very commonly used when working with agents\n- Some coding agents load skills as slash commands when in their native CLI but don't do the same when running as ACP servers",
           "status": "fail",
-          "message": "Junie did not expose a thinking effort selector as a session config option."
+          "message": "Junie did not load skills from .junie/skills as a slash commands."
         },
         {
-          "slug": "switch-thinking-effort-100ms",
-          "position": 7,
-          "label": "Switch thinking effort < 100ms",
-          "explanation_markdown": "This check verifies that the agent responds to a thinking effort switch request within 100ms.\n\n**Why is this important?**\n\n- This affects the time it takes to switch thinking effort, which is an action users will perform multiple times a day.\n- For native agents like Cursor & Zed the switch time is usually ~zero.",
+          "slug": "loads-skills-100ms",
+          "position": 9,
+          "label": "Loads skills < 100ms",
+          "explanation_markdown": "This check verifies that skills are loaded as [slash commands](https://agentclientprotocol.com/protocol/slash-commands) within 100ms of creating a session.\n\n**Why is this important?**\n\n- Often sessions are created with the sole purpose of running a skill (like `/bump-version`).\n- If skills aren't loaded quick enough, a chat session can feel laggy since users have to wait till they're loaded to invoke the skill.",
           "status": "fail",
-          "message": "Junie did not expose a thinking effort selector as a session config option."
+          "message": "Junie did not load skills from .junie/skills as slash commands."
         },
         {
           "slug": "supports-session-close",
-          "position": 8,
+          "position": 13,
           "label": "Session close",
           "explanation_markdown": "This check verifies that the agent supports the `session/close` capability.\n\n**Why is this important?**\n\n`session/close` is required to terminate a running session and free up resources.\n\n<!-- TODO: See if this is used to remove threads from the sidebar -->",
           "status": "fail",
@@ -377,7 +361,7 @@
         },
         {
           "slug": "supports-session-resume",
-          "position": 9,
+          "position": 14,
           "label": "Session resume",
           "explanation_markdown": "This check verifies that the agent supports the `session/resume` capability.\n\n**Why is this important?**\n\n`session/resume` allows clients to reconnect to a previously created session without losing conversation history.",
           "status": "pass",
@@ -397,7 +381,7 @@
           "label": "First session < 500ms",
           "explanation_markdown": "This check verifies that the agent boots and responds to [`initialize`](https://agentclientprotocol.com/protocol/initialization) and [`session/new`](https://agentclientprotocol.com/protocol/session-setup#creating-a-session) within 500ms.\n\n**Why is this important?**\n\n- This affects the load time of the first chat session.\n- For native agents like Cursor & Zed this load time is usually ~zero.\n\n**Notes**\n\n- There's a separate \"New session < 500ms\" check that tracks load times for subsequent sessions.",
           "status": "fail",
-          "message": "OpenCode took 1076ms to boot and create a new session, exceeding the 500ms target."
+          "message": "OpenCode took 1194ms to boot and create a new session, exceeding the 500ms target."
         },
         {
           "slug": "new-session-100ms",
@@ -405,15 +389,7 @@
           "label": "New session < 100ms",
           "explanation_markdown": "This check verifies that the agent responds to the `session/new` request within 100ms. The check is performed after the agent has booted and created at least one session.\n\n**Why is this important?**\n\n- This affects the load time of chat sessions after the first one, which is something users will run into multiple times a day.\n- For native agents like Cursor & Zed this load time is usually ~zero.\n\n**Notes**\n\n- There's a separate \"First session < 500ms\" check that tracks load times for the first session, which includes the agent boot time.",
           "status": "pass",
-          "message": "OpenCode created a new session in 23ms."
-        },
-        {
-          "slug": "loads-skills",
-          "position": 3,
-          "label": "Loads skills",
-          "explanation_markdown": "This check verifies that the agents loads skills as [Slash Commands](https://agentclientprotocol.com/protocol/slash-commands).\n\n**Why is this important?**\n\n- Skills are very commonly used when working with agents\n- Some coding agents load skills as slash commands when in their native CLI but don't do the same when running as ACP servers",
-          "status": "pass",
-          "message": "OpenCode loaded skills from .agents/skills as slash commands."
+          "message": "OpenCode created a new session in 27ms."
         },
         {
           "slug": "list-models",
@@ -422,14 +398,6 @@
           "explanation_markdown": "This check verifies that the agent exposes available models through [Session Config Options](https://agentclientprotocol.com/protocol/session-config-options).\n\n**Why is this important?**\n\n- This is required to render the current model in the UI\n- The same API is also required to list other available models",
           "status": "pass",
           "message": "OpenCode listed 52 models as available, with \"opencode/big-pickle\" as the default."
-        },
-        {
-          "slug": "loads-skills-100ms",
-          "position": 4,
-          "label": "Loads skills < 100ms",
-          "explanation_markdown": "This check verifies that skills are loaded as [slash commands](https://agentclientprotocol.com/protocol/slash-commands) within 100ms of creating a session.\n\n**Why is this important?**\n\n- Often sessions are created with the sole purpose of running a skill (like `/bump-version`).\n- If skills aren't loaded quick enough, a chat session can feel laggy since users have to wait till they're loaded to invoke the skill.",
-          "status": "pass",
-          "message": "OpenCode loaded skills from .agents/skills in 1ms."
         },
         {
           "slug": "switch-model",
@@ -445,7 +413,7 @@
           "label": "Switch model < 100ms",
           "explanation_markdown": "This check verifies that the agent responds to a model switch request within 100ms.\n\n**Why is this important?**\n\n- This affects the time it takes to switch models, which is an action users will perform multiple times a day.\n- For native agents like Cursor & Zed the switch time is usually ~zero.",
           "status": "pass",
-          "message": "OpenCode took 12ms to switch models from \"opencode/big-pickle\" to \"opencode/gpt-5.5-pro\"."
+          "message": "OpenCode took 14ms to switch models from \"opencode/big-pickle\" to \"opencode/gpt-5.5-pro\"."
         },
         {
           "slug": "switch-thinking-effort",
@@ -464,8 +432,24 @@
           "message": "OpenCode does not support switching thinking effort."
         },
         {
-          "slug": "supports-session-close",
+          "slug": "loads-skills",
           "position": 8,
+          "label": "Loads skills",
+          "explanation_markdown": "This check verifies that the agents loads skills as [Slash Commands](https://agentclientprotocol.com/protocol/slash-commands).\n\n**Why is this important?**\n\n- Skills are very commonly used when working with agents\n- Some coding agents load skills as slash commands when in their native CLI but don't do the same when running as ACP servers",
+          "status": "pass",
+          "message": "OpenCode loaded skills from .agents/skills as slash commands."
+        },
+        {
+          "slug": "loads-skills-100ms",
+          "position": 9,
+          "label": "Loads skills < 100ms",
+          "explanation_markdown": "This check verifies that skills are loaded as [slash commands](https://agentclientprotocol.com/protocol/slash-commands) within 100ms of creating a session.\n\n**Why is this important?**\n\n- Often sessions are created with the sole purpose of running a skill (like `/bump-version`).\n- If skills aren't loaded quick enough, a chat session can feel laggy since users have to wait till they're loaded to invoke the skill.",
+          "status": "pass",
+          "message": "OpenCode loaded skills from .agents/skills in 7ms."
+        },
+        {
+          "slug": "supports-session-close",
+          "position": 13,
           "label": "Session close",
           "explanation_markdown": "This check verifies that the agent supports the `session/close` capability.\n\n**Why is this important?**\n\n`session/close` is required to terminate a running session and free up resources.\n\n<!-- TODO: See if this is used to remove threads from the sidebar -->",
           "status": "pass",
@@ -473,7 +457,7 @@
         },
         {
           "slug": "supports-session-resume",
-          "position": 9,
+          "position": 14,
           "label": "Session resume",
           "explanation_markdown": "This check verifies that the agent supports the `session/resume` capability.\n\n**Why is this important?**\n\n`session/resume` allows clients to reconnect to a previously created session without losing conversation history.",
           "status": "pass",

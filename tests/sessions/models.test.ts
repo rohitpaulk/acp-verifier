@@ -78,12 +78,7 @@ test.each(registry.agentSlugs)("can list and switch models (%s)", async (slug) =
   );
 
   const modelValues = (modelOption.options as acp.SessionConfigSelectOption[]).map((option) => option.value);
-  const gptModelValues = modelValues.filter((modelValue) => modelValue.includes("gpt-5"));
-
-  // Prefer gpt models since we'll need to test reasoning switching later
-  const modelValueToSwitchTo =
-    gptModelValues.find((modelValue) => modelValue != modelOption.currentValue) ||
-    modelValues.find((modelValue) => modelValue != modelOption.currentValue);
+  const modelValueToSwitchTo = modelValues.find((modelValue) => modelValue != modelOption.currentValue);
 
   if (!modelValueToSwitchTo) {
     throw new Error("no model value found to switch to");
@@ -108,6 +103,13 @@ test.each(registry.agentSlugs)("can list and switch models (%s)", async (slug) =
       "switch-model-100ms",
       `${agent.name} took ${elapsedMs}ms to switch models from "${modelOption.currentValue}" to "${modelValueToSwitchTo}", exceeding the 100ms threshold.`,
     );
+  }
+
+  const gptModelValue = modelValues.find((modelValue) => modelValue.toLowerCase().includes("gpt"));
+
+  // We need GPT models to test reasning switch
+  if (gptModelValue && gptModelValue !== modelValueToSwitchTo) {
+    await switchOption(connection, session.sessionId, modelOption, gptModelValue);
   }
 
   const reasoningOption = (configOptions || []).find((configOption) => configOption.category === "thought_level");
@@ -139,7 +141,7 @@ test.each(registry.agentSlugs)("can list and switch models (%s)", async (slug) =
     `${agent.name} successfully switched thinking effort from "${reasoningOption.currentValue}" to "${reasoningValueToSwitchTo}".`,
   );
 
-  if (elapsedMs <= 100) {
+  if (tElapsedMs <= 100) {
     check.pass(
       "switch-thinking-effort-100ms",
       `${agent.name} took ${tElapsedMs}ms to switch thinking effort from "${reasoningOption.currentValue}" to "${reasoningValueToSwitchTo}".`,
