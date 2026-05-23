@@ -4,7 +4,7 @@ import { AgentProcess } from "../../lib/agent-process";
 import { initAndAuth } from "../helpers";
 import { checkCollectorRegistry, registry } from "../setup";
 
-setDefaultTimeout(45_000);
+setDefaultTimeout(15_000);
 
 async function switchOption(
   connection: acp.ClientSideConnection,
@@ -61,6 +61,16 @@ test.each(registry.agentSlugs)("can list and switch models (%s)", async (slug) =
       check.fail("switch-model-100ms", `${agent.name} does not support switching models.`);
     }
 
+    check.fail(
+      "switch-thinking-effort",
+      `${agent.name} does not support switching models, so thinking effort tests were skipped.`,
+    );
+
+    check.fail(
+      "switch-thinking-effort-100ms",
+      `${agent.name} does not support switching models, so thinking effort tests were skipped.`,
+    );
+
     return;
   }
 
@@ -107,7 +117,7 @@ test.each(registry.agentSlugs)("can list and switch models (%s)", async (slug) =
 
   const gptModelValue = modelValues.find((modelValue) => modelValue.toLowerCase().includes("gpt"));
 
-  // We need GPT models to test reasoning switch.
+  // We need GPT models to test reasning switch
   if (gptModelValue && gptModelValue !== modelValueToSwitchTo) {
     await switchOption(connection, session.sessionId, modelOption, gptModelValue);
   }

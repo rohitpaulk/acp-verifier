@@ -301,7 +301,7 @@
           "label": "First session < 500ms",
           "explanation_markdown": "This check verifies that the agent boots and responds to [`initialize`](https://agentclientprotocol.com/protocol/initialization) and [`session/new`](https://agentclientprotocol.com/protocol/session-setup#creating-a-session) within 500ms.\n\n**Why is this important?**\n\n- This affects the load time of the first chat session.\n- For native agents like Cursor & Zed this load time is usually ~zero.\n\n**Notes**\n\n- There's a separate \"New session < 500ms\" check that tracks load times for subsequent sessions.",
           "status": "fail",
-          "message": "Junie took 1383ms to boot and create a new session, exceeding the 500ms target."
+          "message": "Junie took 1130ms to boot and create a new session, exceeding the 500ms target."
         },
         {
           "slug": "new-session-100ms",
@@ -309,7 +309,7 @@
           "label": "New session < 100ms",
           "explanation_markdown": "This check verifies that the agent responds to the `session/new` request within 100ms. The check is performed after the agent has booted and created at least one session.\n\n**Why is this important?**\n\n- This affects the load time of chat sessions after the first one, which is something users will run into multiple times a day.\n- For native agents like Cursor & Zed this load time is usually ~zero.\n\n**Notes**\n\n- There's a separate \"First session < 500ms\" check that tracks load times for the first session, which includes the agent boot time.",
           "status": "pass",
-          "message": "Junie created a new session in 21ms."
+          "message": "Junie created a new session in 16ms."
         },
         {
           "slug": "list-models",
@@ -334,6 +334,22 @@
           "explanation_markdown": "This check verifies that the agent responds to a model switch request within 100ms.\n\n**Why is this important?**\n\n- This affects the time it takes to switch models, which is an action users will perform multiple times a day.\n- For native agents like Cursor & Zed the switch time is usually ~zero.",
           "status": "fail",
           "message": "Junie did include a \"Model\" config option, but it didn't use the \"model\" category."
+        },
+        {
+          "slug": "switch-thinking-effort",
+          "position": 6,
+          "label": "Switch thinking effort",
+          "explanation_markdown": "This check verifies that the agent can switch thinking effort using [Session Config Options](https://agentclientprotocol.com/protocol/session-config-options).\n\n**Why is this important?**\n\n- This is required to allow switching thinking effort via UI controls.",
+          "status": "fail",
+          "message": "Junie does not support switching models, so thinking effort tests were skipped."
+        },
+        {
+          "slug": "switch-thinking-effort-100ms",
+          "position": 7,
+          "label": "Switch thinking effort < 100ms",
+          "explanation_markdown": "This check verifies that the agent responds to a thinking effort switch request within 100ms.\n\n**Why is this important?**\n\n- This affects the time it takes to switch thinking effort, which is an action users will perform multiple times a day.\n- For native agents like Cursor & Zed the switch time is usually ~zero.",
+          "status": "fail",
+          "message": "Junie does not support switching models, so thinking effort tests were skipped."
         },
         {
           "slug": "loads-skills",
