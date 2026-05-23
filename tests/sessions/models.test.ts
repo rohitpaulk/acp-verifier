@@ -164,22 +164,8 @@ test.each(registry.agentSlugs)("can list and switch models (%s)", async (slug) =
 
   check.pass(
     "list-models",
-    `${agent.name} listed ${modelOption.options.length} models as available, with ${modelOption.currentValue} as the default.`,
+    `${agent.name} listed ${modelOption.options.length} models as available, with "${modelOption.currentValue}" as the default.`,
   );
-
-  // if (currentModel) {
-  //   check.pass(
-  //     "list-models",
-  //     `${agent.name} listed ${modelValues.length} model${modelValues.length === 1 ? "" : "s"} as session config options.`,
-  //   );
-  // } else {
-  //   check.fail(
-  //     "list-models",
-  //     `${agent.name} exposed a model selector, but the current model was not present in its values.`,
-  //   );
-  //   check.fail("switch-model", `${agent.name} did not report a valid current model to switch from.`);
-  //   check.fail("switch-model-100ms", `${agent.name} did not report a valid current model to switch from.`);
-  // }
 
   // if (currentModel) {
   //   configOptions =
