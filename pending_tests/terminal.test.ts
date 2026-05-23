@@ -6,9 +6,9 @@ import { spawn, type ChildProcess } from "node:child_process";
 import { randomUUID } from "node:crypto";
 import { expect, test, setDefaultTimeout } from "bun:test";
 import * as acp from "@agentclientprotocol/sdk";
-import { AgentProcess } from "../../lib/agent-process";
-import { checkCollectorRegistry, registry } from "../setup";
-import { initAndAuth } from "../helpers";
+import { AgentProcess } from "../lib/agent-process";
+import { checkCollectorRegistry, registry } from "../tests/setup";
+import { initAndAuth } from "../tests/helpers";
 
 setDefaultTimeout(45_000);
 

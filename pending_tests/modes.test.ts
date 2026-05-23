@@ -1,8 +1,8 @@
 import { expect, test, setDefaultTimeout } from "bun:test";
-import { AgentProcess } from "../../lib/agent-process";
-import { checkCollectorRegistry, registry } from "../setup";
+import { AgentProcess } from "../lib/agent-process";
+import { checkCollectorRegistry, registry } from "../tests/setup";
 import * as acp from "@agentclientprotocol/sdk";
-import { initAndAuth } from "../helpers";
+import { initAndAuth } from "../tests/helpers";
 
 setDefaultTimeout(15_000);
 
