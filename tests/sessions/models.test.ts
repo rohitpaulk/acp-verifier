@@ -11,10 +11,6 @@ type SelectConfigOption = acp.SessionConfigOption & { type: "select" };
 type SelectConfigCheckSlug = "switch-model" | "switch-thinking-effort";
 type SelectConfigTimingCheckSlug = "switch-model-100ms" | "switch-thinking-effort-100ms";
 
-function isSelectConfigOption(option: acp.SessionConfigOption): option is SelectConfigOption {
-  return option.type === "select";
-}
-
 function selectValues(option: SelectConfigOption): acp.SessionConfigSelectOption[] {
   return option.options.flatMap((entry) => ("value" in entry ? [entry] : entry.options));
 }
@@ -28,95 +24,27 @@ function optionMatches(option: acp.SessionConfigOption, category: string, keywor
   return keywords.some((keyword) => searchableText.includes(keyword));
 }
 
-function findSelectConfigOption(
-  options: acp.SessionConfigOption[],
-  category: string,
-  keywords: string[],
-): SelectConfigOption | undefined {
-  return options.find((option) => isSelectConfigOption(option) && optionMatches(option, category, keywords)) as
-    | SelectConfigOption
-    | undefined;
-}
-
-function setConfigErrorMessage(error: unknown): string {
-  return error instanceof Error ? error.message : String(error);
-}
-
-async function checkSwitchSelectConfigOption(params: {
-  agentName: string;
-  check: CheckCollector;
-  connection: acp.ClientSideConnection;
-  sessionId: string;
-  option: SelectConfigOption | undefined;
-  optionLabel: string;
-  switchSlug: SelectConfigCheckSlug;
-  timingSlug: SelectConfigTimingCheckSlug;
-}): Promise<acp.SessionConfigOption[] | undefined> {
-  const { agentName, check, connection, sessionId, option, optionLabel, switchSlug, timingSlug } = params;
-
-  if (!option) {
-    check.fail(switchSlug, `${agentName} did not expose a ${optionLabel} selector as a session config option.`);
-    check.fail(timingSlug, `${agentName} did not expose a ${optionLabel} selector as a session config option.`);
-    return undefined;
-  }
-
-  const values = selectValues(option);
-  const target = values.find((value) => value.value !== option.currentValue);
-
-  if (!target) {
-    check.fail(
-      switchSlug,
-      `${agentName} listed ${optionLabel} in session config options, but did not include another value to switch to.`,
-    );
-    check.fail(
-      timingSlug,
-      `${agentName} listed ${optionLabel} in session config options, but did not include another value to switch to.`,
-    );
-    return undefined;
-  }
-
-  const start = performance.now();
-
+async function switchOption(
+  connection: acp.ClientSideConnection,
+  sessionId: string,
+  option: SelectConfigOption,
+  newValue: string,
+): Promise<void> {
   let result: acp.SetSessionConfigOptionResponse;
-  try {
-    result = await connection.setSessionConfigOption({
-      sessionId,
-      configId: option.id,
-      value: target.value,
-    });
-  } catch (error) {
-    const errorMessage = setConfigErrorMessage(error);
-    check.fail(switchSlug, `${agentName} failed to switch ${optionLabel}: ${errorMessage}`);
-    check.fail(timingSlug, `${agentName} failed to switch ${optionLabel}: ${errorMessage}`);
-    return undefined;
-  }
 
-  const elapsedMs = Math.round(performance.now() - start);
-  const updatedOption = result.configOptions.find(
-    (candidate) => candidate.id === option.id && isSelectConfigOption(candidate),
-  ) as SelectConfigOption | undefined;
+  result = await connection.setSessionConfigOption({
+    sessionId,
+    configId: option.id,
+    value: newValue,
+  });
 
-  if (updatedOption?.currentValue !== target.value) {
-    check.fail(
-      switchSlug,
-      `${agentName} acknowledged a ${optionLabel} switch, but did not report ${target.name} as the current value.`,
+  const updatedOption = result.configOptions.find((candidate) => candidate.id === option.id)!;
+
+  if (updatedOption.currentValue !== newValue) {
+    throw new Error(
+      `Expected ${option.name} to switch to ${newValue}, but current value is ${updatedOption.currentValue}.`,
     );
-    check.fail(
-      timingSlug,
-      `${agentName} acknowledged a ${optionLabel} switch, but did not report ${target.name} as the current value.`,
-    );
-    return result.configOptions;
   }
-
-  check.pass(switchSlug, `${agentName} switched ${optionLabel} from ${option.currentValue} to ${target.value}.`);
-
-  if (elapsedMs <= 100) {
-    check.pass(timingSlug, `${agentName} switched ${optionLabel} in ${elapsedMs}ms.`);
-  } else {
-    check.fail(timingSlug, `${agentName} took ${elapsedMs}ms to switch ${optionLabel}, exceeding the 100ms target.`);
-  }
-
-  return result.configOptions;
 }
 
 test.each(registry.agentSlugs)("can list and switch models (%s)", async (slug) => {
@@ -166,6 +94,34 @@ test.each(registry.agentSlugs)("can list and switch models (%s)", async (slug) =
     "list-models",
     `${agent.name} listed ${modelOption.options.length} models as available, with "${modelOption.currentValue}" as the default.`,
   );
+
+  const modelValues = (modelOption.options as acp.SessionConfigSelectOption[]).map((option) => option.value);
+  const modelValueToSwitchTo = modelValues.find((modelValue) => modelValue != modelOption.currentValue);
+
+  if (!modelValueToSwitchTo) {
+    throw new Error("no model value found to switch to");
+  }
+
+  const start = performance.now();
+  await switchOption(connection, session.sessionId, modelOption, modelValueToSwitchTo);
+  const elapsedMs = performance.now() - start;
+
+  check.pass(
+    "switch-model",
+    `${agent.name} successfully switched models from "${modelOption.currentValue}" to "${modelValueToSwitchTo}".`,
+  );
+
+  if (elapsedMs <= 100) {
+    check.pass(
+      "switch-model-100ms",
+      `${agent.name} took ${elapsedMs}ms to switch models from "${modelOption.currentValue}" to "${modelValueToSwitchTo}".`,
+    );
+  } else {
+    check.fail(
+      "switch-model-100ms",
+      `${agent.name} took ${elapsedMs}ms to switch models from "${modelOption.currentValue}" to "${modelValueToSwitchTo}", exceeding the 100ms threshold.`,
+    );
+  }
 
   // if (currentModel) {
   //   configOptions =

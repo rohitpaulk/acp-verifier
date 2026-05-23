@@ -37,7 +37,7 @@
           "label": "Lists models",
           "explanation_markdown": "This check verifies that the agent exposes available models through [Session Config Options](https://agentclientprotocol.com/protocol/session-config-options).\n\n**Why is this important?**\n\n- This is required to render the current model in the UI\n- The same API is also required to list other available models",
           "status": "pass",
-          "message": "Claude Code listed 4 models as available, with default as the default."
+          "message": "Claude Code listed 4 models as available, with \"default\" as the default."
         },
         {
           "slug": "loads-skills-100ms",
@@ -53,7 +53,7 @@
           "label": "Switch model",
           "explanation_markdown": "This check verifies that the agent can switch models using [Session Config Options](https://agentclientprotocol.com/protocol/session-config-options).\n\n**Why is this important?**\n\n- This is required to allow switching models via UI controls.",
           "status": "pass",
-          "message": "Claude Code switched model from default to sonnet[1m]."
+          "message": "Claude Code successfully switched models from \"default\" to \"sonnet[1m]\"."
         },
         {
           "slug": "switch-model-100ms",
@@ -61,7 +61,7 @@
           "label": "Switch model < 100ms",
           "explanation_markdown": "This check verifies that the agent responds to a model switch request within 100ms.\n\n**Why is this important?**\n\n- This affects the time it takes to switch models, which is an action users will perform multiple times a day.\n- For native agents like Cursor & Zed the switch time is usually ~zero.",
           "status": "pass",
-          "message": "Claude Code switched model in 9ms."
+          "message": "Claude Code took 8.983957999999802ms to switch models from \"default\" to \"sonnet[1m]\"."
         },
         {
           "slug": "switch-thinking-effort",
@@ -133,7 +133,7 @@
           "label": "Lists models",
           "explanation_markdown": "This check verifies that the agent exposes available models through [Session Config Options](https://agentclientprotocol.com/protocol/session-config-options).\n\n**Why is this important?**\n\n- This is required to render the current model in the UI\n- The same API is also required to list other available models",
           "status": "pass",
-          "message": "Copilot listed 4 models as available, with gpt-5-mini as the default."
+          "message": "Copilot listed 4 models as available, with \"gpt-5-mini\" as the default."
         },
         {
           "slug": "loads-skills-100ms",
@@ -149,7 +149,7 @@
           "label": "Switch model",
           "explanation_markdown": "This check verifies that the agent can switch models using [Session Config Options](https://agentclientprotocol.com/protocol/session-config-options).\n\n**Why is this important?**\n\n- This is required to allow switching models via UI controls.",
           "status": "pass",
-          "message": "Copilot switched model from gpt-5-mini to auto."
+          "message": "Copilot successfully switched models from \"gpt-5-mini\" to \"auto\"."
         },
         {
           "slug": "switch-model-100ms",
@@ -157,7 +157,7 @@
           "label": "Switch model < 100ms",
           "explanation_markdown": "This check verifies that the agent responds to a model switch request within 100ms.\n\n**Why is this important?**\n\n- This affects the time it takes to switch models, which is an action users will perform multiple times a day.\n- For native agents like Cursor & Zed the switch time is usually ~zero.",
           "status": "pass",
-          "message": "Copilot switched model in 16ms."
+          "message": "Copilot took 8.10541700000067ms to switch models from \"gpt-5-mini\" to \"auto\"."
         },
         {
           "slug": "switch-thinking-effort",
@@ -229,7 +229,7 @@
           "label": "Lists models",
           "explanation_markdown": "This check verifies that the agent exposes available models through [Session Config Options](https://agentclientprotocol.com/protocol/session-config-options).\n\n**Why is this important?**\n\n- This is required to render the current model in the UI\n- The same API is also required to list other available models",
           "status": "pass",
-          "message": "Codex listed 5 models as available, with gpt-5.5 as the default."
+          "message": "Codex listed 5 models as available, with \"gpt-5.5\" as the default."
         },
         {
           "slug": "loads-skills-100ms",
@@ -245,7 +245,7 @@
           "label": "Switch model",
           "explanation_markdown": "This check verifies that the agent can switch models using [Session Config Options](https://agentclientprotocol.com/protocol/session-config-options).\n\n**Why is this important?**\n\n- This is required to allow switching models via UI controls.",
           "status": "pass",
-          "message": "Codex switched model from gpt-5.5 to gpt-5.4."
+          "message": "Codex successfully switched models from \"gpt-5.5\" to \"gpt-5.4\"."
         },
         {
           "slug": "switch-model-100ms",
@@ -253,7 +253,7 @@
           "label": "Switch model < 100ms",
           "explanation_markdown": "This check verifies that the agent responds to a model switch request within 100ms.\n\n**Why is this important?**\n\n- This affects the time it takes to switch models, which is an action users will perform multiple times a day.\n- For native agents like Cursor & Zed the switch time is usually ~zero.",
           "status": "pass",
-          "message": "Codex switched model in 2ms."
+          "message": "Codex took 1.6542919999992591ms to switch models from \"gpt-5.5\" to \"gpt-5.4\"."
         },
         {
           "slug": "switch-thinking-effort",
@@ -325,7 +325,7 @@
           "label": "Lists models",
           "explanation_markdown": "This check verifies that the agent exposes available models through [Session Config Options](https://agentclientprotocol.com/protocol/session-config-options).\n\n**Why is this important?**\n\n- This is required to render the current model in the UI\n- The same API is also required to list other available models",
           "status": "fail",
-          "message": "Junie did include a model selector, but it didn't use the \"model\" category."
+          "message": "Junie did include a \"Model\" config option, but it didn't use the \"model\" category."
         },
         {
           "slug": "loads-skills-100ms",
@@ -341,7 +341,7 @@
           "label": "Switch model",
           "explanation_markdown": "This check verifies that the agent can switch models using [Session Config Options](https://agentclientprotocol.com/protocol/session-config-options).\n\n**Why is this important?**\n\n- This is required to allow switching models via UI controls.",
           "status": "fail",
-          "message": "Junie did include a model selector, but it didn't use the \"model\" category."
+          "message": "Junie did include a \"Model\" config option, but it didn't use the \"model\" category."
         },
         {
           "slug": "switch-model-100ms",
@@ -349,7 +349,7 @@
           "label": "Switch model < 100ms",
           "explanation_markdown": "This check verifies that the agent responds to a model switch request within 100ms.\n\n**Why is this important?**\n\n- This affects the time it takes to switch models, which is an action users will perform multiple times a day.\n- For native agents like Cursor & Zed the switch time is usually ~zero.",
           "status": "fail",
-          "message": "Junie did include a model selector, but it didn't use the \"model\" category."
+          "message": "Junie did include a \"Model\" config option, but it didn't use the \"model\" category."
         },
         {
           "slug": "switch-thinking-effort",
@@ -421,7 +421,7 @@
           "label": "Lists models",
           "explanation_markdown": "This check verifies that the agent exposes available models through [Session Config Options](https://agentclientprotocol.com/protocol/session-config-options).\n\n**Why is this important?**\n\n- This is required to render the current model in the UI\n- The same API is also required to list other available models",
           "status": "pass",
-          "message": "OpenCode listed 52 models as available, with opencode/big-pickle as the default."
+          "message": "OpenCode listed 52 models as available, with \"opencode/big-pickle\" as the default."
         },
         {
           "slug": "loads-skills-100ms",
@@ -437,7 +437,7 @@
           "label": "Switch model",
           "explanation_markdown": "This check verifies that the agent can switch models using [Session Config Options](https://agentclientprotocol.com/protocol/session-config-options).\n\n**Why is this important?**\n\n- This is required to allow switching models via UI controls.",
           "status": "pass",
-          "message": "OpenCode switched model from opencode/big-pickle to opencode-go/qwen3.6-plus."
+          "message": "OpenCode successfully switched models from \"opencode/big-pickle\" to \"opencode-go/qwen3.6-plus\"."
         },
         {
           "slug": "switch-model-100ms",
@@ -445,7 +445,7 @@
           "label": "Switch model < 100ms",
           "explanation_markdown": "This check verifies that the agent responds to a model switch request within 100ms.\n\n**Why is this important?**\n\n- This affects the time it takes to switch models, which is an action users will perform multiple times a day.\n- For native agents like Cursor & Zed the switch time is usually ~zero.",
           "status": "pass",
-          "message": "OpenCode switched model in 9ms."
+          "message": "OpenCode took 5.685874999999214ms to switch models from \"opencode/big-pickle\" to \"opencode-go/qwen3.6-plus\"."
         },
         {
           "slug": "switch-thinking-effort",
