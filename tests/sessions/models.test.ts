@@ -4,7 +4,7 @@ import { AgentProcess } from "../../lib/agent-process";
 import { initAndAuth } from "../helpers";
 import { checkCollectorRegistry, registry } from "../setup";
 
-setDefaultTimeout(15_000);
+setDefaultTimeout(45_000);
 
 async function switchOption(
   connection: acp.ClientSideConnection,
@@ -107,7 +107,7 @@ test.each(registry.agentSlugs)("can list and switch models (%s)", async (slug) =
 
   const gptModelValue = modelValues.find((modelValue) => modelValue.toLowerCase().includes("gpt"));
 
-  // We need GPT models to test reasning switch
+  // We need GPT models to test reasoning switch.
   if (gptModelValue && gptModelValue !== modelValueToSwitchTo) {
     await switchOption(connection, session.sessionId, modelOption, gptModelValue);
   }

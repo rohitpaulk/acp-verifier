@@ -1,0 +1,5 @@
+name: Cursor
+company: Anysphere
+version_string: 2026.05.20-2b5dd59
+env_vars:
+  - CURSOR_API_KEY

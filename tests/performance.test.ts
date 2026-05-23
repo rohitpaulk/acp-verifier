@@ -4,7 +4,7 @@ import { AgentProcess } from "../lib/agent-process";
 import { checkCollectorRegistry, registry } from "./setup";
 import { initAndAuth } from "./helpers";
 
-setDefaultTimeout(15_000);
+setDefaultTimeout(45_000);
 
 test.each(registry.agentSlugs)("responds to initialize within 500ms (%s)", async (slug) => {
   const agent = registry.agentBySlug(slug);

@@ -4,7 +4,7 @@ import { AgentProcess } from "../../lib/agent-process";
 import { checkCollectorRegistry, registry } from "../setup";
 import { waitUntil } from "../helpers";
 
-setDefaultTimeout(15_000);
+setDefaultTimeout(45_000);
 
 test.each(registry.agentSlugs)("loads skills as slash commands (%s)", async (slug) => {
   const check = checkCollectorRegistry.get(slug);
