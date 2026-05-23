@@ -445,7 +445,7 @@
           "label": "Loads skills < 100ms",
           "explanation_markdown": "This check verifies that skills are loaded as [slash commands](https://agentclientprotocol.com/protocol/slash-commands) within 100ms of creating a session.\n\n**Why is this important?**\n\n- Often sessions are created with the sole purpose of running a skill (like `/bump-version`).\n- If skills aren't loaded quick enough, a chat session can feel laggy since users have to wait till they're loaded to invoke the skill.",
           "status": "pass",
-          "message": "OpenCode loaded skills from .agents/skills in 8ms."
+          "message": "OpenCode loaded skills from .agents/skills in 1ms."
         },
         {
           "slug": "supports-session-close",
@@ -533,7 +533,7 @@
           "label": "Loads skills",
           "explanation_markdown": "This check verifies that the agents loads skills as [Slash Commands](https://agentclientprotocol.com/protocol/slash-commands).\n\n**Why is this important?**\n\n- Skills are very commonly used when working with agents\n- Some coding agents load skills as slash commands when in their native CLI but don't do the same when running as ACP servers",
           "status": "fail",
-          "message": "Cursor did not load skills from .agents/skills as a slash commands."
+          "message": "Cursor did not load skills from .cursor/skills as a slash commands."
         },
         {
           "slug": "loads-skills-100ms",
@@ -541,7 +541,7 @@
           "label": "Loads skills < 100ms",
           "explanation_markdown": "This check verifies that skills are loaded as [slash commands](https://agentclientprotocol.com/protocol/slash-commands) within 100ms of creating a session.\n\n**Why is this important?**\n\n- Often sessions are created with the sole purpose of running a skill (like `/bump-version`).\n- If skills aren't loaded quick enough, a chat session can feel laggy since users have to wait till they're loaded to invoke the skill.",
           "status": "fail",
-          "message": "Cursor did not load skills from .agents/skills as slash commands."
+          "message": "Cursor did not load skills from .cursor/skills as slash commands."
         },
         {
           "slug": "supports-session-close",
