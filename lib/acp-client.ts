@@ -62,7 +62,7 @@ export class AcpClient {
       return existing;
     }
 
-    const session = new AcpClientSession(sessionId, newSessionResult);
+    const session = new AcpClientSession(this.connection, sessionId, newSessionResult);
     this.sessions.set(sessionId, session);
     return session;
   }

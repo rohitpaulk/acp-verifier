@@ -7,6 +7,7 @@ export class AcpClientSession {
   readonly updates: acp.SessionUpdate[] = [];
 
   constructor(
+    readonly connection: acp.ClientSideConnection,
     readonly sessionId: string,
     public newSessionResult?: NewSessionResult,
   ) {}
@@ -20,11 +21,8 @@ export class AcpClientSession {
   }
 
   get agentMessages(): string[] {
-    return _.values(_.groupBy(this.agentMessageChunkUpdates, (update) => update.messageId)).map(
-      (group) =>
-        group
-          .map((update) => (update.content.type === "text" ? update.content.text : ""))
-          .join(""),
+    return _.values(_.groupBy(this.agentMessageChunkUpdates, (update) => update.messageId)).map((group) =>
+      group.map((update) => (update.content.type === "text" ? update.content.text : "")).join(""),
     );
   }
 
@@ -38,6 +36,24 @@ export class AcpClientSession {
 
   addUpdate(update: acp.SessionUpdate): void {
     this.updates.push(update);
+  }
+
+  async switchOption(option: acp.SessionConfigOption & { type: "select" }, newValue: string): Promise<void> {
+    let result: acp.SetSessionConfigOptionResponse;
+
+    result = await this.connection.setSessionConfigOption({
+      sessionId: this.sessionId,
+      configId: option.id,
+      value: newValue,
+    });
+
+    const updatedOption = result.configOptions.find((candidate) => candidate.id === option.id)!;
+
+    if (updatedOption.currentValue !== newValue) {
+      throw new Error(
+        `Expected ${option.name} to switch to ${newValue}, but current value is ${updatedOption.currentValue}.`,
+      );
+    }
   }
 
   private latestAvailableCommandsUpdate():
