@@ -22,7 +22,9 @@ test.each(registry.agentSlugs)("streams reasoning via agent_thought_chunk (%s)",
     prompt: [
       {
         type: "text",
-        text: "Use your reasoning capability to count from 1 till 25, then pick a random number. Respond with only the final number, but include the full thinking in your reasoning.",
+        text: `Step 1: In your thinking section, list all the days in the week
+Step 2: Count the total times the letter "e" & "a" appear across all those days
+Step 3: Respond to the user with just the number (no extra output)`,
       },
     ],
   });
