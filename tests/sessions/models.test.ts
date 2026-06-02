@@ -1,50 +1,27 @@
 import * as acp from "@agentclientprotocol/sdk";
 import { expect, setDefaultTimeout, test } from "bun:test";
+import { AcpClient } from "../../lib/acp-client";
 import { AgentProcess } from "../../lib/agent-process";
-import { initAndAuth } from "../helpers";
 import { checkCollectorRegistry, registry } from "../setup";
 
 setDefaultTimeout(15_000);
-
-async function switchOption(
-  connection: acp.ClientSideConnection,
-  sessionId: string,
-  option: acp.SessionConfigOption & { type: "select" },
-  newValue: string,
-): Promise<void> {
-  let result: acp.SetSessionConfigOptionResponse;
-
-  result = await connection.setSessionConfigOption({
-    sessionId,
-    configId: option.id,
-    value: newValue,
-  });
-
-  const updatedOption = result.configOptions.find((candidate) => candidate.id === option.id)!;
-
-  if (updatedOption.currentValue !== newValue) {
-    throw new Error(
-      `Expected ${option.name} to switch to ${newValue}, but current value is ${updatedOption.currentValue}.`,
-    );
-  }
-}
 
 test.each(registry.agentSlugs)("can list and switch models (%s)", async (slug) => {
   const agent = registry.agentBySlug(slug);
   const check = checkCollectorRegistry.get(slug);
 
   using proc = new AgentProcess(agent);
-  const connection = proc.connect();
-  await initAndAuth(connection, agent);
+  const client = new AcpClient(proc);
+  await client.initAndAuth();
 
-  const session = await connection.newSession({
+  const session = await client.newSession({
     cwd: "/tmp",
     mcpServers: [],
   });
 
   expect(session.sessionId).toBeTruthy();
 
-  let configOptions = session.configOptions;
+  let configOptions = session.newSessionResult?.configOptions;
   const modelOption = (configOptions || []).find((configOption) => configOption.category === "model");
 
   if (!modelOption) {
@@ -95,7 +72,7 @@ test.each(registry.agentSlugs)("can list and switch models (%s)", async (slug) =
   }
 
   const start = performance.now();
-  await switchOption(connection, session.sessionId, modelOption, modelValueToSwitchTo);
+  await session.switchOption(modelOption, modelValueToSwitchTo);
   const elapsedMs = Math.round(performance.now() - start);
 
   check.pass(
@@ -119,7 +96,7 @@ test.each(registry.agentSlugs)("can list and switch models (%s)", async (slug) =
 
   // We need GPT models to test reasning switch
   if (gptModelValue && gptModelValue !== modelValueToSwitchTo) {
-    await switchOption(connection, session.sessionId, modelOption, gptModelValue);
+    await session.switchOption(modelOption, gptModelValue);
   }
 
   const reasoningOption = (configOptions || []).find((configOption) => configOption.category === "thought_level");
@@ -143,7 +120,7 @@ test.each(registry.agentSlugs)("can list and switch models (%s)", async (slug) =
   }
 
   const tStart = performance.now();
-  await switchOption(connection, session.sessionId, reasoningOption, reasoningValueToSwitchTo);
+  await session.switchOption(reasoningOption, reasoningValueToSwitchTo);
   const tElapsedMs = Math.round(performance.now() - tStart);
 
   check.pass(
