@@ -9,10 +9,12 @@
     "chalk": "^5.6.2",
     "dotenv": "^17.4.2",
     "execa": "^9.6.1",
+    "lodash": "^4.18.1",
     "yaml": "^2.8.3"
   },
   "devDependencies": {
-    "@types/bun": "latest"
+    "@types/bun": "latest",
+    "@types/lodash": "^4.17.24"
   },
   "peerDependencies": {
     "typescript": "^5"
