@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-05-23",
+  "lastUpdated": "2026-06-02",
   "agents": [
     {
       "slug": "claude-code",
@@ -94,6 +94,14 @@
           "explanation_markdown": "This check verifies that the agent supports the `session/resume` capability.\n\n**Why is this important?**\n\n`session/resume` allows clients to reconnect to a previously created session without losing conversation history.",
           "status": "pass",
           "message": "Claude Code advertised session resume support during initialization."
+        },
+        {
+          "slug": "streams-reasoning",
+          "position": 15,
+          "label": "Streams reasoning",
+          "explanation_markdown": "This check verifies that the agent streams its internal reasoning traces using [`agent_thought_chunk`](https://agentclientprotocol.com/protocol/prompt-turn#agent-thoughts) session updates when responding to a prompt.\n\n**Why is this important?**\n\n- Surfacing the agent's reasoning helps users understand and trust how an answer was reached.\n- Many models produce thinking/reasoning, but some agents don't forward it to the client as `agent_thought_chunk` updates, so it never shows up in the UI.",
+          "status": "fail",
+          "message": "Claude Code did not include any reasoning traces via agent_thought_chunk session updates."
         }
       ]
     },
@@ -190,6 +198,14 @@
           "explanation_markdown": "This check verifies that the agent supports the `session/resume` capability.\n\n**Why is this important?**\n\n`session/resume` allows clients to reconnect to a previously created session without losing conversation history.",
           "status": "fail",
           "message": "Copilot did not advertise session resume support during initialization."
+        },
+        {
+          "slug": "streams-reasoning",
+          "position": 15,
+          "label": "Streams reasoning",
+          "explanation_markdown": "This check verifies that the agent streams its internal reasoning traces using [`agent_thought_chunk`](https://agentclientprotocol.com/protocol/prompt-turn#agent-thoughts) session updates when responding to a prompt.\n\n**Why is this important?**\n\n- Surfacing the agent's reasoning helps users understand and trust how an answer was reached.\n- Many models produce thinking/reasoning, but some agents don't forward it to the client as `agent_thought_chunk` updates, so it never shows up in the UI.",
+          "status": "fail",
+          "message": "Copilot did not include any reasoning traces via agent_thought_chunk session updates."
         }
       ]
     },
@@ -286,6 +302,14 @@
           "explanation_markdown": "This check verifies that the agent supports the `session/resume` capability.\n\n**Why is this important?**\n\n`session/resume` allows clients to reconnect to a previously created session without losing conversation history.",
           "status": "fail",
           "message": "Codex did not advertise session resume support during initialization."
+        },
+        {
+          "slug": "streams-reasoning",
+          "position": 15,
+          "label": "Streams reasoning",
+          "explanation_markdown": "This check verifies that the agent streams its internal reasoning traces using [`agent_thought_chunk`](https://agentclientprotocol.com/protocol/prompt-turn#agent-thoughts) session updates when responding to a prompt.\n\n**Why is this important?**\n\n- Surfacing the agent's reasoning helps users understand and trust how an answer was reached.\n- Many models produce thinking/reasoning, but some agents don't forward it to the client as `agent_thought_chunk` updates, so it never shows up in the UI.",
+          "status": "fail",
+          "message": "Codex did not include any reasoning traces via agent_thought_chunk session updates."
         }
       ]
     },
@@ -382,6 +406,14 @@
           "explanation_markdown": "This check verifies that the agent supports the `session/resume` capability.\n\n**Why is this important?**\n\n`session/resume` allows clients to reconnect to a previously created session without losing conversation history.",
           "status": "pass",
           "message": "Junie advertised session resume support during initialization."
+        },
+        {
+          "slug": "streams-reasoning",
+          "position": 15,
+          "label": "Streams reasoning",
+          "explanation_markdown": "This check verifies that the agent streams its internal reasoning traces using [`agent_thought_chunk`](https://agentclientprotocol.com/protocol/prompt-turn#agent-thoughts) session updates when responding to a prompt.\n\n**Why is this important?**\n\n- Surfacing the agent's reasoning helps users understand and trust how an answer was reached.\n- Many models produce thinking/reasoning, but some agents don't forward it to the client as `agent_thought_chunk` updates, so it never shows up in the UI.",
+          "status": "fail",
+          "message": "Junie emitted a reasoning block but did not stream its contents via agent_thought_chunk session updates."
         }
       ]
     },
@@ -478,6 +510,14 @@
           "explanation_markdown": "This check verifies that the agent supports the `session/resume` capability.\n\n**Why is this important?**\n\n`session/resume` allows clients to reconnect to a previously created session without losing conversation history.",
           "status": "pass",
           "message": "OpenCode advertised session resume support during initialization."
+        },
+        {
+          "slug": "streams-reasoning",
+          "position": 15,
+          "label": "Streams reasoning",
+          "explanation_markdown": "This check verifies that the agent streams its internal reasoning traces using [`agent_thought_chunk`](https://agentclientprotocol.com/protocol/prompt-turn#agent-thoughts) session updates when responding to a prompt.\n\n**Why is this important?**\n\n- Surfacing the agent's reasoning helps users understand and trust how an answer was reached.\n- Many models produce thinking/reasoning, but some agents don't forward it to the client as `agent_thought_chunk` updates, so it never shows up in the UI.",
+          "status": "pass",
+          "message": "OpenCode streamed reasoning traces before the final answer."
         }
       ]
     },
@@ -574,6 +614,14 @@
           "explanation_markdown": "This check verifies that the agent supports the `session/resume` capability.\n\n**Why is this important?**\n\n`session/resume` allows clients to reconnect to a previously created session without losing conversation history.",
           "status": "fail",
           "message": "Cursor did not advertise session resume support during initialization."
+        },
+        {
+          "slug": "streams-reasoning",
+          "position": 15,
+          "label": "Streams reasoning",
+          "explanation_markdown": "This check verifies that the agent streams its internal reasoning traces using [`agent_thought_chunk`](https://agentclientprotocol.com/protocol/prompt-turn#agent-thoughts) session updates when responding to a prompt.\n\n**Why is this important?**\n\n- Surfacing the agent's reasoning helps users understand and trust how an answer was reached.\n- Many models produce thinking/reasoning, but some agents don't forward it to the client as `agent_thought_chunk` updates, so it never shows up in the UI.",
+          "status": "pass",
+          "message": "Cursor streamed reasoning traces before the final answer."
         }
       ]
     }

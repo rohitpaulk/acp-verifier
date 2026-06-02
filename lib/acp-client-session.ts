@@ -26,6 +26,12 @@ export class AcpClientSession {
     );
   }
 
+  get agentThoughtMessages(): string[] {
+    return _.values(_.groupBy(this.thoughtChunkUpdates, (update) => update.messageId)).map((group) =>
+      group.map((update) => (update.content.type === "text" ? update.content.text : "")).join(""),
+    );
+  }
+
   get slashCommands(): string[] {
     return this.availableCommands.map((command) => `/${command.name}`);
   }
